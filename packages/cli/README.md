@@ -5,7 +5,7 @@ Command-line interface for Engineering OS.
 ## Install
 
 ```bash
-npm install -g @engineering-os/cli
+npm install -g engineering-os
 ```
 
 ## Commands

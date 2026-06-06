@@ -427,7 +427,7 @@ li { margin: 6px 0; }
 
 <div class="code-title">Terminal</div>
 <pre><code># Install globally
-npm install -g @engineering-os/cli
+npm install -g engineering-os
 
 # Initialize in your project
 cd your-project
@@ -1054,7 +1054,7 @@ node --version
 npm rebuild better-sqlite3
 
 # Or reinstall EOS globally with the current Node
-npm install -g @engineering-os/cli</code></pre>
+npm install -g engineering-os</code></pre>
 </div>
 
 <h4>Why this happens</h4>
@@ -1064,7 +1064,7 @@ npm install -g @engineering-os/cli</code></pre>
 <div class="code-block">
 <pre><code># Option A: Always install with the same Node your shell uses
 nvm use 22       # or whatever your default is
-npm install -g @engineering-os/cli
+npm install -g engineering-os
 
 # Option B: Add a .nvmrc to avoid confusion
 echo "22" > ~/.nvmrc
@@ -1082,7 +1082,7 @@ nvm alias default 22</code></pre>
 which eos
 
 # If not found, install globally
-npm install -g @engineering-os/cli
+npm install -g engineering-os
 
 # Verify it works
 eos --version</code></pre>
