@@ -1,6 +1,6 @@
 {
   "name": "engineering-os",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "AI-native knowledge layer for your codebase — MCP server with 47 tools for code intelligence, architecture discovery, and workflow automation",
   "license": "Apache-2.0",
   "author": "Engineering OS Contributors",
@@ -54,7 +54,7 @@
   "scripts": {
     "build": "node ./scripts/bundle.js",
     "prepublishOnly": "node ./scripts/bundle.js",
-    "postinstall": "node ./scripts/check-native.js"
+    "postinstall": "node -e \"try{require('./scripts/check-native.js')}catch(e){}\""
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
