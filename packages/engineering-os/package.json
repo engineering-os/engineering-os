@@ -65,6 +65,12 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
+    "@engineering-os/shared": "*",
+    "@engineering-os/core": "*",
+    "@engineering-os/cli": "*",
+    "@engineering-os/adapter-claude": "*",
+    "@engineering-os/adapter-cursor": "*",
+    "@engineering-os/adapter-vscode": "*",
     "@types/better-sqlite3": "^7.6.0",
     "@types/js-yaml": "^4.0.9",
     "typescript": "^5.4.0"
