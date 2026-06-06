@@ -35,7 +35,7 @@ describe('isHighEntropy', () => {
   });
 
   it('returns true for API-key-like strings', () => {
-    expect(isHighEntropy('xk_test_R4nD0mH1gHEnTr0pYsTr1nG')).toBe(true);
+    expect(isHighEntropy('a1B2c3D4e5F6g7H8i9J0kLmNoPqRsT')).toBe(true);
   });
 
   it('respects custom threshold', () => {

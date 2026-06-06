@@ -26,6 +26,10 @@
     "codebase",
     "mcp-server"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "bin": {
     "eos": "./dist/cli/cli.js"
   },

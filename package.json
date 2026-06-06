@@ -25,7 +25,7 @@
     "test": "vitest",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "turbo run build && node packages/engineering-os/scripts/bundle.js && changeset publish --provenance"
+    "release": "turbo run build && node packages/engineering-os/scripts/bundle.js && changeset publish"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
