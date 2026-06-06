@@ -4,7 +4,7 @@
 
 If you discover a security vulnerability, please report it responsibly:
 
-- **Email:** security@engineering-os.dev
+- **Email:** engineering.os.dev@gmail.com
 - **Do NOT** open a public GitHub issue for security vulnerabilities
 - You will receive acknowledgment within 48 hours
 - We aim to provide a fix within 7 days for critical issues
@@ -175,7 +175,7 @@ LanceDB: escape user input before interpolating into filter strings.
 
 ## Reporting Vulnerabilities
 
-If you discover a security vulnerability, please email security@engineering-os.dev (or open a private security advisory on GitHub). Do not open a public issue for security vulnerabilities.
+If you discover a security vulnerability, please email engineering.os.dev@gmail.com (or open a private security advisory on GitHub). Do not open a public issue for security vulnerabilities.
 
 ---
 

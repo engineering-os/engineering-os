@@ -144,7 +144,7 @@ npm install -g engineering-os
 
 ## Documentation
 
-Full documentation: [docs/index.html](docs/index.html)
+Full documentation: [engineering-os.github.io/engineering-os](https://engineering-os.github.io/engineering-os/)
 
 ## Architecture
 

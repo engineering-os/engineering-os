@@ -47,6 +47,7 @@ Engineering OS indexes your codebase and serves structured knowledge to AI tools
 
 ## Documentation
 
+- [Full Docs](https://engineering-os.github.io/engineering-os/) — interactive HTML documentation
 - [GitHub](https://github.com/engineering-os/engineering-os)
 - [Contributing](https://github.com/engineering-os/engineering-os/blob/main/CONTRIBUTING.md)
 - [Security](https://github.com/engineering-os/engineering-os/blob/main/SECURITY.md)
