@@ -1,0 +1,146 @@
+# SOC2 Type II Compliance Framework Rules
+# Trust Service Criteria: Security, Availability, Processing Integrity, Confidentiality, Privacy
+
+name: SOC2
+version: "2024.1"
+description: SOC2 Type II compliance checks for software systems
+
+rules:
+  # CC6.1 - Logical and Physical Access Controls
+  - id: soc2-auth-required
+    category: access-control
+    title: Authentication required on all endpoints
+    description: All non-public API endpoints must enforce authentication
+    severity: high
+    trustCriteria: CC6.1
+    check:
+      type: pattern-absent
+      filePattern: "*.controller.ts,*.route.ts,*.router.ts"
+      pattern: "\\.(get|post|put|delete|patch)\\s*\\("
+      exemptPattern: "(auth|middleware|guard|protect|verify|public)"
+    remediation: Add authentication middleware to all API route handlers
+
+  # CC6.1 - Access Control
+  - id: soc2-no-hardcoded-creds
+    category: access-control
+    title: No hardcoded credentials
+    description: Secrets must not be hardcoded in source code
+    severity: critical
+    trustCriteria: CC6.1
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.py,*.java"
+      pattern: "(password|secret|api_?key|token|private_?key)\\s*[:=]\\s*['\"][^$\\{][^'\"]{8,}"
+    remediation: Use environment variables or a secrets manager for all credentials
+
+  # CC6.6 - System Boundaries
+  - id: soc2-input-validation
+    category: data-integrity
+    title: Input validation on system boundaries
+    description: All external inputs must be validated before processing
+    severity: high
+    trustCriteria: CC6.6
+    check:
+      type: pattern-absent
+      filePattern: "*.controller.ts,*.route.ts"
+      pattern: "req\\.(body|query|params)"
+      exemptPattern: "(validate|sanitize|schema|dto|zod|joi|class-validator)"
+    remediation: Validate all request inputs using a schema validation library
+
+  # CC6.7 - Data Transmission
+  - id: soc2-encryption-in-transit
+    category: encryption
+    title: Enforce HTTPS/TLS for data transmission
+    description: All network communication must use encrypted channels
+    severity: high
+    trustCriteria: CC6.7
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.py,*.yaml,*.yml"
+      pattern: "http://(?!localhost|127\\.0\\.0\\.1|0\\.0\\.0\\.0)"
+    remediation: Replace all non-local HTTP URLs with HTTPS
+
+  # CC6.8 - Malicious Software Prevention
+  - id: soc2-dependency-pinning
+    category: supply-chain
+    title: Dependencies must be version-pinned
+    description: Package dependencies should use exact versions, not ranges
+    severity: medium
+    trustCriteria: CC6.8
+    check:
+      type: file-check
+      filePath: "package-lock.json,yarn.lock,pnpm-lock.yaml"
+      exists: true
+    remediation: Ensure a lock file exists and is committed to version control
+
+  # CC7.2 - Monitoring
+  - id: soc2-logging-present
+    category: monitoring
+    title: Application logging must be present
+    description: Critical operations must have structured logging
+    severity: medium
+    trustCriteria: CC7.2
+    check:
+      type: file-check
+      filePattern: "*.ts,*.js"
+      contentPattern: "(logger|winston|pino|bunyan|log4j|console\\.log)"
+      minMatches: 3
+    remediation: Implement structured logging for authentication, data access, and errors
+
+  # CC7.3 - Incident Response
+  - id: soc2-error-handling
+    category: monitoring
+    title: Global error handling configured
+    description: Unhandled exceptions must be caught and logged
+    severity: medium
+    trustCriteria: CC7.3
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js"
+      patterns:
+        - "process\\.on\\(['\"]uncaughtException"
+        - "process\\.on\\(['\"]unhandledRejection"
+        - "app\\.use\\(.*error.*handler"
+        - "GlobalExceptionFilter"
+    remediation: Add global error handlers that log exceptions and alert operations
+
+  # CC8.1 - Change Management
+  - id: soc2-ci-config
+    category: change-management
+    title: CI/CD pipeline must be configured
+    description: Automated testing and deployment pipelines must exist
+    severity: medium
+    trustCriteria: CC8.1
+    check:
+      type: file-check
+      filePath: ".github/workflows/*.yml,.gitlab-ci.yml,Jenkinsfile,.circleci/config.yml,bitbucket-pipelines.yml"
+      exists: true
+    remediation: Configure a CI/CD pipeline for automated testing and deployment
+
+  # CC6.3 - Least Privilege
+  - id: soc2-no-wildcard-cors
+    category: access-control
+    title: CORS must not use wildcard origins
+    description: Cross-origin resource sharing must restrict allowed origins
+    severity: high
+    trustCriteria: CC6.3
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.yaml,*.yml"
+      pattern: "origin:\\s*['\"]\\*['\"]|cors\\(\\)|Access-Control-Allow-Origin.*\\*"
+    remediation: Configure CORS with specific allowed origins instead of wildcard
+
+  # CC6.1 - Rate Limiting
+  - id: soc2-rate-limiting
+    category: access-control
+    title: Rate limiting on authentication endpoints
+    description: Login and auth endpoints must have rate limiting to prevent brute force
+    severity: high
+    trustCriteria: CC6.1
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js"
+      patterns:
+        - "rateLimit|rate-limit|throttle|RateLimiter"
+        - "express-rate-limit|@nestjs/throttler"
+    remediation: Add rate limiting middleware to authentication endpoints

@@ -1,0 +1,73 @@
+{
+  "name": "@engineering-os/adapter-vscode",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Engineering OS VS Code extension — MCP client with sidebar and command palette",
+  "displayName": "Engineering OS",
+  "license": "Apache-2.0",
+  "author": "Engineering OS Contributors",
+  "publisher": "engineering-os",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/engineering-os/engineering-os.git",
+    "directory": "packages/adapter-vscode"
+  },
+  "homepage": "https://github.com/engineering-os/engineering-os/tree/main/packages/adapter-vscode",
+  "bugs": {
+    "url": "https://github.com/engineering-os/engineering-os/issues"
+  },
+  "keywords": ["engineering-os", "mcp", "ai", "vscode", "extension", "code-intelligence"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "workspaceContains:.eos/"
+  ],
+  "main": "./dist/extension.js",
+  "exports": {
+    ".": {
+      "types": "./dist/extension.d.ts",
+      "require": "./dist/extension.js"
+    }
+  },
+  "files": ["dist", "media", "README.md"],
+  "contributes": {
+    "commands": [
+      { "command": "eos.search", "title": "EOS: Search Codebase" },
+      { "command": "eos.status", "title": "EOS: Show Status" },
+      { "command": "eos.decide", "title": "EOS: Record Decision" },
+      { "command": "eos.security", "title": "EOS: Security Scan" },
+      { "command": "eos.configure", "title": "EOS: Configure MCP Connection" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "engineering-os",
+          "title": "Engineering OS",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "engineering-os": [
+        { "id": "eos.services", "name": "Services" },
+        { "id": "eos.decisions", "name": "Decisions" },
+        { "id": "eos.workflows", "name": "Workflows" }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@engineering-os/core": "0.1.0",
+    "@engineering-os/shared": "0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

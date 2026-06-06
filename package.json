@@ -1,0 +1,37 @@
+{
+  "name": "@engineering-os/monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "packageManager": "npm@11.4.2",
+  "license": "Apache-2.0",
+  "author": "Engineering OS Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/engineering-os/engineering-os.git"
+  },
+  "homepage": "https://github.com/engineering-os/engineering-os",
+  "bugs": {
+    "url": "https://github.com/engineering-os/engineering-os/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "vitest",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "turbo run build && node packages/engineering-os/scripts/bundle.js && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.7.0",
+    "@changesets/cli": "^2.31.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

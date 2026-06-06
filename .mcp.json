@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "engineering-os": {
+      "command": "eos",
+      "args": [
+        "serve"
+      ]
+    }
+  }
+}

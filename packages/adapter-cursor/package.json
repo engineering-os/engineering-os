@@ -1,0 +1,51 @@
+{
+  "name": "@engineering-os/adapter-cursor",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Cursor IDE adapter for Engineering OS — .cursorrules generation and file watching",
+  "license": "Apache-2.0",
+  "author": "Engineering OS Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/engineering-os/engineering-os.git",
+    "directory": "packages/adapter-cursor"
+  },
+  "homepage": "https://github.com/engineering-os/engineering-os/tree/main/packages/adapter-cursor",
+  "bugs": {
+    "url": "https://github.com/engineering-os/engineering-os/issues"
+  },
+  "keywords": ["engineering-os", "mcp", "ai", "cursor", "cursorrules", "ide"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "eos-cursor": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@engineering-os/core": "0.1.0",
+    "@engineering-os/shared": "0.1.0",
+    "commander": "^12.0.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "^5.4.0"
+  }
+}

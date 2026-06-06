@@ -1,0 +1,32 @@
+name: refactor
+description: Code refactoring workflow with safety checks
+stages:
+  - id: analyze
+    description: Analyze current code and identify refactoring targets
+    dependsOn: []
+    approval: none
+    output: analysis.md
+
+  - id: plan
+    description: Plan refactoring steps with risk assessment
+    dependsOn: [analyze]
+    approval: required
+    output: plan.json
+
+  - id: execute
+    description: Execute refactoring in safe incremental steps
+    dependsOn: [plan]
+    approval: none
+    output: implementation/
+
+  - id: validate
+    description: Ensure all tests pass and behavior is preserved
+    dependsOn: [execute]
+    approval: none
+    output: validation.md
+
+  - id: review
+    description: Review refactored code for quality improvements
+    dependsOn: [validate]
+    approval: optional
+    output: review.md

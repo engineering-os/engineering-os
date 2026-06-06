@@ -1,0 +1,156 @@
+# PCI-DSS v4.0 Compliance Framework Rules
+# Payment Card Industry Data Security Standard
+
+name: PCI-DSS
+version: "4.0"
+description: PCI-DSS compliance checks for systems processing payment card data
+
+rules:
+  # Requirement 2 - Secure Configurations
+  - id: pci-no-default-creds
+    category: configuration
+    title: No default credentials
+    description: Default passwords and accounts must be changed or disabled
+    severity: critical
+    requirement: "2.2.2"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.py,*.yaml,*.yml,*.json,*.env"
+      pattern: "(admin|root|default|test|demo).*[:=].*(password|pass|pwd|123|admin|root)"
+    remediation: Remove all default credentials. Use unique, strong passwords.
+
+  # Requirement 3 - Protect Stored Account Data
+  - id: pci-no-pan-stored
+    category: data-protection
+    title: No unencrypted PAN storage
+    description: Primary Account Numbers must not be stored in plaintext
+    severity: critical
+    requirement: "3.5.1"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.py,*.java"
+      pattern: "(card.?number|pan|credit.?card|cc.?num)\\s*[:=]|\\b[0-9]{13,19}\\b"
+    remediation: Never store full PAN. Use tokenization or encrypt with AES-256.
+
+  # Requirement 3 - Mask PAN
+  - id: pci-pan-masking
+    category: data-protection
+    title: PAN must be masked when displayed
+    description: At most first 6 and last 4 digits of PAN may be displayed
+    severity: high
+    requirement: "3.4.1"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.py,*.java,*.tsx,*.jsx"
+      pattern: "(card|pan|account).*(display|show|render|print|log)(?!.*mask)"
+    remediation: Mask PAN display to show at most first 6 and last 4 digits
+
+  # Requirement 4 - Encrypt Transmission
+  - id: pci-strong-crypto-transit
+    category: encryption
+    title: Strong cryptography for cardholder data in transit
+    description: Payment data must use TLS 1.2+ for all transmissions
+    severity: critical
+    requirement: "4.2.1"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.py,*.yaml,*.yml,*.conf"
+      pattern: "(TLSv1\\.?[01]|SSLv[23]|ssl\\.PROTOCOL_TLSv1[^_2]|minVersion.*TLSv1['\"][^.])"
+    remediation: Enforce minimum TLS 1.2. Disable SSL and TLS 1.0/1.1.
+
+  # Requirement 6 - Secure Development
+  - id: pci-injection-prevention
+    category: secure-coding
+    title: Injection attack prevention
+    description: All user input must be parameterized to prevent injection
+    severity: critical
+    requirement: "6.2.4"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.py,*.java"
+      pattern: "(query|exec|execute|raw)\\s*\\([^)]*[`'\"].*\\$\\{|\\+\\s*(req|request|input|params)"
+    remediation: Use parameterized queries and prepared statements for all database operations
+
+  # Requirement 6 - XSS Prevention
+  - id: pci-xss-prevention
+    category: secure-coding
+    title: Cross-site scripting prevention
+    description: All output must be encoded to prevent XSS
+    severity: high
+    requirement: "6.2.4"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.tsx,*.jsx"
+      pattern: "(innerHTML|dangerouslySetInnerHTML|document\\.write|eval\\()"
+    remediation: Use output encoding and avoid innerHTML. Use safe rendering functions.
+
+  # Requirement 7 - Restrict Access
+  - id: pci-least-privilege
+    category: access-control
+    title: Least privilege access to cardholder data
+    description: Access to payment data must be restricted by business need-to-know
+    severity: high
+    requirement: "7.2.1"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py"
+      patterns:
+        - "(role|permission|rbac|acl|authorize)"
+        - "@Roles|@Guard|@Policy|hasRole|checkPermission"
+    remediation: Implement role-based access control with least-privilege principle
+
+  # Requirement 8 - Identify Users
+  - id: pci-strong-auth
+    category: authentication
+    title: Strong authentication mechanisms
+    description: Multi-factor auth required for access to cardholder data environment
+    severity: high
+    requirement: "8.4.2"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py,*.yaml,*.yml"
+      patterns:
+        - "(mfa|multi.?factor|two.?factor|2fa|totp)"
+        - "(password.?policy|minLength.*[89]|complexity)"
+    remediation: Enforce MFA for cardholder data access. Require passwords 8+ chars with complexity.
+
+  # Requirement 10 - Logging and Monitoring
+  - id: pci-audit-logging
+    category: audit
+    title: Audit trail for cardholder data access
+    description: All access to cardholder data must be logged with timestamp and user
+    severity: critical
+    requirement: "10.2.1"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py"
+      patterns:
+        - "audit(Log|Trail|Record|Event)"
+        - "logAccess|trackAccess|recordAccess"
+    remediation: Log all access to cardholder data with user ID, timestamp, and action type
+
+  # Requirement 11 - Security Testing
+  - id: pci-vulnerability-scanning
+    category: testing
+    title: Regular vulnerability scanning
+    description: Internal and external vulnerability scans must be performed quarterly
+    severity: medium
+    requirement: "11.3.1"
+    check:
+      type: file-check
+      filePath: ".github/workflows/security*.yml,.github/workflows/*scan*,.snyk,sonar-project.properties"
+      exists: true
+    remediation: Configure automated vulnerability scanning in CI/CD pipeline
+
+  # Requirement 12 - Security Policy
+  - id: pci-security-policy
+    category: governance
+    title: Security policy documentation
+    description: A security policy must be maintained and reviewed annually
+    severity: medium
+    requirement: "12.1.1"
+    check:
+      type: file-check
+      filePath: "SECURITY.md,docs/security*,security-policy*"
+      exists: true
+    remediation: Create and maintain a SECURITY.md documenting security practices and contact info

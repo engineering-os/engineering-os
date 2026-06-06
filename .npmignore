@@ -1,0 +1,15 @@
+.eos/
+*.test.ts
+*.spec.ts
+__tests__/
+__fixtures__/
+.DS_Store
+vitest.config.ts
+tsconfig.json
+tsconfig.base.json
+turbo.json
+PLAN.md
+IMPLEMENTATION.md
+VALIDATION.md
+.github/
+.changeset/

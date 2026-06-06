@@ -1,0 +1,11 @@
+{
+  "name": "eos",
+  "version": "1.0.0",
+  "description": "Engineering Intelligence Platform - gives AI tools persistent memory of your codebase architecture, decisions, and conventions",
+  "mcpServers": {
+    "engineering-os": {
+      "command": "eos",
+      "args": ["serve"]
+    }
+  }
+}

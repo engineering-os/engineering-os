@@ -1,0 +1,13 @@
+{
+  "name": "eos",
+  "description": "Engineering OS marketplace",
+  "owner": {
+    "name": "Engineering OS"
+  },
+  "plugins": [
+    {
+      "name": "eos",
+      "source": "./"
+    }
+  ]
+}

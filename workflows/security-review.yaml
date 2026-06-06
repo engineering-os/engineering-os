@@ -1,0 +1,26 @@
+name: security-review
+description: Security-focused code review with threat modeling
+stages:
+  - id: scan
+    description: Run security scanner across target paths
+    dependsOn: []
+    approval: none
+    output: scan-report.md
+
+  - id: threat-model
+    description: Generate STRIDE threat model for the feature
+    dependsOn: [scan]
+    approval: optional
+    output: threat-model.md
+
+  - id: fix
+    description: Remediate identified vulnerabilities
+    dependsOn: [threat-model]
+    approval: none
+    output: fixes.md
+
+  - id: verify
+    description: Re-scan to confirm all findings resolved
+    dependsOn: [fix]
+    approval: required
+    output: verification.md

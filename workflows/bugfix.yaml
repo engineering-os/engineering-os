@@ -1,0 +1,32 @@
+name: bugfix
+description: Bug fix workflow with minimal ceremony
+stages:
+  - id: reproduce
+    description: Reproduce and document the bug
+    dependsOn: []
+    approval: none
+    output: bug-report.md
+
+  - id: diagnose
+    description: Identify root cause and affected areas
+    dependsOn: [reproduce]
+    approval: none
+    output: diagnosis.md
+
+  - id: fix
+    description: Implement the fix
+    dependsOn: [diagnose]
+    approval: none
+    output: implementation/
+
+  - id: verify
+    description: Verify fix resolves the issue and add regression test
+    dependsOn: [fix]
+    approval: none
+    output: verification.md
+
+  - id: review
+    description: Code review of the fix
+    dependsOn: [verify]
+    approval: required
+    output: review.md

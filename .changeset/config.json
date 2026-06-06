@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.1.4/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "engineering-os/engineering-os" }],
+  "commit": false,
+  "fixed": [],
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@engineering-os/shared",
+    "@engineering-os/core",
+    "@engineering-os/cli",
+    "@engineering-os/adapter-claude",
+    "@engineering-os/adapter-cursor",
+    "@engineering-os/adapter-vscode"
+  ]
+}

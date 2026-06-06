@@ -1,0 +1,44 @@
+name: feature
+description: Full feature development workflow
+stages:
+  - id: refine
+    description: Refine raw requirement into structured specification
+    dependsOn: []
+    approval: required
+    output: requirement.md
+
+  - id: design
+    description: Generate architecture design
+    dependsOn: [refine]
+    approval: required
+    output: architecture.md
+
+  - id: plan
+    description: Decompose into executable tasks
+    dependsOn: [design]
+    approval: optional
+    output: plan.json
+
+  - id: execute
+    description: Implement the plan
+    dependsOn: [plan]
+    approval: none
+    output: implementation/
+
+  - id: qa
+    description: Validate implementation
+    dependsOn: [execute]
+    approval: none
+    output: qa-report.md
+
+  - id: security
+    description: Security scan and vulnerability assessment
+    dependsOn: [execute]
+    approval: none
+    output: security-report.md
+
+  - id: review
+    description: Architecture-aware code review
+    dependsOn: [qa, security]
+    approval: required
+    output: review.md

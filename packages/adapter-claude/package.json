@@ -1,0 +1,42 @@
+{
+  "name": "@engineering-os/adapter-claude",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Claude Code plugin for Engineering OS — skills and MCP integration",
+  "license": "Apache-2.0",
+  "author": "Engineering OS Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/engineering-os/engineering-os.git",
+    "directory": "packages/adapter-claude"
+  },
+  "homepage": "https://github.com/engineering-os/engineering-os/tree/main/packages/adapter-claude",
+  "bugs": {
+    "url": "https://github.com/engineering-os/engineering-os/issues"
+  },
+  "keywords": ["engineering-os", "mcp", "ai", "claude", "claude-code", "plugin", "skills"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "skills", ".claude-plugin", "plugin.json", "README.md"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@engineering-os/core": "0.1.0",
+    "@engineering-os/shared": "0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

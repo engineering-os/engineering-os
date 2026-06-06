@@ -1,0 +1,149 @@
+# HIPAA Compliance Framework Rules
+# Health Insurance Portability and Accountability Act
+
+name: HIPAA
+version: "2024.1"
+description: HIPAA compliance checks for systems handling Protected Health Information (PHI)
+
+rules:
+  # §164.312(a)(1) - Access Control
+  - id: hipaa-access-control
+    category: access-control
+    title: Role-based access control for PHI
+    description: Systems handling PHI must implement role-based access control
+    severity: critical
+    regulation: "§164.312(a)(1)"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py"
+      patterns:
+        - "(role|permission|rbac|acl|guard|policy)"
+        - "@Roles|@Permissions|@Authorize|hasPermission|checkAccess"
+    remediation: Implement RBAC with granular permissions for PHI access
+
+  # §164.312(a)(2)(i) - Unique User Identification
+  - id: hipaa-unique-user-id
+    category: access-control
+    title: Unique user identification
+    description: Each user must have a unique identifier for audit purposes
+    severity: high
+    regulation: "§164.312(a)(2)(i)"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py"
+      patterns:
+        - "userId|user_id|userIdentifier|sub|principal"
+        - "getCurrentUser|getAuthenticatedUser|req\\.user"
+    remediation: Ensure every system action is attributable to a unique user identifier
+
+  # §164.312(a)(2)(iv) - Encryption and Decryption
+  - id: hipaa-data-encryption
+    category: encryption
+    title: PHI must be encrypted at rest
+    description: Protected Health Information must be encrypted when stored
+    severity: critical
+    regulation: "§164.312(a)(2)(iv)"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.java,*.py,*.yaml,*.yml"
+      pattern: "(encrypt|cipher|aes|AES|crypto\\.create|KMS|kms)"
+    remediation: Encrypt all PHI fields using AES-256 or equivalent before storage
+
+  # §164.312(c)(1) - Integrity Controls
+  - id: hipaa-no-phi-in-logs
+    category: data-protection
+    title: PHI must not appear in logs
+    description: Logging must not contain patient names, SSN, medical records, or health data
+    severity: critical
+    regulation: "§164.312(c)(1)"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.java,*.py"
+      pattern: "(console\\.log|logger\\.(info|debug|warn)).*\\b(patient|ssn|diagnosis|medical|health_record|dob|date_of_birth)"
+    remediation: Redact or exclude all PHI from log statements
+
+  # §164.312(d) - Person or Entity Authentication
+  - id: hipaa-mfa
+    category: authentication
+    title: Multi-factor authentication for PHI access
+    description: Access to PHI should require multi-factor authentication
+    severity: high
+    regulation: "§164.312(d)"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py,*.yaml,*.yml"
+      patterns:
+        - "(mfa|multi.?factor|two.?factor|2fa|totp|otp)"
+        - "(authenticator|sms.?verify|email.?verify)"
+    remediation: Implement MFA for all accounts with access to PHI
+
+  # §164.312(e)(1) - Transmission Security
+  - id: hipaa-transmission-security
+    category: encryption
+    title: PHI must be encrypted in transit
+    description: All PHI transmission must use TLS 1.2 or higher
+    severity: critical
+    regulation: "§164.312(e)(1)"
+    check:
+      type: pattern-match
+      filePattern: "*.ts,*.js,*.py,*.yaml,*.yml,*.conf"
+      pattern: "(TLSv1\\.?[01]|SSLv[23]|ssl\\.PROTOCOL_TLSv1[^_2])"
+    remediation: Enforce TLS 1.2+ for all network communications. Disable older protocols.
+
+  # §164.312(b) - Audit Controls
+  - id: hipaa-audit-trail
+    category: audit
+    title: Audit trail for PHI access
+    description: All access to PHI must be logged with user, timestamp, and action
+    severity: critical
+    regulation: "§164.312(b)"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py"
+      patterns:
+        - "audit(Log|Trail|Record|Event)"
+        - "createAuditEntry|logAccess|trackAccess"
+    remediation: Implement comprehensive audit logging for all PHI read/write operations
+
+  # §164.308(a)(5)(ii)(B) - Security Awareness
+  - id: hipaa-session-timeout
+    category: access-control
+    title: Automatic session timeout
+    description: Sessions must timeout after period of inactivity
+    severity: high
+    regulation: "§164.308(a)(5)(ii)(B)"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py,*.yaml,*.yml"
+      patterns:
+        - "(session.?timeout|idle.?timeout|maxAge|expiresIn)"
+        - "(express-session|connect-timeout|@Session)"
+    remediation: Configure session timeout (recommended 15-30 minutes for PHI systems)
+
+  # §164.312(c)(2) - Integrity Mechanism
+  - id: hipaa-data-validation
+    category: data-integrity
+    title: Data integrity validation
+    description: PHI must be validated for integrity on input and output
+    severity: high
+    regulation: "§164.312(c)(2)"
+    check:
+      type: pattern-match-any
+      filePattern: "*.ts,*.js,*.java,*.py"
+      patterns:
+        - "(checksum|hash|integrity|signature|hmac)"
+        - "(validate|sanitize|schema).*(input|data|record)"
+    remediation: Implement data integrity checks (checksums, digital signatures) for PHI records
+
+  # §164.308(a)(7) - Contingency Plan
+  - id: hipaa-backup-config
+    category: availability
+    title: Backup and recovery procedures
+    description: Systems storing PHI must have documented backup procedures
+    severity: medium
+    regulation: "§164.308(a)(7)"
+    check:
+      type: file-check
+      filePath: "backup.yaml,backup.yml,docker-compose.yml,k8s/backup*,scripts/backup*"
+      exists: true
+    remediation: Configure and document automated backup procedures for PHI data stores

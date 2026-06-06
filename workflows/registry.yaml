@@ -1,0 +1,30 @@
+templates:
+  - name: feature
+    description: Full feature development workflow with parallel QA and security
+    category: development
+    stages: 7
+    author: engineering-os
+
+  - name: bugfix
+    description: Bug investigation and fix workflow
+    category: maintenance
+    stages: 5
+    author: engineering-os
+
+  - name: refactor
+    description: Safe refactoring with validation gates
+    category: maintenance
+    stages: 5
+    author: engineering-os
+
+  - name: migration
+    description: Database or API migration with rollback planning
+    category: infrastructure
+    stages: 6
+    author: engineering-os
+
+  - name: security-review
+    description: Security-focused code review with threat modeling
+    category: security
+    stages: 4
+    author: engineering-os

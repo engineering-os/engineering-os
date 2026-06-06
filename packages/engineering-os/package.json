@@ -1,0 +1,72 @@
+{
+  "name": "engineering-os",
+  "version": "0.1.1",
+  "description": "AI-native knowledge layer for your codebase — MCP server with 47 tools for code intelligence, architecture discovery, and workflow automation",
+  "license": "Apache-2.0",
+  "author": "Engineering OS Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/engineering-os/engineering-os.git"
+  },
+  "homepage": "https://github.com/engineering-os/engineering-os",
+  "bugs": {
+    "url": "https://github.com/engineering-os/engineering-os/issues"
+  },
+  "keywords": [
+    "engineering-os",
+    "mcp",
+    "ai",
+    "knowledge-engine",
+    "code-intelligence",
+    "claude",
+    "cursor",
+    "vscode",
+    "developer-tools",
+    "architecture",
+    "codebase",
+    "mcp-server"
+  ],
+  "bin": {
+    "eos": "./dist/cli/cli.js"
+  },
+  "main": "dist/core/index.js",
+  "types": "dist/core/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts",
+      "require": "./dist/core/index.js"
+    },
+    "./cli": {
+      "require": "./dist/cli/cli.js"
+    }
+  },
+  "files": [
+    "dist",
+    "skills",
+    ".claude-plugin",
+    "plugin.json",
+    "scripts",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "node ./scripts/bundle.js",
+    "prepublishOnly": "node ./scripts/bundle.js",
+    "postinstall": "node ./scripts/check-native.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "better-sqlite3": "^11.0.0",
+    "commander": "^12.0.0",
+    "fast-glob": "^3.3.0",
+    "glob": "^10.3.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "^5.4.0"
+  }
+}

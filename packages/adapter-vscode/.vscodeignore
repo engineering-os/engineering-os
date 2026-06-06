@@ -1,0 +1,8 @@
+src/**
+tsconfig.json
+tsconfig.tsbuildinfo
+node_modules/**
+.turbo/**
+.eos/**
+**/*.test.ts
+**/__tests__/**

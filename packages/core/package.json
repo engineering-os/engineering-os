@@ -1,0 +1,51 @@
+{
+  "name": "@engineering-os/core",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Core knowledge engine, MCP server, and intelligence layer for Engineering OS",
+  "license": "Apache-2.0",
+  "author": "Engineering OS Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/engineering-os/engineering-os.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/engineering-os/engineering-os/tree/main/packages/core",
+  "bugs": {
+    "url": "https://github.com/engineering-os/engineering-os/issues"
+  },
+  "keywords": ["engineering-os", "mcp", "ai", "knowledge-engine", "code-intelligence", "sqlite", "architecture"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": ["dist/**/*.js", "dist/**/*.d.ts", "!dist/**/*.test.*", "!dist/__tests__", "README.md"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@engineering-os/shared": "0.1.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "better-sqlite3": "^11.0.0",
+    "fast-glob": "^3.3.0",
+    "js-yaml": "^4.1.0",
+    "glob": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/js-yaml": "^4.0.9",
+    "typescript": "^5.4.0"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "@engineering-os/shared",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Shared TypeScript types and interfaces for Engineering OS",
+  "license": "Apache-2.0",
+  "author": "Engineering OS Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/engineering-os/engineering-os.git",
+    "directory": "packages/shared"
+  },
+  "homepage": "https://github.com/engineering-os/engineering-os/tree/main/packages/shared",
+  "bugs": {
+    "url": "https://github.com/engineering-os/engineering-os/issues"
+  },
+  "keywords": ["engineering-os", "mcp", "ai", "types", "typescript"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
