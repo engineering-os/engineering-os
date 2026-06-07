@@ -453,7 +453,45 @@ li { margin: 6px 0; }
 <!-- Overview -->
 <section id="overview">
 <h1>Engineering OS</h1>
-<p style="font-size:16px; color: var(--text-primary); max-width: 640px;">A local MCP server that gives AI coding tools persistent knowledge about your codebase — architecture, conventions, decisions, and cross-service dependencies that survive between sessions.</p>
+<p style="font-size:18px; color: var(--text-primary); max-width: 680px; line-height: 1.7;">The engineering brain for your AI coding tools. A local MCP server that gives Claude Code, Cursor, and Windsurf persistent knowledge about your codebase — architecture, conventions, decisions, and cross-service dependencies that survive between sessions.</p>
+
+<p style="color: var(--text-secondary); max-width: 640px;">Your AI assistant forgets everything between sessions. It re-explores files, re-debates settled decisions, and misses cross-repo context. EOS fixes this by indexing your codebase once and serving structured knowledge on demand via the <a href="https://modelcontextprotocol.io">Model Context Protocol</a>.</p>
+
+<!-- Architecture Vision Diagram -->
+<div style="margin: 32px 0; padding: 32px; background: var(--surface-1); border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow-x: auto;">
+<pre style="background: none; border: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: var(--text-secondary);">
+<span style="color: var(--text-tertiary)">┌─────────────────────────────────────────────────────────────────────────┐</span>
+<span style="color: var(--text-tertiary)">│</span>  <span style="color: var(--accent); font-weight: 600">YOUR AI TOOLS</span>                                                         <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>                                                                         <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   <span style="color: var(--purple)">Claude Code</span>        <span style="color: var(--green)">Cursor</span>        <span style="color: var(--orange)">Windsurf</span>        <span style="color: var(--text-tertiary)">Any MCP Client</span>  <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>       │                 │               │                  │          <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">└───────┼─────────────────┼───────────────┼──────────────────┼──────────┘</span>
+        │                 │               │                  │
+        └────────────┬────┴───────────────┴──────┬───────────┘
+                     │  <span style="color: var(--accent)">MCP Protocol (stdio)</span>       │
+                     ▼                            ▼
+<span style="color: var(--text-tertiary)">┌─────────────────────────────────────────────────────────────────────────┐</span>
+<span style="color: var(--text-tertiary)">│</span>  <span style="color: var(--accent); font-weight: 600">ENGINEERING OS</span>  <span style="color: var(--text-tertiary)">(local server, zero cloud)</span>                            <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>                                                                         <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   ┌──────────┐  ┌───────────┐  ┌──────────┐  ┌───────────────────┐    <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   │<span style="color: var(--green)">Code Index</span>│  │<span style="color: var(--purple)">Service   </span>│  │<span style="color: var(--orange)">Skills   </span>│  │<span style="color: var(--red)">Security Scanner</span>  │    <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   │ FTS5+BM25│  │ Graph     │  │ Store    │  │ OWASP + CVE       │    <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   └──────────┘  └───────────┘  └──────────┘  └───────────────────┘    <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   ┌──────────┐  ┌───────────┐  ┌──────────┐  ┌───────────────────┐    <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   │<span style="color: var(--green)">Decisions </span>│  │<span style="color: var(--purple)">Conventions│  │</span><span style="color: var(--orange)">Workflow </span>│  │<span style="color: var(--red)">Compliance       </span> │    <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   │ YAML     │  │ Enforced  │  │ DAG      │  │ SOC2/HIPAA/PCI    │    <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>   └──────────┘  └───────────┘  └──────────┘  └───────────────────┘    <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>                                                                         <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">└─────────────────────────────────────────────────────────────────────────┘</span>
+                     │                            │
+                     ▼                            ▼
+<span style="color: var(--text-tertiary)">┌──────────────────────────┐    ┌────────────────────────────────────────┐</span>
+<span style="color: var(--text-tertiary)">│</span>  <span style="color: var(--text-primary); font-weight: 500">Your Project</span>             <span style="color: var(--text-tertiary)">│    │</span>  <span style="color: var(--text-primary); font-weight: 500">Linked Repos</span> <span style="color: var(--text-tertiary)">(federated)</span>          <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>  .eos/ (SQLite index)      <span style="color: var(--text-tertiary)">│    │</span>  Backend API  ·  ML Pipeline           <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">│</span>  eos.workspace.yaml        <span style="color: var(--text-tertiary)">│    │</span>  Mobile App   ·  Infra Config          <span style="color: var(--text-tertiary)">│</span>
+<span style="color: var(--text-tertiary)">└──────────────────────────┘    └────────────────────────────────────────┘</span>
+</pre>
+</div>
 
 <div class="stats-bar">
   <div class="stat"><div class="stat-value">47</div><div class="stat-label">MCP Tools</div></div>
@@ -471,38 +509,98 @@ li { margin: 6px 0; }
   <div class="feature-card">
     <div class="feature-card-icon">🔗</div>
     <h4>Cross-Repo Intelligence</h4>
-    <p>Links services across repositories. Knows your FE calls your BFF which calls your backend.</p>
+    <p>Federated search across all your services. AI sees your FE → BFF → backend → ML pipeline topology.</p>
   </div>
   <div class="feature-card">
     <div class="feature-card-icon">📚</div>
     <h4>Skill Retention</h4>
-    <p>Learns from every session. Gotchas, patterns, and connections accumulate over time.</p>
+    <p>AI learns gotchas, patterns, and connections from every session. Knowledge compounds over time.</p>
   </div>
   <div class="feature-card">
     <div class="feature-card-icon">🔒</div>
     <h4>100% Local</h4>
-    <p>Everything runs in SQLite on your machine. No cloud. No telemetry. No API keys.</p>
+    <p>SQLite on your machine. No cloud. No telemetry. No API keys. Works offline. Your code never leaves.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-card-icon">🛡️</div>
+    <h4>Security Built-In</h4>
+    <p>OWASP scanning, CVE detection across 7 ecosystems, STRIDE threat modeling, compliance checks.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-card-icon">⚡</div>
+    <h4>Any AI Tool</h4>
+    <p>Works with Claude Code, Cursor, Windsurf, VS Code — anything that speaks MCP protocol.</p>
   </div>
 </div>
+
+<h3>The Problem</h3>
+<table>
+<tr><th>Without EOS</th><th>With EOS</th></tr>
+<tr><td>AI forgets between sessions</td><td>Knowledge persists across all sessions</td></tr>
+<tr><td>AI explores files for 30s before working</td><td>AI gets full context in one <code>eos_context</code> call</td></tr>
+<tr><td>AI re-debates settled architecture decisions</td><td>Decisions are recalled instantly</td></tr>
+<tr><td>AI sees one repo at a time</td><td>Full cross-repo service graph available</td></tr>
+<tr><td>Same gotcha rediscovered every session</td><td>Skills accumulate and auto-inject</td></tr>
+<tr><td>No convention enforcement</td><td>Coding standards enforced automatically</td></tr>
+<tr><td>Security review is manual</td><td>Continuous OWASP + CVE scanning</td></tr>
+</table>
 </section>
 
 <!-- Quick Start -->
 <section id="quickstart">
 <h2>Quick Start</h2>
 
+<h3>1. Install</h3>
 <div class="code-title">Terminal</div>
-<pre><code># Install globally
-npm install -g engineering-os
+<pre><code>npm install -g engineering-os</code></pre>
 
-# Initialize in your project
-cd your-project
+<h3>2. Initialize in your project</h3>
+<div class="code-title">Terminal</div>
+<pre><code>cd your-project
 eos init --claude --cursor
 
-# Done. Start Claude Code or Cursor — EOS is active.</code></pre>
+# Output:
+# ✓ Repository indexed (847 files, 4201 chunks)
+# ✓ Architecture discovered (12 services, 3 patterns)
+# ✓ Graph built (156 calls, 4 contracts)
+# ✓ CLAUDE.md generated
+# ✓ .cursor/rules/ generated (5 files)
+# ✨ Engineering OS initialized!</code></pre>
+
+<h3>3. That's it — start coding</h3>
+<p>Open Claude Code or Cursor. Your AI now has full project knowledge. It will:</p>
+<ul>
+  <li>Call <code>eos_context</code> before starting any task (gets routes, architecture, conventions)</li>
+  <li>Use <code>eos_search</code> instead of grep/find (pre-indexed, instant results)</li>
+  <li>Recall past decisions with <code>eos_recall_decision</code> (never re-debates)</li>
+  <li>Learn from the session with <code>eos_learn</code> (gotchas persist forever)</li>
+</ul>
 
 <div class="callout callout-tip">
   <span class="callout-icon">💡</span>
-  <div>After <code>eos init</code>, your AI tool reads <code>CLAUDE.md</code> and automatically calls EOS tools for context. No manual setup needed beyond this.</div>
+  <div><strong>No manual wiring needed.</strong> The generated <code>CLAUDE.md</code> steers your AI to call EOS tools automatically. The <code>.mcp.json</code> tells Claude Code where the server is. Just code.</div>
+</div>
+
+<h3>4. Cross-repo (optional)</h3>
+<div class="code-title">Terminal</div>
+<pre><code># Link sibling services for full architecture awareness
+eos link backend-api ../backend-api
+eos link mobile-app ../mobile-app
+
+# Or declare in eos.workspace.yaml (team-shared, checked into git)
+eos workspace add-repo backend-api ../backend-api --role bff</code></pre>
+
+<h3>5. Keep fresh</h3>
+<div class="code-title">Terminal</div>
+<pre><code># Auto-refresh after code changes (add to git post-commit hook)
+eos refresh --incremental
+
+# Or continuous watch mode
+eos index --watch</code></pre>
+
+<div class="callout callout-note">
+  <span class="callout-icon">📘</span>
+  <div><strong>For library/SDK authors:</strong> You can import the core engine directly — <code>require('engineering-os')</code> gives you the full knowledge engine, graph store, and MCP server as a programmatic API.</div>
 </div>
 </section>
 
