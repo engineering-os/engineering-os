@@ -515,15 +515,13 @@ section { position: relative; z-index: 1; }
       <div>
         <h3>Index your project</h3>
         <p>EOS scans all source files, discovers architecture, builds a service graph, and stores everything in local SQLite.</p>
-        <div class="how-step-code">
-<span class="g">$ npm install -g engineering-os</span>
+        <div class="how-step-code"><span class="g">$ npm install -g engineering-os</span>
 <span class="g">$ eos init --claude --cursor</span>
 
 <span class="c">&#x2713; Repository indexed (847 files, 4201 chunks)</span>
 <span class="c">&#x2713; Architecture discovered (12 services, 3 patterns)</span>
 <span class="c">&#x2713; Graph built (156 calls, 4 contracts)</span>
-<span class="c">&#x2713; CLAUDE.md + .cursor/rules/ generated</span>
-        </div>
+<span class="c">&#x2713; CLAUDE.md + .cursor/rules/ generated</span></div>
       </div>
     </div>
     <div class="how-step reveal reveal-delay-1">
@@ -531,8 +529,7 @@ section { position: relative; z-index: 1; }
       <div>
         <h3>AI connects automatically</h3>
         <p>Open Claude Code or Cursor. The generated config tells your AI to call EOS tools. No manual wiring — it just works.</p>
-        <div class="how-step-code">
-<span class="m">// Your AI now calls these automatically:</span>
+        <div class="how-step-code"><span class="m">// Your AI now calls these automatically:</span>
 <span class="g">eos_context</span>({ task: "add retry to uploads" })
 <span class="m">// Returns: routes, architecture, conventions, skills</span>
 
@@ -540,8 +537,7 @@ section { position: relative; z-index: 1; }
 <span class="m">// Returns: ranked results in 2ms</span>
 
 <span class="g">eos_recall_skills</span>({ query: "uploads" })
-<span class="m">// Returns: "Chunks must be uploaded in order"</span>
-        </div>
+<span class="m">// Returns: "Chunks must be uploaded in order"</span></div>
       </div>
     </div>
     <div class="how-step reveal reveal-delay-2">
@@ -549,16 +545,14 @@ section { position: relative; z-index: 1; }
       <div>
         <h3>Knowledge compounds</h3>
         <p>Every session, your AI learns more. Gotchas, patterns, and connections accumulate — making each session smarter than the last.</p>
-        <div class="how-step-code">
-<span class="m">// AI discovers something → persists it forever:</span>
+        <div class="how-step-code"><span class="m">// AI discovers something → persists it forever:</span>
 <span class="g">eos_learn</span>({
   type: "gotcha",
   content: "FlatList items must not be memoized...",
   tags: ["react-native", "performance"]
 })
 
-<span class="m">// Next session, auto-recalled when relevant.</span>
-        </div>
+<span class="m">// Next session, auto-recalled when relevant.</span></div>
       </div>
     </div>
   </div>
