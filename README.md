@@ -1,8 +1,8 @@
 # Engineering OS
 
-**The engineering brain for your AI coding tools.**
+**Your AI finally remembers your codebase.**
 
-EOS gives Claude Code, Cursor, and Windsurf persistent knowledge about your codebase — architecture, conventions, decisions, and cross-service dependencies that survive between sessions.
+Stop re-explaining your architecture every session. Engineering OS gives Claude Code, Cursor, Codex, and any MCP-compatible AI code editor the memory they've always been missing. They finally write code like someone who actually knows your project.
 
 ```bash
 npm install -g engineering-os
@@ -10,52 +10,45 @@ cd your-project
 eos init --claude
 ```
 
-That's it. Your AI tool now has persistent project knowledge.
+That's it. Your AI now has persistent project knowledge. Permanently.
 
 ---
 
-## What It Does
+## The Problem
 
-| Without EOS | With EOS |
+Every new session, your AI re-explores files, re-debates decisions you already made, and has no idea your frontend talks to three backend services.
+
+| Today (without Engineering OS) | With Engineering OS |
 |---|---|
-| AI forgets between sessions | Knowledge persists forever |
-| AI makes generic decisions | AI follows YOUR conventions |
-| AI re-debates solved problems | Past decisions are recalled instantly |
-| AI knows one repo at a time | Full cross-repo service topology |
-| Gotchas rediscovered every time | Skills accumulate over sessions |
+| "Let me explore your project structure..." | Already knows. Starts working immediately. |
+| "Should we use Redux or Zustand?" | "You decided on Zustand last month. Here's why." |
+| Suggests code that breaks another service | Sees the dependency graph. Avoids breakage. |
+| You explain the same gotcha every session | Learned it once. Warns you proactively. |
+| grep-ing for 30s trying to find that function | Instant answer. It's pre-indexed. |
+| Security review is something you do "later" | Already scanned. Flags issues as you code. |
 
 ## How It Works
 
 ```
-AI Tool (Claude Code / Cursor / Windsurf)
-    │ MCP Protocol
+AI Code Editor (Claude Code / Cursor / Codex / Any MCP Client)
+    │ MCP Protocol (stdio)
     ▼
-Engineering OS (local server)
-    ├── Code Index (SQLite FTS5)
-    ├── Service Graph (cross-repo connections)
-    ├── Skills Store (learns over time)
-    ├── Decision Records
-    ├── Convention Enforcement
-    └── Security Scanning
+Engineering OS (runs on your machine, zero cloud)
+    ├── Code Search (FTS5 + BM25, instant results)
+    ├── Service Graph (cross-repo topology)
+    ├── Skill Memory (learns from every session)
+    ├── Decision Records (never re-debates)
+    ├── Convention Enforcement (your rules, always followed)
+    └── Security Scanner (OWASP, CVE, compliance)
+    │
+    ▼
+Your Codebase + Linked Repos (SQLite, 100% local)
 ```
 
-1. `eos init` indexes your codebase, discovers architecture, builds service graph
-2. `CLAUDE.md` steers Claude to call EOS tools before acting
-3. Claude calls `eos_context` → gets routes, architecture, conventions, skills
-4. Claude calls `eos_learn` → discoveries persist for future sessions
-
-## Features
-
-- **47 MCP Tools** — knowledge, architecture, decisions, security, workflows
-- **8 Languages** — TypeScript, JavaScript, Python, Go, Rust, Java, Ruby, Kotlin
-- **Cross-Repo Intelligence** — links services, shows topology, tracks impact
-- **Skill Retention** — learns gotchas, patterns, connections from every session
-- **Route Scanning** — Express, NestJS, Fastify, Next.js, Vert.x, Ktor, Spring Boot, Android Nav
-- **Security** — secrets, injection, XSS, OWASP, CVE scanning (npm, Python, Go, Java, Gradle, Rust, Ruby)
-- **Multi-Agent Build** — requirement → product spec → tech spec → execution plan
-- **Global MCP** — one server for all repos, works from any directory
-- **Team Sharing** — `eos.workspace.yaml` in git (conventions, decisions, repo links)
-- **100% Local** — SQLite, no cloud, no API keys, no telemetry
+1. `eos init` indexes your codebase, discovers architecture, builds the service graph
+2. Your AI tool connects automatically via MCP (no manual config)
+3. AI calls `eos_context` and gets full project knowledge instantly
+4. AI calls `eos_learn` when it discovers something. That knowledge persists forever.
 
 ## Quick Start
 
@@ -63,40 +56,54 @@ Engineering OS (local server)
 # Install
 npm install -g engineering-os
 
-# Initialize (indexes + generates CLAUDE.md)
+# Point it at your project
 cd your-project
 eos init --claude --cursor
 
-# For cross-repo: declare linked services
-eos workspace init
-eos workspace add-repo api-service ../api-service --role backend
+# Link sibling services (optional)
+eos link backend-api ../backend-api
+eos link ml-pipeline ../ml-service
 
-# Re-init to link them
-eos init --claude
+# Keep it fresh
+eos refresh --incremental
 ```
+
+## What You Get
+
+- **Never explains twice.** Architecture, routes, conventions, and decisions persist across every session.
+- **Sees all your repos.** Link your mobile app, BFF, backend, ML pipeline. Your AI sees the full picture.
+- **Learns your tricks.** That weird workaround? That gotcha with uploads? Remembered. Forever.
+- **Catches security issues.** Secrets, injection flaws, known CVEs in your dependencies. Scans continuously.
+- **Finds code instantly.** Pre-indexed search. Ask "where's the auth middleware?" and get the answer in milliseconds.
+- **Maps your architecture.** Auto-detects how your services connect, which layers exist, what patterns you follow.
 
 ## CLI Commands
 
-| Command | Description |
+| Command | What it does |
 |---------|-------------|
-| `eos init --claude --cursor` | Initialize + generate AI context files |
-| `eos serve --global` | Start MCP server (works from any directory) |
+| `eos init --claude --cursor` | Index your project + generate AI context files |
+| `eos serve` | Start the MCP server |
 | `eos refresh --incremental` | Update knowledge after code changes |
-| `eos workspace init` | Create team-shared workspace config |
-| `eos workspace add-convention` | Add team convention |
-| `eos workspace add-decision` | Record engineering decision |
-| `eos workspace add-repo` | Link a service repo |
-| `eos link <name> <path>` | Link a repository |
-| `eos index --watch` | Continuous re-indexing |
-| `eos status` | Show knowledge stats |
+| `eos link <name> <path>` | Link a sibling repository |
+| `eos workspace init` | Create team-shared config (checked into git) |
+| `eos index --watch` | Continuous re-indexing as you code |
+| `eos status` | Show knowledge health and drift |
 
-## Workspace Config
+## Works With
 
-Create `eos.workspace.yaml` (checked into git, shared with team):
+- **Claude Code** (Anthropic)
+- **Cursor**
+- **Codex** (OpenAI)
+- **VS Code**
+- Any editor that speaks MCP protocol
+
+## Team Sharing
+
+Create `eos.workspace.yaml` and check it into git. Your entire team shares the same conventions and decisions:
 
 ```yaml
 name: my-project
-type: react-native-monorepo
+type: monorepo
 org: my-company
 
 repos:
@@ -109,71 +116,53 @@ repos:
 
 conventions:
   - name: error-handling
-    rule: "Use Result<T> pattern, never throw in service layer"
+    rule: "Use Result<T> pattern. Only controllers throw HTTP exceptions."
+  - name: state
+    rule: "Zustand only. No Redux. One store per domain."
 
 decisions:
   - title: "Redis for sessions"
     decision: "Redis Cluster for session management"
-    rationale: "Sub-ms reads, horizontal scaling"
-
-ai:
-  tools: [claude, cursor]
-  mcp: true
+    rationale: "Sub-ms reads, horizontal scaling, built-in expiry"
 ```
 
 ## Troubleshooting
 
 ### MCP Error `-32000` in Claude Code
 
-This means Node.js version mismatch. The native SQLite module was compiled for a different Node version than what's running.
+Node.js version mismatch. The native SQLite module was compiled for a different Node version.
 
 ```bash
 # Fix: rebuild for your current Node
 npm rebuild better-sqlite3
 
-# Or reinstall globally
+# Or just reinstall
 npm install -g engineering-os
 ```
 
-**Root cause:** If you use nvm and your shell defaults to a different Node version than what you used during `npm install`, the native module won't load. Ensure the Node version that installs EOS matches the Node version that runs it.
+**Why:** If you use nvm and your shell defaults to a different Node version than what installed Engineering OS, the native binary won't load. Make sure both match.
 
 ### Requirements
 
 - Node.js >= 18 (LTS 20 or 22 recommended)
-- No API keys, no cloud, no external dependencies
+- No API keys, no cloud, nothing external
 
 ## Documentation
 
-Full documentation: [engineering-os.github.io/engineering-os](https://engineering-os.github.io/engineering-os/)
+Full docs with API reference, guides, and tool list: [engineering-os.github.io/engineering-os](https://engineering-os.github.io/engineering-os/)
 
 ## Architecture
 
 ```
 packages/
 ├── shared/           # Shared types
-├── core/             # MCP server, knowledge engine, agents (the brain)
-├── cli/              # CLI (eos command)
+├── core/             # MCP server, knowledge engine, security, workflows
+├── cli/              # CLI (the `eos` command)
 ├── adapter-claude/   # Claude Code plugin (11 skills)
 ├── adapter-cursor/   # Cursor rules generator
 ├── adapter-vscode/   # VS Code extension
-└── engineering-os/   # Single npm package (bundles all of the above)
+└── engineering-os/   # Single npm package (bundles everything)
 ```
-
-Install the single package — it includes everything:
-
-```bash
-npm install -g engineering-os
-```
-
-## Stats
-
-| Metric | Value |
-|--------|-------|
-| MCP Tools | 47 |
-| Tests | 341 |
-| Languages | 8 |
-| CLI Commands | 11 |
-| Lines of Code | ~26K |
 
 ## License
 
