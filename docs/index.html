@@ -61,9 +61,9 @@ body::after {
 
 /* ═══════════ BRAIN SVG BG ═══════════ */
 .brain-bg {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: 110vw; max-width: 1200px; height: auto;
-  opacity: 0.35; pointer-events: none; z-index: 0;
+  opacity: 0.3; pointer-events: none; z-index: 0;
   filter: drop-shadow(0 0 12px rgba(99,102,241,0.4)) drop-shadow(0 0 40px rgba(99,102,241,0.15));
 }
 .brain-bg .node { animation: node-pulse 3s ease-in-out infinite; }
@@ -400,27 +400,54 @@ section { position: relative; z-index: 1; }
 .footer-links { display: flex; justify-content: center; gap: 28px; margin-bottom: 20px; }
 
 /* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .arch-modules-grid { grid-template-columns: repeat(3, 1fr); }
+  .section-header { margin-bottom: 32px; }
+}
 @media (max-width: 768px) {
   .nav { padding: 12px 16px; }
   .nav-links a:not(.nav-cta) { display: none; }
   .nav-mobile { display: block; }
-  .hero { padding: 110px 20px 70px; }
-  .hero h1 { letter-spacing: -1.5px; }
-  .stats { flex-wrap: wrap; gap: 20px; padding: 36px 20px; }
-  .stat-value { font-size: 30px; }
-  .arch-section, .how-section, .features-section, .usecases-section, .compare-section, .cta-section { padding: 56px 16px; }
+  .hero { padding: 100px 20px 50px; min-height: auto; }
+  .hero h1 { letter-spacing: -1.5px; font-size: clamp(32px, 8vw, 48px); }
+  .hero-sub { font-size: 16px; max-width: 90%; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .btn { width: 100%; max-width: 280px; justify-content: center; }
+  .hero-install { font-size: 12px; padding: 12px 16px; }
+  .arch-section, .how-section, .features-section, .usecases-section, .compare-section, .cta-section { padding: 48px 20px; }
   .features-grid { grid-template-columns: 1fr; }
   .usecases-grid { grid-template-columns: 1fr; }
   .arch-modules-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .how-step { grid-template-columns: 48px 1fr; gap: 16px; }
+  .arch-tier-nodes { gap: 8px; }
+  .arch-chip { font-size: 12px; padding: 8px 12px; }
+  .how-step { grid-template-columns: 44px 1fr; gap: 14px; padding: 24px 0; }
+  .how-step h3 { font-size: 16px; }
+  .how-step p { font-size: 13px; }
+  .how-step-code { font-size: 11.5px; padding: 14px 16px; }
+  .compare-table { margin-top: 32px; }
   .compare-cell { padding: 12px 14px; font-size: 12px; }
-  .trust-logos { gap: 12px; }
-  .trust-logo { font-size: 12px; padding: 8px 14px; }
+  .trust-logos { gap: 8px; }
+  .trust-logo { font-size: 11px; padding: 7px 12px; }
+  .section-title { font-size: clamp(22px, 5vw, 32px); }
+  .section-desc { font-size: 14px; }
+  .feature-item { padding: 28px 24px; }
+  .feature-item h3 { font-size: 14px; }
+  .feature-item p { font-size: 12px; }
+  .usecase-card { padding: 24px 20px; }
+  .footer-links { flex-wrap: wrap; gap: 16px; }
 }
 @media (max-width: 480px) {
-  .arch-modules-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .arch-chip { font-size: 11px; padding: 8px 10px; }
-  .how-step-num { width: 40px; height: 40px; font-size: 15px; }
+  .hero { padding: 90px 16px 40px; }
+  .hero h1 { font-size: 28px; letter-spacing: -1px; }
+  .arch-modules-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .arch-mod { padding: 12px 8px; }
+  .arch-mod-icon { font-size: 18px; }
+  .arch-mod-name { font-size: 11px; }
+  .how-step-num { width: 36px; height: 36px; font-size: 14px; border-radius: 10px; }
+  .compare-row { grid-template-columns: 1fr; }
+  .compare-cell:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  .trust-section { padding: 40px 16px; }
 }
 
 /* Scroll animations */
@@ -459,11 +486,8 @@ section { position: relative; z-index: 1; }
   </div>
 </nav>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-glow"></div>
-  <!-- Brain-Circuit SVG Background -->
-  <svg class="brain-bg" viewBox="0 0 1000 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Brain-Circuit SVG — fixed page background -->
+<svg class="brain-bg" viewBox="0 0 1000 700" fill="none" xmlns="http://www.w3.org/2000/svg">
     <!-- Left hemisphere: organic neural pathways -->
     <path class="trace" d="M120 350 C100 280, 160 220, 220 240 C280 260, 260 320, 300 350 C340 380, 320 300, 370 320" stroke="#6366f1" stroke-width="2" fill="none"/>
     <path class="trace" d="M100 400 C80 450, 140 480, 200 460 C260 440, 240 490, 300 500 C360 510, 340 460, 380 440" stroke="#818cf8" stroke-width="1.8" fill="none"/>
@@ -516,6 +540,10 @@ section { position: relative; z-index: 1; }
     <circle class="node" cx="480" cy="280" r="5" fill="#818cf8"/>
     <circle class="node" cx="520" cy="400" r="5" fill="#a78bfa"/>
   </svg>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-glow"></div>
   <div class="hero-badge"><span class="hero-badge-dot"></span> v0.1.2 — Now on npm</div>
   <h1>The engineering brain for your AI tools</h1>
   <p class="hero-sub">Give Claude Code, Cursor, and Windsurf persistent knowledge about your codebase. Architecture, conventions, decisions — surviving between every session.</p>
