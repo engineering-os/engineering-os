@@ -66,18 +66,16 @@ body::after {
   opacity: 0.3; pointer-events: none; z-index: 0;
   filter: drop-shadow(0 0 12px rgba(99,102,241,0.4)) drop-shadow(0 0 40px rgba(99,102,241,0.15));
 }
-.brain-bg .node { animation: node-pulse 6s ease-in-out infinite; }
-.brain-bg .node:nth-child(2n) { animation-delay: 1.5s; }
-.brain-bg .node:nth-child(3n) { animation-delay: 3s; }
-.brain-bg .node:nth-child(5n) { animation-delay: 4.5s; }
-.brain-bg .node:nth-child(7n) { animation-delay: 2s; }
-.brain-bg .trace { stroke-dasharray: 300; stroke-dashoffset: 300; animation: synapse-fire 8s ease-in-out infinite; }
-.brain-bg .trace:nth-child(2n) { animation-delay: 2s; animation-duration: 10s; }
-.brain-bg .trace:nth-child(3n) { animation-delay: 4s; animation-duration: 12s; }
-.brain-bg .trace:nth-child(5n) { animation-delay: 1s; animation-duration: 9s; }
-.brain-bg .trace:nth-child(7n) { animation-delay: 5s; animation-duration: 11s; }
-@keyframes node-pulse { 0%,100%{opacity:.3; transform: scale(1)} 40%{opacity:.9; transform: scale(1.4)} 60%{opacity:.7; transform: scale(1.2)} }
-@keyframes synapse-fire { 0%{stroke-dashoffset:300; opacity:.2} 30%{opacity:.8} 50%{stroke-dashoffset:0; opacity:.6} 80%{opacity:.3} 100%{stroke-dashoffset:-300; opacity:.2} }
+.brain-bg .node { animation: node-glow 5s ease-in-out infinite; }
+.brain-bg .node:nth-child(2n) { animation-delay: 1.2s; }
+.brain-bg .node:nth-child(3n) { animation-delay: 2.5s; }
+.brain-bg .node:nth-child(5n) { animation-delay: 3.8s; }
+.brain-bg .pulse-line { stroke-dasharray: 8 24; animation: heartbeat-flow 3s linear infinite; }
+.brain-bg .pulse-line:nth-child(2n) { animation-delay: 0.8s; }
+.brain-bg .pulse-line:nth-child(3n) { animation-delay: 1.6s; }
+.brain-bg .connection { opacity: 0.6; }
+@keyframes node-glow { 0%,100%{opacity:.4} 50%{opacity:.9} }
+@keyframes heartbeat-flow { 0%{stroke-dashoffset:0} 100%{stroke-dashoffset:-64} }
 
 /* ═══════════ NAV ═══════════ */
 .nav {
@@ -483,63 +481,57 @@ section { position: relative; z-index: 1; }
 
 <!-- Brain-Circuit SVG — fixed page background -->
 <svg class="brain-bg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Neuron cluster 1: upper-left -->
-    <path class="trace" d="M150 200 C170 180, 200 170, 230 190 C260 210, 240 240, 270 250" stroke="#6366f1" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M150 200 C130 220, 120 260, 140 280 C160 300, 180 290, 200 310" stroke="#818cf8" stroke-width="1.2" fill="none"/>
-    <path class="trace" d="M150 200 C160 230, 190 240, 210 260" stroke="#a78bfa" stroke-width="1" fill="none"/>
-    <!-- Neuron cluster 2: mid-left -->
-    <path class="trace" d="M200 400 C220 370, 250 360, 280 380 C310 400, 300 430, 330 440" stroke="#6366f1" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M200 400 C180 420, 170 460, 200 480 C230 500, 260 490, 280 510" stroke="#818cf8" stroke-width="1.2" fill="none"/>
-    <path class="trace" d="M200 400 C230 410, 250 430, 270 420" stroke="#06b6d4" stroke-width="1" fill="none"/>
-    <!-- Neuron cluster 3: center -->
-    <path class="trace" d="M500 350 C530 320, 560 310, 580 330 C600 350, 590 380, 610 390" stroke="#6366f1" stroke-width="1.8" fill="none"/>
-    <path class="trace" d="M500 350 C480 370, 470 400, 490 420 C510 440, 540 430, 560 450" stroke="#818cf8" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M500 350 C520 360, 540 380, 530 400" stroke="#a78bfa" stroke-width="1.2" fill="none"/>
-    <path class="trace" d="M500 350 C470 340, 450 320, 440 300 C430 280, 450 260, 470 250" stroke="#06b6d4" stroke-width="1.5" fill="none"/>
-    <!-- Neuron cluster 4: upper-right -->
-    <path class="trace" d="M750 200 C770 180, 800 190, 820 210 C840 230, 830 260, 850 270" stroke="#6366f1" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M750 200 C730 220, 720 250, 740 270 C760 290, 780 280, 790 300" stroke="#818cf8" stroke-width="1.2" fill="none"/>
-    <path class="trace" d="M750 200 C760 230, 780 240, 800 250" stroke="#a78bfa" stroke-width="1" fill="none"/>
-    <!-- Neuron cluster 5: lower-right -->
-    <path class="trace" d="M780 480 C800 460, 830 450, 850 470 C870 490, 860 520, 880 530" stroke="#6366f1" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M780 480 C760 500, 750 530, 770 550 C790 570, 810 560, 830 580" stroke="#818cf8" stroke-width="1.2" fill="none"/>
-    <!-- Axon connections between clusters (long, sweeping curves) -->
-    <path class="trace" d="M270 250 C320 270, 380 290, 440 300 C470 310, 490 330, 500 350" stroke="#6366f1" stroke-width="1.8" fill="none"/>
-    <path class="trace" d="M330 440 C380 430, 420 410, 460 400 C480 390, 490 370, 500 350" stroke="#818cf8" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M610 390 C650 380, 690 350, 720 300 C740 270, 750 230, 750 200" stroke="#a78bfa" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M560 450 C620 470, 680 480, 720 480 C750 480, 770 480, 780 480" stroke="#06b6d4" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M470 250 C500 220, 560 200, 620 190 C680 180, 720 190, 750 200" stroke="#6366f1" stroke-width="1.2" fill="none"/>
-    <path class="trace" d="M200 310 C230 330, 260 350, 300 360 C360 380, 420 380, 480 370" stroke="#06b6d4" stroke-width="1.2" fill="none"/>
-    <!-- Peripheral dendrites (short, thin) -->
-    <path class="trace" d="M80 150 C100 160, 120 180, 150 200" stroke="#6366f1" stroke-width="0.8" fill="none"/>
-    <path class="trace" d="M60 250 C80 240, 110 220, 140 280" stroke="#818cf8" stroke-width="0.8" fill="none"/>
-    <path class="trace" d="M100 500 C130 490, 160 470, 200 400" stroke="#a78bfa" stroke-width="0.8" fill="none"/>
-    <path class="trace" d="M900 150 C880 170, 850 180, 820 210" stroke="#06b6d4" stroke-width="0.8" fill="none"/>
-    <path class="trace" d="M950 350 C920 340, 890 320, 850 270" stroke="#818cf8" stroke-width="0.8" fill="none"/>
-    <path class="trace" d="M920 600 C900 580, 870 560, 830 580" stroke="#6366f1" stroke-width="0.8" fill="none"/>
-    <path class="trace" d="M50 400 C80 410, 120 420, 170 460" stroke="#06b6d4" stroke-width="0.8" fill="none"/>
-    <!-- Neuron bodies (soma) — larger circles -->
-    <circle class="node" cx="150" cy="200" r="8" fill="#6366f1"/>
-    <circle class="node" cx="200" cy="400" r="7" fill="#818cf8"/>
-    <circle class="node" cx="500" cy="350" r="10" fill="#6366f1"/>
-    <circle class="node" cx="750" cy="200" r="7" fill="#a78bfa"/>
-    <circle class="node" cx="780" cy="480" r="7" fill="#06b6d4"/>
-    <!-- Secondary neurons (smaller) -->
-    <circle class="node" cx="270" cy="250" r="5" fill="#818cf8"/>
-    <circle class="node" cx="330" cy="440" r="5" fill="#6366f1"/>
-    <circle class="node" cx="610" cy="390" r="5" fill="#a78bfa"/>
-    <circle class="node" cx="470" cy="250" r="4" fill="#06b6d4"/>
-    <circle class="node" cx="560" cy="450" r="4" fill="#818cf8"/>
-    <circle class="node" cx="720" cy="300" r="4" fill="#6366f1"/>
-    <!-- Synaptic junctions (tiny dots along axons) -->
-    <circle class="node" cx="380" cy="290" r="2.5" fill="#6366f1"/>
-    <circle class="node" cx="420" cy="410" r="2.5" fill="#818cf8"/>
-    <circle class="node" cx="650" cy="370" r="2.5" fill="#a78bfa"/>
-    <circle class="node" cx="680" cy="480" r="2.5" fill="#06b6d4"/>
-    <circle class="node" cx="300" cy="360" r="2.5" fill="#06b6d4"/>
-    <circle class="node" cx="600" cy="200" r="2.5" fill="#6366f1"/>
-    <circle class="node" cx="440" cy="300" r="3" fill="#818cf8"/>
-    <circle class="node" cx="530" cy="400" r="2.5" fill="#a78bfa"/>
+    <!-- Brain outline shape (left hemisphere) -->
+    <path class="connection" d="M500 120 C380 120, 280 160, 240 240 C200 320, 210 400, 250 460 C290 520, 360 570, 440 580 C480 585, 500 580, 500 580" stroke="#6366f1" stroke-width="1.2" fill="none"/>
+    <!-- Brain outline shape (right hemisphere) -->
+    <path class="connection" d="M500 120 C620 120, 720 160, 760 240 C800 320, 790 400, 750 460 C710 520, 640 570, 560 580 C520 585, 500 580, 500 580" stroke="#6366f1" stroke-width="1.2" fill="none"/>
+    <!-- Brain stem -->
+    <path class="connection" d="M500 580 C500 600, 490 630, 500 660" stroke="#818cf8" stroke-width="1.5" fill="none"/>
+    <!-- Internal brain folds (sulci) -->
+    <path class="connection" d="M340 200 C380 220, 420 200, 460 220" stroke="#818cf8" stroke-width="0.8" fill="none"/>
+    <path class="connection" d="M540 200 C580 220, 620 200, 660 220" stroke="#818cf8" stroke-width="0.8" fill="none"/>
+    <path class="connection" d="M300 320 C340 300, 380 320, 420 300" stroke="#a78bfa" stroke-width="0.8" fill="none"/>
+    <path class="connection" d="M580 320 C620 300, 660 320, 700 300" stroke="#a78bfa" stroke-width="0.8" fill="none"/>
+    <path class="connection" d="M320 440 C360 420, 400 440, 440 420" stroke="#818cf8" stroke-width="0.8" fill="none"/>
+    <path class="connection" d="M560 440 C600 420, 640 440, 680 420" stroke="#818cf8" stroke-width="0.8" fill="none"/>
+    <!-- Central fissure -->
+    <path class="connection" d="M500 140 L500 560" stroke="rgba(99,102,241,0.3)" stroke-width="0.6" stroke-dasharray="4 8" fill="none"/>
+
+    <!-- Heartbeat pulse lines flowing through the brain (the engineering signal) -->
+    <!-- Horizontal pulses across left hemisphere -->
+    <path class="pulse-line" d="M260 280 L300 280 L310 260 L320 300 L330 270 L340 290 L360 280 L420 280 L480 280" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+    <path class="pulse-line" d="M270 380 L320 380 L330 360 L340 400 L350 370 L360 390 L380 380 L440 380 L490 380" stroke="#818cf8" stroke-width="1.2" fill="none"/>
+    <path class="pulse-line" d="M290 480 L330 480 L340 462 L350 498 L360 472 L370 488 L390 480 L440 480 L480 480" stroke="#06b6d4" stroke-width="1" fill="none"/>
+    <!-- Horizontal pulses across right hemisphere -->
+    <path class="pulse-line" d="M520 280 L580 280 L600 280 L610 260 L620 300 L630 270 L640 290 L660 280 L740 280" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+    <path class="pulse-line" d="M510 380 L560 380 L580 380 L590 360 L600 400 L610 370 L620 390 L640 380 L730 380" stroke="#818cf8" stroke-width="1.2" fill="none"/>
+    <path class="pulse-line" d="M520 480 L560 480 L580 480 L590 462 L600 498 L610 472 L620 488 L640 480 L720 480" stroke="#06b6d4" stroke-width="1" fill="none"/>
+    <!-- Vertical pulse down brain stem -->
+    <path class="pulse-line" d="M500 560 L500 580 L492 590 L508 600 L495 610 L505 620 L500 640 L500 660" stroke="#a78bfa" stroke-width="1.5" fill="none"/>
+
+    <!-- Circuit nodes at intersections (engineering element) -->
+    <circle class="node" cx="500" cy="160" r="5" fill="#6366f1"/>
+    <circle class="node" cx="380" cy="240" r="4" fill="#818cf8"/>
+    <circle class="node" cx="620" cy="240" r="4" fill="#818cf8"/>
+    <circle class="node" cx="300" cy="320" r="3.5" fill="#a78bfa"/>
+    <circle class="node" cx="700" cy="320" r="3.5" fill="#a78bfa"/>
+    <circle class="node" cx="340" cy="440" r="3" fill="#06b6d4"/>
+    <circle class="node" cx="660" cy="440" r="3" fill="#06b6d4"/>
+    <circle class="node" cx="500" cy="350" r="6" fill="#6366f1"/>
+    <circle class="node" cx="420" cy="280" r="3" fill="#6366f1"/>
+    <circle class="node" cx="580" cy="280" r="3" fill="#6366f1"/>
+    <circle class="node" cx="440" cy="380" r="3" fill="#818cf8"/>
+    <circle class="node" cx="560" cy="380" r="3" fill="#818cf8"/>
+    <circle class="node" cx="500" cy="500" r="4" fill="#a78bfa"/>
+    <circle class="node" cx="260" cy="400" r="3" fill="#6366f1"/>
+    <circle class="node" cx="740" cy="400" r="3" fill="#6366f1"/>
+    <!-- Corner engineering accents (gear-like dots) -->
+    <circle class="node" cx="100" cy="100" r="2" fill="#818cf8"/>
+    <circle class="node" cx="900" cy="100" r="2" fill="#818cf8"/>
+    <circle class="node" cx="100" cy="600" r="2" fill="#818cf8"/>
+    <circle class="node" cx="900" cy="600" r="2" fill="#818cf8"/>
+    <circle class="node" cx="150" cy="350" r="2.5" fill="#6366f1"/>
+    <circle class="node" cx="850" cy="350" r="2.5" fill="#6366f1"/>
   </svg>
 
 <!-- Hero -->
