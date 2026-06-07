@@ -265,7 +265,7 @@ section { position: relative; z-index: 1; }
 }
 
 .arch-modules-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
 }
 .arch-mod {
   padding: 18px 12px; border-radius: 10px; text-align: center;
@@ -311,7 +311,7 @@ section { position: relative; z-index: 1; }
 /* ═══════════ FEATURES ═══════════ */
 .features-section { padding: 120px 24px; }
 .features-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 1px; max-width: 1000px; margin: 0 auto;
   background: var(--border); border-radius: var(--radius-lg); overflow: hidden;
 }
@@ -402,7 +402,7 @@ section { position: relative; z-index: 1; }
   .arch-section, .how-section, .features-section, .usecases-section, .compare-section, .cta-section { padding: 80px 16px; }
   .features-grid { grid-template-columns: 1fr; }
   .usecases-grid { grid-template-columns: 1fr; }
-  .arch-modules-grid { grid-template-columns: repeat(2, 1fr); }
+  .arch-modules-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .how-step { grid-template-columns: 48px 1fr; gap: 16px; }
   .compare-cell { padding: 12px 14px; font-size: 12px; }
   .trust-logos { gap: 12px; }

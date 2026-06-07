@@ -256,18 +256,18 @@ li { margin: 8px 0; line-height: 1.7; }
 
 /* Feature grid */
 .feature-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px; margin: 20px 0;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin: 24px 0;
 }
 .feature-card {
-  background: var(--surface-1); border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg); padding: 20px;
-  transition: box-shadow .2s, transform .2s;
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px;
+  transition: border-color .2s, transform .2s;
 }
-.feature-card:hover { box-shadow: var(--shadow-1); transform: translateY(-1px); }
+.feature-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
 .feature-card-icon { font-size: 28px; margin-bottom: 12px; }
-.feature-card h4 { font-size: 14px; margin: 0 0 6px; }
-.feature-card p { font-size: 12px; margin: 0; color: var(--text-tertiary); }
+.feature-card h4 { font-size: 14px; font-weight: 600; margin: 0 0 8px; }
+.feature-card p { font-size: 13px; margin: 0; color: var(--text-secondary); line-height: 1.6; }
 
 /* Stats bar */
 .stats-bar {
@@ -352,8 +352,8 @@ li { margin: 8px 0; line-height: 1.7; }
 }
 
 .arch-modules {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 10px; max-width: 680px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; max-width: 680px; margin: 0 auto;
 }
 .arch-module {
   display: flex; flex-direction: column; align-items: center; gap: 4px;
@@ -418,7 +418,8 @@ li { margin: 8px 0; line-height: 1.7; }
   .main { margin-left: 0; }
   .content { padding: 40px 24px 80px; }
 
-  .feature-grid { grid-template-columns: 1fr; }
+  .feature-grid { grid-template-columns: 1fr 1fr; }
+  .arch-modules { grid-template-columns: repeat(2, 1fr); }
 
   h1 { font-size: 28px; }
   h2 { font-size: 22px; margin: 48px 0 16px; }
@@ -437,6 +438,7 @@ li { margin: 8px 0; line-height: 1.7; }
   .header { padding: 0 14px; }
   .header-logo { font-size: 14px; }
   .content { padding: 32px 18px 60px; }
+  .feature-grid { grid-template-columns: 1fr; }
   .feature-card { padding: 18px; }
   .tool-card-body { padding: 16px 18px; }
   .callout { padding: 14px 16px; font-size: 13px; }
