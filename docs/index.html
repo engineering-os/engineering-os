@@ -291,12 +291,70 @@ li { margin: 6px 0; }
 .stat-value { font-family: var(--font-sans); font-size: 28px; font-weight: 700; color: var(--accent); }
 .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-tertiary); margin-top: 2px; }
 
+/* Mobile menu toggle */
+.mobile-menu-btn {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  padding: 8px; border-radius: 8px; color: var(--text-primary);
+  transition: background .15s;
+}
+.mobile-menu-btn:hover { background: var(--surface-2); }
+.mobile-menu-btn svg { display: block; }
+
+/* Sidebar overlay */
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.4); z-index: 998;
+  opacity: 0; transition: opacity .3s;
+}
+.sidebar-overlay.visible { display: block; opacity: 1; }
+
 /* Responsive */
 @media (max-width: 960px) {
-  .sidebar { display: none; }
+  .mobile-menu-btn { display: block; }
+  .header-nav a:not(#theme-toggle) { display: none; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 999;
+    box-shadow: none;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,.15);
+  }
+
   .main { margin-left: 0; }
-  .content { padding: 24px 20px 60px; }
-  .stats-bar { flex-wrap: wrap; gap: 16px; }
+  .content { padding: 32px 20px 60px; }
+
+  .stats-bar { flex-wrap: wrap; gap: 20px; justify-content: center; }
+  .stat { min-width: 80px; }
+
+  .feature-grid { grid-template-columns: 1fr; }
+
+  h1 { font-size: 26px; }
+  h2 { font-size: 20px; margin: 40px 0 12px; }
+  h3 { font-size: 16px; }
+
+  pre { font-size: 13px; padding: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+
+  .tool-card-header { flex-wrap: wrap; gap: 8px; }
+  .cmd-sig { font-size: 13px; padding: 8px 14px; overflow-x: auto; }
+}
+
+@media (max-width: 480px) {
+  .header { padding: 0 16px; }
+  .header-logo { font-size: 16px; }
+  .header-badge { display: none; }
+  .content { padding: 24px 16px 48px; }
+  .stats-bar { gap: 12px; padding: 16px 0; }
+  .stat-value { font-size: 22px; }
+  .feature-card { padding: 16px; }
+  .tool-card-body { padding: 12px 16px; }
+  .callout { padding: 12px 14px; font-size: 12px; }
 }
 </style>
 </head>
@@ -304,6 +362,9 @@ li { margin: 6px 0; }
 
 <!-- Header -->
 <header class="header">
+  <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle navigation">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
   <div class="header-logo">
     <span class="icon">E</span>
     Engineering OS
@@ -313,12 +374,15 @@ li { margin: 6px 0; }
     <a href="#overview" class="active">Docs</a>
     <a href="#cli">CLI</a>
     <a href="#tools-knowledge">API</a>
-    <a href="https://github.com">GitHub</a>
+    <a href="https://github.com/engineering-os/engineering-os">GitHub</a>
     <button onclick="toggleTheme()" id="theme-toggle" title="Toggle dark mode" style="background:none;border:1px solid var(--border);border-radius:20px;padding:6px 12px;cursor:pointer;font-size:14px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;transition:all .2s;">
       <span id="theme-icon">🌙</span>
     </button>
   </nav>
 </header>
+
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
 <!-- Sidebar -->
 <aside class="sidebar">
@@ -1206,6 +1270,30 @@ function toggleTheme() {
     overlay.remove();
   }, 520);
 }
+
+// Mobile sidebar toggle
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  const isOpen = sidebar.classList.contains('open');
+  if (isOpen) {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+  } else {
+    sidebar.classList.add('open');
+    overlay.classList.add('visible');
+  }
+}
+
+// Close sidebar when a nav item is clicked (mobile)
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 960) {
+      document.querySelector('.sidebar').classList.remove('open');
+      document.querySelector('.sidebar-overlay').classList.remove('visible');
+    }
+  });
+});
 
 // Load saved theme or respect system preference
 (function() {
