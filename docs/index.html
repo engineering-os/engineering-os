@@ -4,8 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Engineering OS — The Engineering Brain for AI Tools</title>
+<meta name="description" content="A local MCP server that gives AI coding tools persistent knowledge about your codebase. 47 tools, 8 languages, zero API keys.">
+<meta property="og:title" content="Engineering OS">
+<meta property="og:description" content="The engineering brain for your AI tools. Persistent context, cross-repo intelligence, skill retention.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://engineering-os.github.io/engineering-os/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
@@ -44,27 +51,29 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Noise texture overlay */
-body::before {
+/* Noise overlay */
+body::after {
   content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.018;
 }
 
-/* ═══════════ NAVIGATION ═══════════ */
+/* ═══════════ CANVAS ═══════════ */
+#particles {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ═══════════ NAV ═══════════ */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 16px 32px;
-  background: rgba(9,9,11,0.7);
+  padding: 14px 32px;
+  background: rgba(9,9,11,0.75);
   backdrop-filter: blur(20px) saturate(1.4);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center;
-  transition: all .3s;
 }
-.nav-logo {
-  display: flex; align-items: center; gap: 10px;
-  font-weight: 700; font-size: 15px; letter-spacing: -0.3px;
-}
+.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; letter-spacing: -0.3px; text-decoration: none; color: var(--text-primary); }
 .nav-logo-mark {
   width: 28px; height: 28px; border-radius: 8px;
   background: linear-gradient(135deg, var(--accent), var(--purple));
@@ -75,91 +84,84 @@ body::before {
 .nav-links { margin-left: auto; display: flex; gap: 4px; align-items: center; }
 .nav-links a {
   padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
-  color: var(--text-secondary); text-decoration: none;
-  transition: color .2s, background .2s;
+  color: var(--text-secondary); text-decoration: none; transition: color .2s, background .2s;
 }
 .nav-links a:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+.nav-links a.active { color: var(--text-primary); }
 .nav-cta {
   margin-left: 8px; padding: 8px 18px !important;
   background: var(--accent) !important; color: white !important;
-  border-radius: 8px; font-weight: 600 !important; font-size: 13px;
+  border-radius: 8px; font-weight: 600 !important;
   box-shadow: 0 0 24px var(--accent-glow);
   transition: transform .2s, box-shadow .2s !important;
 }
 .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 0 40px rgba(99,102,241,0.3) !important; }
+.nav-mobile { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; padding: 8px; }
 
 /* ═══════════ HERO ═══════════ */
 .hero {
   position: relative; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 120px 24px 80px; text-align: center;
-  overflow: hidden;
+  padding: 140px 24px 100px; text-align: center;
 }
 .hero-glow {
-  position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-  width: 800px; height: 800px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 60%);
+  position: absolute; top: -300px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 900px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.1) 0%, rgba(167,139,250,0.05) 40%, transparent 65%);
   filter: blur(60px); pointer-events: none;
-  animation: glow-pulse 6s ease-in-out infinite alternate;
+  animation: glow-breathe 8s ease-in-out infinite alternate;
 }
-@keyframes glow-pulse { 0%{opacity:.6;transform:translateX(-50%) scale(1)} 100%{opacity:1;transform:translateX(-50%) scale(1.1)} }
-
-.hero-grid {
-  position: absolute; inset: 0; pointer-events: none;
-  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 20%, transparent 80%);
-}
+@keyframes glow-breathe { 0%{opacity:.5;transform:translateX(-50%) scale(1)} 100%{opacity:.8;transform:translateX(-50%) scale(1.15)} }
 
 .hero-badge {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 6px 16px; border-radius: 100px;
   background: var(--bg-card); border: 1px solid var(--border);
   font-size: 12px; font-weight: 500; color: var(--text-secondary);
-  margin-bottom: 32px;
+  margin-bottom: 32px; position: relative; z-index: 1;
   animation: fade-up .8s ease-out;
 }
 .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
 .hero h1 {
-  font-size: clamp(40px, 7vw, 72px); font-weight: 800;
-  letter-spacing: -2px; line-height: 1.05;
-  max-width: 800px;
-  background: linear-gradient(180deg, var(--text-primary) 40%, var(--text-secondary) 100%);
+  font-size: clamp(42px, 7vw, 76px); font-weight: 900;
+  letter-spacing: -3px; line-height: 1.0;
+  max-width: 820px; position: relative; z-index: 1;
+  background: linear-gradient(180deg, #ffffff 30%, rgba(255,255,255,0.5) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   animation: fade-up .8s ease-out .1s both;
 }
 .hero-sub {
-  margin-top: 24px; font-size: clamp(16px, 2vw, 20px);
-  color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-weight: 400;
+  margin-top: 24px; font-size: clamp(16px, 2vw, 19px);
+  color: var(--text-secondary); max-width: 540px; line-height: 1.65; font-weight: 400;
+  position: relative; z-index: 1;
   animation: fade-up .8s ease-out .2s both;
 }
 .hero-actions {
   display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap; justify-content: center;
+  position: relative; z-index: 1;
   animation: fade-up .8s ease-out .3s both;
 }
 .btn {
   padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600;
   text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-  transition: all .2s;
+  transition: all .25s; position: relative;
 }
 .btn-primary {
   background: var(--accent); color: white;
-  box-shadow: 0 0 30px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: 0 0 30px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.15);
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(99,102,241,0.3); }
-.btn-ghost {
-  background: var(--bg-card); color: var(--text-primary);
-  border: 1px solid var(--border);
-}
-.btn-ghost:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(99,102,241,0.35); }
+.btn-ghost { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--bg-card-hover); border-color: var(--border-hover); transform: translateY(-1px); }
 
 .hero-install {
   margin-top: 48px; padding: 14px 24px;
   background: var(--bg-elevated); border: 1px solid var(--border);
   border-radius: 10px; font-family: var(--mono); font-size: 14px;
   color: var(--text-secondary); display: inline-flex; align-items: center; gap: 12px;
+  position: relative; z-index: 1;
   animation: fade-up .8s ease-out .4s both;
 }
 .hero-install code { color: var(--green); }
@@ -169,236 +171,268 @@ body::before {
 }
 .hero-install .copy-btn:hover { color: var(--text-primary); }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes fade-up { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
 /* ═══════════ STATS ═══════════ */
 .stats {
-  display: flex; justify-content: center; gap: 48px; padding: 48px 24px;
+  display: flex; justify-content: center; gap: 56px; padding: 56px 24px;
   border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-  background: var(--bg-elevated);
+  background: var(--bg-elevated); position: relative; z-index: 1;
 }
 .stat-item { text-align: center; }
-.stat-value { font-size: 36px; font-weight: 800; letter-spacing: -1px; color: var(--text-primary); }
-.stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+.stat-value { font-size: 40px; font-weight: 800; letter-spacing: -1.5px; color: var(--text-primary); }
+.stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.2px; margin-top: 4px; }
 
-/* ═══════════ ARCHITECTURE VISUAL ═══════════ */
-.arch-section {
-  padding: 120px 24px; position: relative; overflow: hidden;
-}
-.arch-section .section-header { text-align: center; margin-bottom: 64px; }
+/* ═══════════ SECTION COMMON ═══════════ */
+section { position: relative; z-index: 1; }
+.section-header { text-align: center; margin-bottom: 64px; }
 .section-tag {
   display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 1.5px; color: var(--accent-bright); margin-bottom: 16px;
+  letter-spacing: 2px; color: var(--accent-bright); margin-bottom: 16px;
 }
 .section-title {
-  font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -1px;
+  font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -1.5px;
   max-width: 600px; margin: 0 auto;
 }
 .section-desc {
   margin-top: 16px; font-size: 16px; color: var(--text-secondary);
-  max-width: 480px; margin-left: auto; margin-right: auto;
+  max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.6;
 }
 
-.arch-visual {
-  max-width: 900px; margin: 0 auto; position: relative;
-}
-
-/* Glass panels */
+/* ═══════════ ARCHITECTURE ═══════════ */
+.arch-section { padding: 140px 24px; }
+.arch-visual { max-width: 880px; margin: 0 auto; }
 .arch-tier {
-  position: relative; padding: 28px; margin-bottom: 24px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  backdrop-filter: blur(12px);
+  position: relative; padding: 28px; margin-bottom: 20px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); backdrop-filter: blur(8px);
   transition: border-color .3s;
 }
 .arch-tier:hover { border-color: var(--border-hover); }
 .arch-tier-label {
   position: absolute; top: -10px; left: 24px;
   font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
-  color: var(--accent-bright); background: var(--bg);
-  padding: 2px 12px; border-radius: 4px;
+  color: var(--accent-bright); background: var(--bg); padding: 2px 12px; border-radius: 4px;
 }
-
-.arch-tier-nodes {
-  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-}
+.arch-tier-nodes { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .arch-chip {
   display: flex; align-items: center; gap: 8px;
   padding: 10px 16px; border-radius: 10px;
-  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
-  font-size: 13px; font-weight: 500; color: var(--text-primary);
-  transition: all .25s;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  font-size: 13px; font-weight: 500; color: var(--text-primary); transition: all .25s;
 }
-.arch-chip:hover { background: rgba(255,255,255,0.07); transform: translateY(-1px); border-color: var(--border-hover); }
+.arch-chip:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); border-color: var(--border-hover); }
 .arch-chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-/* Flow arrow */
+/* Rotating gradient border on EOS tier */
+@property --border-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+.arch-tier-eos {
+  border: none; padding: 2px; border-radius: var(--radius-lg);
+  background: conic-gradient(from var(--border-angle), var(--accent), var(--purple), var(--cyan), var(--green), var(--accent));
+  animation: rotate-border 6s linear infinite;
+}
+@keyframes rotate-border { to { --border-angle: 360deg; } }
+.arch-tier-eos-inner {
+  background: var(--bg); border-radius: calc(var(--radius-lg) - 2px);
+  padding: 28px;
+}
+
 .arch-flow {
   display: flex; align-items: center; justify-content: center;
-  padding: 12px 0; position: relative;
+  padding: 14px 0; position: relative;
 }
 .arch-flow-line {
-  width: 2px; height: 32px;
+  width: 2px; height: 36px;
   background: linear-gradient(to bottom, var(--accent), transparent);
   position: relative;
 }
 .arch-flow-line::after {
   content: ''; position: absolute; bottom: -4px; left: -3px;
   width: 8px; height: 8px; border-radius: 50%;
-  background: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
-  animation: flow-pulse 1.5s ease-in-out infinite;
+  background: var(--accent); box-shadow: 0 0 12px var(--accent);
+  animation: flow-dot 2s ease-in-out infinite;
 }
-@keyframes flow-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.6)} }
+@keyframes flow-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.5)} }
 .arch-flow-tag {
   position: absolute; left: 50%; transform: translateX(-50%);
   font-family: var(--mono); font-size: 10px; color: var(--accent-bright);
-  background: var(--bg); padding: 2px 10px; border-radius: 4px;
-  white-space: nowrap;
+  background: var(--bg); padding: 2px 10px; border-radius: 4px; white-space: nowrap;
 }
 
-/* Module grid inside middle tier */
 .arch-modules-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px;
 }
 .arch-mod {
-  padding: 16px 12px; border-radius: 10px; text-align: center;
-  background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+  padding: 18px 12px; border-radius: 10px; text-align: center;
+  background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);
   transition: all .25s;
 }
-.arch-mod:hover { background: rgba(255,255,255,0.05); border-color: var(--border-hover); transform: translateY(-2px); }
-.arch-mod-icon { font-size: 20px; margin-bottom: 6px; }
+.arch-mod:hover { background: rgba(255,255,255,0.05); transform: translateY(-3px); border-color: rgba(255,255,255,0.1); }
+.arch-mod-icon { font-size: 22px; margin-bottom: 8px; }
 .arch-mod-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
-.arch-mod-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+.arch-mod-sub { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+
+/* ═══════════ HOW IT WORKS ═══════════ */
+.how-section { padding: 140px 24px; }
+.how-steps {
+  max-width: 800px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr; gap: 0;
+}
+.how-step {
+  display: grid; grid-template-columns: 60px 1fr; gap: 24px;
+  padding: 40px 0; border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.how-step:last-child { border-bottom: none; }
+.how-step-num {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: var(--accent-glow); border: 1px solid rgba(99,102,241,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: var(--accent-bright);
+}
+.how-step h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; }
+.how-step p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+.how-step-code {
+  margin-top: 16px; padding: 16px 20px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: 10px; font-family: var(--mono); font-size: 13px;
+  color: var(--text-secondary); line-height: 1.7; overflow-x: auto;
+}
+.how-step-code .g { color: var(--green); }
+.how-step-code .c { color: var(--cyan); }
+.how-step-code .m { color: var(--text-muted); }
 
 /* ═══════════ FEATURES ═══════════ */
-.features-section { padding: 120px 24px; }
+.features-section { padding: 140px 24px; }
 .features-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1px; max-width: 1000px; margin: 0 auto;
   background: var(--border); border-radius: var(--radius-lg); overflow: hidden;
 }
-.feature-item {
-  padding: 36px 32px; background: var(--bg);
-  transition: background .3s;
-}
+.feature-item { padding: 40px 32px; background: var(--bg); transition: background .3s; }
 .feature-item:hover { background: var(--bg-elevated); }
 .feature-icon {
-  width: 40px; height: 40px; border-radius: 10px;
+  width: 42px; height: 42px; border-radius: 11px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px; margin-bottom: 16px;
+  font-size: 20px; margin-bottom: 18px;
 }
 .feature-item h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-.feature-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.feature-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.65; }
 
-/* ═══════════ CODE EXAMPLE ═══════════ */
-.code-section { padding: 80px 24px 120px; }
-.code-demo {
-  max-width: 700px; margin: 0 auto;
-  background: var(--bg-elevated); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); overflow: hidden;
+/* ═══════════ USE CASES ═══════════ */
+.usecases-section { padding: 120px 24px; }
+.usecases-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px; max-width: 900px; margin: 0 auto;
 }
-.code-demo-header {
-  padding: 12px 20px; border-bottom: 1px solid var(--border);
+.usecase-card {
+  padding: 32px 28px; border-radius: var(--radius-lg);
+  background: var(--bg-card); border: 1px solid var(--border);
+  transition: all .3s;
+}
+.usecase-card:hover { border-color: var(--border-hover); transform: translateY(-3px); background: var(--bg-card-hover); }
+.usecase-card-icon { font-size: 28px; margin-bottom: 16px; }
+.usecase-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.usecase-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ═══════════ TRUST ═══════════ */
+.trust-section {
+  padding: 80px 24px; text-align: center;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.trust-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 24px; }
+.trust-logos { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; align-items: center; }
+.trust-logo {
+  padding: 10px 20px; border-radius: 8px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  font-size: 13px; font-weight: 600; color: var(--text-secondary);
   display: flex; align-items: center; gap: 8px;
 }
-.code-demo-dot { width: 10px; height: 10px; border-radius: 50%; }
-.code-demo-body {
-  padding: 24px; font-family: var(--mono); font-size: 13px; line-height: 1.8;
-  color: var(--text-secondary); overflow-x: auto;
-}
-.code-demo-body .cmd { color: var(--green); }
-.code-demo-body .comment { color: var(--text-muted); }
-.code-demo-body .output { color: var(--cyan); }
+.trust-logo svg { opacity: 0.6; }
 
-/* ═══════════ COMPARISON TABLE ═══════════ */
-.compare-section { padding: 80px 24px; }
+/* ═══════════ COMPARISON ═══════════ */
+.compare-section { padding: 120px 24px; }
 .compare-table {
   max-width: 700px; margin: 48px auto 0;
-  border: 1px solid var(--border); border-radius: var(--radius-lg);
-  overflow: hidden;
+  border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;
 }
-.compare-row {
-  display: grid; grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--border);
-}
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
 .compare-row:last-child { border-bottom: none; }
 .compare-row-header { background: var(--bg-elevated); }
-.compare-cell {
-  padding: 14px 20px; font-size: 13px; color: var(--text-secondary);
-}
+.compare-cell { padding: 14px 20px; font-size: 13px; color: var(--text-secondary); }
 .compare-cell:first-child { border-right: 1px solid var(--border); }
 .compare-row-header .compare-cell { font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-.compare-cell .check { color: var(--green); margin-right: 6px; }
-.compare-cell .cross { color: var(--red); margin-right: 6px; opacity: .6; }
 
 /* ═══════════ CTA ═══════════ */
-.cta-section {
-  padding: 120px 24px; text-align: center; position: relative;
-}
+.cta-section { padding: 140px 24px; text-align: center; position: relative; }
 .cta-section::before {
-  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  content: ''; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
   width: 600px; height: 400px; border-radius: 50%;
-  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+  background: radial-gradient(circle, rgba(99,102,241,0.12), transparent 65%);
   filter: blur(80px); pointer-events: none;
 }
-.cta-section h2 {
-  font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -1px;
-  position: relative;
-}
+.cta-section h2 { font-size: clamp(28px, 4vw, 42px); font-weight: 700; letter-spacing: -1px; position: relative; }
 .cta-section p { margin-top: 16px; color: var(--text-secondary); font-size: 16px; position: relative; }
 .cta-section .hero-actions { margin-top: 32px; position: relative; }
 
 /* ═══════════ FOOTER ═══════════ */
 .footer {
-  padding: 48px 24px; text-align: center;
-  border-top: 1px solid var(--border);
-  font-size: 12px; color: var(--text-muted);
+  padding: 56px 24px; text-align: center;
+  border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);
 }
-.footer a { color: var(--text-secondary); text-decoration: none; }
+.footer a { color: var(--text-secondary); text-decoration: none; transition: color .2s; }
 .footer a:hover { color: var(--text-primary); }
-.footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 16px; }
+.footer-links { display: flex; justify-content: center; gap: 28px; margin-bottom: 20px; }
 
 /* ═══════════ RESPONSIVE ═══════════ */
 @media (max-width: 768px) {
   .nav { padding: 12px 16px; }
   .nav-links a:not(.nav-cta) { display: none; }
-  .hero { padding: 100px 20px 60px; }
-  .stats { flex-wrap: wrap; gap: 24px; padding: 32px 20px; }
-  .stat-value { font-size: 28px; }
-  .arch-section, .features-section, .code-section, .compare-section, .cta-section { padding: 80px 16px; }
+  .nav-mobile { display: block; }
+  .hero { padding: 110px 20px 70px; }
+  .hero h1 { letter-spacing: -1.5px; }
+  .stats { flex-wrap: wrap; gap: 20px; padding: 36px 20px; }
+  .stat-value { font-size: 30px; }
+  .arch-section, .how-section, .features-section, .usecases-section, .compare-section, .cta-section { padding: 80px 16px; }
   .features-grid { grid-template-columns: 1fr; }
+  .usecases-grid { grid-template-columns: 1fr; }
   .arch-modules-grid { grid-template-columns: repeat(2, 1fr); }
+  .how-step { grid-template-columns: 48px 1fr; gap: 16px; }
   .compare-cell { padding: 12px 14px; font-size: 12px; }
-  .hero-install { font-size: 12px; padding: 12px 16px; }
+  .trust-logos { gap: 12px; }
+  .trust-logo { font-size: 12px; padding: 8px 14px; }
 }
 @media (max-width: 480px) {
   .arch-modules-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .arch-chip { font-size: 11px; padding: 8px 12px; }
-  .hero h1 { letter-spacing: -1px; }
+  .arch-chip { font-size: 11px; padding: 8px 10px; }
+  .how-step-num { width: 40px; height: 40px; font-size: 15px; }
 }
 
 /* Scroll reveal */
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s ease; }
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s cubic-bezier(0.16,1,0.3,1), transform .7s cubic-bezier(0.16,1,0.3,1); }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
 </style>
 </head>
 <body>
 
-<!-- Navigation -->
+<!-- Particle Canvas -->
+<canvas id="particles"></canvas>
+
+<!-- Nav -->
 <nav class="nav">
-  <div class="nav-logo">
+  <a href="./index.html" class="nav-logo">
     <div class="nav-logo-mark">E</div>
     Engineering OS
-  </div>
+  </a>
+  <button class="nav-mobile" onclick="document.querySelector('.nav-links').classList.toggle('show')" aria-label="Menu">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
+  </button>
   <div class="nav-links">
+    <a href="./index.html" class="active">Home</a>
     <a href="./docs.html">Docs</a>
-    <a href="#architecture">How it works</a>
-    <a href="#features">Features</a>
     <a href="https://github.com/engineering-os/engineering-os">GitHub</a>
     <a href="https://www.npmjs.com/package/engineering-os" class="nav-cta">Install</a>
   </div>
@@ -407,39 +441,28 @@ body::before {
 <!-- Hero -->
 <section class="hero">
   <div class="hero-glow"></div>
-  <div class="hero-grid"></div>
-
-  <div class="hero-badge">
-    <span class="hero-badge-dot"></span>
-    v0.1.2 — Now on npm
-  </div>
-
+  <div class="hero-badge"><span class="hero-badge-dot"></span> v0.1.2 — Now on npm</div>
   <h1>The engineering brain for your AI tools</h1>
-
-  <p class="hero-sub">A local MCP server that gives Claude Code, Cursor, and Windsurf persistent knowledge about your codebase. Architecture, conventions, decisions — all surviving between sessions.</p>
-
+  <p class="hero-sub">Give Claude Code, Cursor, and Windsurf persistent knowledge about your codebase. Architecture, conventions, decisions — surviving between every session.</p>
   <div class="hero-actions">
-    <a href="#quickstart" class="btn btn-primary">Get Started</a>
+    <a href="#how" class="btn btn-primary">Get Started</a>
     <a href="https://github.com/engineering-os/engineering-os" class="btn btn-ghost">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       Star on GitHub
     </a>
   </div>
-
-  <div class="hero-install" id="quickstart">
-    <span>$</span> <code>npm install -g engineering-os</code>
-    <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g engineering-os')">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-    </button>
+  <div class="hero-install">
+    <span style="color:var(--text-muted)">$</span> <code>npm install -g engineering-os</code>
+    <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g engineering-os');this.innerHTML='&#x2713;';setTimeout(()=>this.innerHTML='&#x1F4CB;',1500)" title="Copy">&#x1F4CB;</button>
   </div>
 </section>
 
 <!-- Stats -->
-<div class="stats">
-  <div class="stat-item"><div class="stat-value">47</div><div class="stat-label">MCP Tools</div></div>
-  <div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Languages</div></div>
-  <div class="stat-item"><div class="stat-value">341</div><div class="stat-label">Tests</div></div>
-  <div class="stat-item"><div class="stat-value">0</div><div class="stat-label">API Keys</div></div>
+<div class="stats reveal">
+  <div class="stat-item"><div class="stat-value" data-count="47">0</div><div class="stat-label">MCP Tools</div></div>
+  <div class="stat-item"><div class="stat-value" data-count="8">0</div><div class="stat-label">Languages</div></div>
+  <div class="stat-item"><div class="stat-value" data-count="341">0</div><div class="stat-label">Tests Passing</div></div>
+  <div class="stat-item"><div class="stat-value" data-count="0">0</div><div class="stat-label">API Keys Needed</div></div>
 </div>
 
 <!-- Architecture -->
@@ -447,55 +470,102 @@ body::before {
   <div class="section-header reveal">
     <div class="section-tag">Architecture</div>
     <h2 class="section-title">One server. Every AI tool. Full context.</h2>
-    <p class="section-desc">EOS indexes once, serves everywhere. Your AI tools call it via MCP and get instant, structured answers.</p>
+    <p class="section-desc">EOS indexes your codebase once and serves structured knowledge to any AI tool via the Model Context Protocol.</p>
   </div>
-
-  <div class="arch-visual reveal">
-    <!-- Top tier: AI Tools -->
-    <div class="arch-tier">
+  <div class="arch-visual">
+    <div class="arch-tier reveal">
       <div class="arch-tier-label">AI Clients</div>
       <div class="arch-tier-nodes">
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--purple)"></div> Claude Code</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--green)"></div> Cursor</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--orange)"></div> Windsurf</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--text-muted)"></div> VS Code</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--text-muted)"></div> Any MCP Client</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--purple)"></div>Claude Code</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--green)"></div>Cursor</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--orange)"></div>Windsurf</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div>VS Code</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--text-muted)"></div>Any MCP Client</div>
       </div>
     </div>
-
-    <!-- Flow arrow -->
-    <div class="arch-flow">
-      <div class="arch-flow-line"></div>
-      <div class="arch-flow-tag">MCP Protocol (stdio)</div>
-    </div>
-
-    <!-- Middle tier: EOS Engine -->
-    <div class="arch-tier" style="border-color: var(--accent-glow); box-shadow: 0 0 60px var(--accent-glow);">
-      <div class="arch-tier-label">Engineering OS Engine</div>
-      <div class="arch-modules-grid">
-        <div class="arch-mod"><div class="arch-mod-icon">&#x1F50D;</div><div class="arch-mod-name">Code Search</div><div class="arch-mod-sub">FTS5 + BM25</div></div>
-        <div class="arch-mod"><div class="arch-mod-icon">&#x1F310;</div><div class="arch-mod-name">Service Graph</div><div class="arch-mod-sub">Cross-repo topology</div></div>
-        <div class="arch-mod"><div class="arch-mod-icon">&#x1F9E0;</div><div class="arch-mod-name">Skill Memory</div><div class="arch-mod-sub">Persists forever</div></div>
-        <div class="arch-mod"><div class="arch-mod-icon">&#x1F6E1;</div><div class="arch-mod-name">Security</div><div class="arch-mod-sub">OWASP + CVE</div></div>
-        <div class="arch-mod"><div class="arch-mod-icon">&#x1F4CB;</div><div class="arch-mod-name">Decisions</div><div class="arch-mod-sub">Never re-debates</div></div>
-        <div class="arch-mod"><div class="arch-mod-icon">&#x26A1;</div><div class="arch-mod-name">Workflows</div><div class="arch-mod-sub">DAG execution</div></div>
+    <div class="arch-flow"><div class="arch-flow-line"></div><div class="arch-flow-tag">MCP Protocol (stdio)</div></div>
+    <div class="arch-tier-eos reveal reveal-delay-1">
+      <div class="arch-tier-eos-inner">
+        <div class="arch-tier-label">Engineering OS Engine</div>
+        <div class="arch-modules-grid">
+          <div class="arch-mod"><div class="arch-mod-icon">&#x1F50D;</div><div class="arch-mod-name">Search</div><div class="arch-mod-sub">FTS5 + BM25</div></div>
+          <div class="arch-mod"><div class="arch-mod-icon">&#x1F310;</div><div class="arch-mod-name">Graph</div><div class="arch-mod-sub">Service topology</div></div>
+          <div class="arch-mod"><div class="arch-mod-icon">&#x1F9E0;</div><div class="arch-mod-name">Skills</div><div class="arch-mod-sub">Persists forever</div></div>
+          <div class="arch-mod"><div class="arch-mod-icon">&#x1F6E1;</div><div class="arch-mod-name">Security</div><div class="arch-mod-sub">OWASP + CVE</div></div>
+          <div class="arch-mod"><div class="arch-mod-icon">&#x1F4CB;</div><div class="arch-mod-name">Decisions</div><div class="arch-mod-sub">Never re-debates</div></div>
+          <div class="arch-mod"><div class="arch-mod-icon">&#x26A1;</div><div class="arch-mod-name">Workflows</div><div class="arch-mod-sub">DAG engine</div></div>
+        </div>
       </div>
     </div>
-
-    <!-- Flow arrow -->
-    <div class="arch-flow">
-      <div class="arch-flow-line"></div>
-      <div class="arch-flow-tag">SQLite (local, zero cloud)</div>
-    </div>
-
-    <!-- Bottom tier: Repos -->
-    <div class="arch-tier">
+    <div class="arch-flow"><div class="arch-flow-line"></div><div class="arch-flow-tag">SQLite (100% local)</div></div>
+    <div class="arch-tier reveal reveal-delay-2">
       <div class="arch-tier-label">Your Codebase</div>
       <div class="arch-tier-nodes">
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div> Primary Project</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div> Backend API</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div> ML Pipeline</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div> Infra Config</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div>Primary Project</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div>Backend API</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div>ML Pipeline</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div>Mobile App</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how-section" id="how">
+  <div class="section-header reveal">
+    <div class="section-tag">Quick Start</div>
+    <h2 class="section-title">Three steps. Permanent intelligence.</h2>
+  </div>
+  <div class="how-steps">
+    <div class="how-step reveal">
+      <div class="how-step-num">1</div>
+      <div>
+        <h3>Index your project</h3>
+        <p>EOS scans all source files, discovers architecture, builds a service graph, and stores everything in local SQLite.</p>
+        <div class="how-step-code">
+<span class="g">$ npm install -g engineering-os</span>
+<span class="g">$ eos init --claude --cursor</span>
+
+<span class="c">&#x2713; Repository indexed (847 files, 4201 chunks)</span>
+<span class="c">&#x2713; Architecture discovered (12 services, 3 patterns)</span>
+<span class="c">&#x2713; Graph built (156 calls, 4 contracts)</span>
+<span class="c">&#x2713; CLAUDE.md + .cursor/rules/ generated</span>
+        </div>
+      </div>
+    </div>
+    <div class="how-step reveal reveal-delay-1">
+      <div class="how-step-num">2</div>
+      <div>
+        <h3>AI connects automatically</h3>
+        <p>Open Claude Code or Cursor. The generated config tells your AI to call EOS tools. No manual wiring — it just works.</p>
+        <div class="how-step-code">
+<span class="m">// Your AI now calls these automatically:</span>
+<span class="g">eos_context</span>({ task: "add retry to uploads" })
+<span class="m">// Returns: routes, architecture, conventions, skills</span>
+
+<span class="g">eos_search</span>({ query: "file upload" })
+<span class="m">// Returns: ranked results in 2ms</span>
+
+<span class="g">eos_recall_skills</span>({ query: "uploads" })
+<span class="m">// Returns: "Chunks must be uploaded in order"</span>
+        </div>
+      </div>
+    </div>
+    <div class="how-step reveal reveal-delay-2">
+      <div class="how-step-num">3</div>
+      <div>
+        <h3>Knowledge compounds</h3>
+        <p>Every session, your AI learns more. Gotchas, patterns, and connections accumulate — making each session smarter than the last.</p>
+        <div class="how-step-code">
+<span class="m">// AI discovers something → persists it forever:</span>
+<span class="g">eos_learn</span>({
+  type: "gotcha",
+  content: "FlatList items must not be memoized...",
+  tags: ["react-native", "performance"]
+})
+
+<span class="m">// Next session, auto-recalled when relevant.</span>
+        </div>
       </div>
     </div>
   </div>
@@ -505,78 +575,60 @@ body::before {
 <section class="features-section" id="features">
   <div class="section-header reveal">
     <div class="section-tag">Capabilities</div>
-    <h2 class="section-title">Everything your AI needs to be effective</h2>
+    <h2 class="section-title">Everything your AI needs to ship effectively</h2>
   </div>
-
   <div class="features-grid reveal">
-    <div class="feature-item">
-      <div class="feature-icon" style="background:var(--accent-glow);color:var(--accent-bright)">&#x1F9E0;</div>
-      <h3>Persistent Context</h3>
-      <p>Architecture, routes, conventions, and decisions survive across sessions. Your AI never starts from zero again.</p>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon" style="background:var(--green-glow);color:var(--green)">&#x1F517;</div>
-      <h3>Cross-Repo Intelligence</h3>
-      <p>Federated search across all linked services. AI sees your full microservices topology instantly.</p>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon" style="background:rgba(245,158,11,0.1);color:var(--orange)">&#x1F4DA;</div>
-      <h3>Skill Retention</h3>
-      <p>AI learns gotchas, patterns, and hidden connections from every session. Knowledge compounds over time.</p>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon" style="background:rgba(239,68,68,0.1);color:var(--red)">&#x1F6E1;</div>
-      <h3>Security Scanning</h3>
-      <p>OWASP Top 10, CVE detection across 7 ecosystems, STRIDE threat modeling, SOC2/HIPAA compliance.</p>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan)">&#x1F50D;</div>
-      <h3>Instant Code Search</h3>
-      <p>Pre-indexed FTS5 with BM25 ranking and synonym expansion. Results in milliseconds, not seconds.</p>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon" style="background:rgba(167,139,250,0.1);color:var(--purple)">&#x1F3D7;</div>
-      <h3>Architecture Discovery</h3>
-      <p>Auto-detects services, layers, patterns, conventions. Supports Express, NestJS, Spring Boot, Ktor, and more.</p>
-    </div>
+    <div class="feature-item"><div class="feature-icon" style="background:var(--accent-glow);color:var(--accent-bright)">&#x1F9E0;</div><h3>Persistent Context</h3><p>Architecture, routes, conventions, and decisions survive across every session. Zero re-exploration.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:var(--green-glow);color:var(--green)">&#x1F517;</div><h3>Cross-Repo Intelligence</h3><p>Federated search across all linked services. AI sees your full microservices topology instantly.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:rgba(245,158,11,0.1);color:var(--orange)">&#x1F4DA;</div><h3>Skill Retention</h3><p>AI learns gotchas, patterns, and connections. Knowledge compounds session over session.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:rgba(239,68,68,0.1);color:var(--red)">&#x1F6E1;</div><h3>Security Scanning</h3><p>OWASP Top 10, CVE detection across 7 ecosystems, STRIDE threat modeling, compliance checks.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan)">&#x1F50D;</div><h3>Instant Search</h3><p>Pre-indexed FTS5 with BM25 ranking and synonym expansion. Milliseconds, not seconds.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:rgba(167,139,250,0.1);color:var(--purple)">&#x1F3D7;</div><h3>Auto-Discovery</h3><p>Detects services, layers, patterns. Supports Express, NestJS, Spring Boot, Ktor, and 8 languages.</p></div>
   </div>
 </section>
 
-<!-- Code Demo -->
-<section class="code-section">
+<!-- Use Cases -->
+<section class="usecases-section">
   <div class="section-header reveal">
-    <div class="section-tag">Quick Start</div>
-    <h2 class="section-title">Three commands. Full intelligence.</h2>
+    <div class="section-tag">Use Cases</div>
+    <h2 class="section-title">Built for teams that ship with AI</h2>
   </div>
-
-  <div class="code-demo reveal">
-    <div class="code-demo-header">
-      <div class="code-demo-dot" style="background:#ff5f57"></div>
-      <div class="code-demo-dot" style="background:#febc2e"></div>
-      <div class="code-demo-dot" style="background:#28c840"></div>
+  <div class="usecases-grid">
+    <div class="usecase-card reveal">
+      <div class="usecase-card-icon">&#x1F4F1;</div>
+      <h3>Multi-repo mobile team</h3>
+      <p>Link your React Native app, Spring Boot BFF, ML pipeline, and infra. AI sees the full picture across all repos.</p>
     </div>
-    <div class="code-demo-body">
-<span class="comment"># Install globally</span>
-<span class="cmd">$ npm install -g engineering-os</span>
-
-<span class="comment"># Initialize in your project</span>
-<span class="cmd">$ cd your-project && eos init --claude --cursor</span>
-
-<span class="output">&#x2713; Repository indexed (847 files, 4201 chunks)</span>
-<span class="output">&#x2713; Architecture discovered (12 services, 3 patterns)</span>
-<span class="output">&#x2713; Graph built (156 calls, 4 contracts)</span>
-<span class="output">&#x2713; CLAUDE.md generated</span>
-<span class="output">&#x2713; .cursor/rules/ generated (5 files)</span>
-<span class="output">&#x2728; Engineering OS initialized!</span>
-
-<span class="comment"># Link sibling services for full topology</span>
-<span class="cmd">$ eos link backend ../backend-api</span>
-<span class="cmd">$ eos link ml-pipeline ../ml-service</span>
-
-<span class="comment"># Done. Open Claude Code or Cursor — EOS is active.</span>
+    <div class="usecase-card reveal reveal-delay-1">
+      <div class="usecase-card-icon">&#x1F9D1;&#x200D;&#x1F4BB;</div>
+      <h3>Solo developer</h3>
+      <p>EOS learns your conventions session by session. After a week, your AI writes code exactly how you would.</p>
+    </div>
+    <div class="usecase-card reveal reveal-delay-2">
+      <div class="usecase-card-icon">&#x1F3E2;</div>
+      <h3>Enterprise team</h3>
+      <p>Security scanning, SOC2/HIPAA compliance, audit trails, team conventions — shared across all developers.</p>
     </div>
   </div>
 </section>
+
+<!-- Trust / Works With -->
+<div class="trust-section reveal">
+  <div class="trust-label">Works with</div>
+  <div class="trust-logos">
+    <div class="trust-logo">&#x1F4DC; Claude Code</div>
+    <div class="trust-logo">&#x25B6; Cursor</div>
+    <div class="trust-logo">&#x1F32A; Windsurf</div>
+    <div class="trust-logo">&#x1F4BB; VS Code</div>
+    <div class="trust-logo">&#x1F527; Any MCP Client</div>
+  </div>
+  <div class="trust-logos" style="margin-top: 16px;">
+    <div class="trust-logo">TypeScript</div>
+    <div class="trust-logo">SQLite</div>
+    <div class="trust-logo">MCP Protocol</div>
+    <div class="trust-logo">Apache 2.0</div>
+  </div>
+</div>
 
 <!-- Comparison -->
 <section class="compare-section">
@@ -584,17 +636,13 @@ body::before {
     <div class="section-tag">Why EOS</div>
     <h2 class="section-title">Before and after</h2>
   </div>
-
   <div class="compare-table reveal">
-    <div class="compare-row compare-row-header">
-      <div class="compare-cell"><span class="cross">&#x2715;</span> Without EOS</div>
-      <div class="compare-cell"><span class="check">&#x2713;</span> With EOS</div>
-    </div>
+    <div class="compare-row compare-row-header"><div class="compare-cell">&#x2715; Without EOS</div><div class="compare-cell">&#x2713; With EOS</div></div>
     <div class="compare-row"><div class="compare-cell">AI forgets between sessions</div><div class="compare-cell">Knowledge persists forever</div></div>
     <div class="compare-row"><div class="compare-cell">30s exploring files before working</div><div class="compare-cell">Full context in one tool call</div></div>
     <div class="compare-row"><div class="compare-cell">Re-debates settled decisions</div><div class="compare-cell">Decisions recalled instantly</div></div>
     <div class="compare-row"><div class="compare-cell">Sees one repo at a time</div><div class="compare-cell">Full service graph available</div></div>
-    <div class="compare-row"><div class="compare-cell">Same gotcha every session</div><div class="compare-cell">Skills accumulate over time</div></div>
+    <div class="compare-row"><div class="compare-cell">Same gotcha every session</div><div class="compare-cell">Skills compound over time</div></div>
     <div class="compare-row"><div class="compare-cell">No security awareness</div><div class="compare-cell">Continuous OWASP + CVE scanning</div></div>
   </div>
 </section>
@@ -602,7 +650,7 @@ body::before {
 <!-- CTA -->
 <section class="cta-section">
   <h2 class="reveal">Ready to give your AI a brain?</h2>
-  <p class="reveal">100% local. Zero API keys. Works offline. Apache 2.0.</p>
+  <p class="reveal">100% local. Zero API keys. Works offline. Open source.</p>
   <div class="hero-actions reveal">
     <a href="https://www.npmjs.com/package/engineering-os" class="btn btn-primary">Install from npm</a>
     <a href="./docs.html" class="btn btn-ghost">Read the Docs</a>
@@ -622,16 +670,88 @@ body::before {
 </footer>
 
 <script>
-// Scroll reveal
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+// ═══════ PARTICLE CANVAS ═══════
+(function() {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles, animId;
+  const isMobile = window.innerWidth < 768;
+  const COUNT = isMobile ? 30 : 70;
+  const CONNECT_DIST = isMobile ? 100 : 150;
 
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function init() {
+    resize();
+    particles = Array.from({length: COUNT}, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 1.5 + 0.5
+    }));
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(99,102,241,0.5)';
+      ctx.fill();
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const q = particles[j];
+        const dx = p.x - q.x, dy = p.y - q.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < CONNECT_DIST) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = `rgba(99,102,241,${0.15 * (1 - dist/CONNECT_DIST)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    animId = requestAnimationFrame(draw);
+  }
+
+  init(); draw();
+  window.addEventListener('resize', () => { resize(); });
+})();
+
+// ═══════ SCROLL REVEAL ═══════
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ═══════ STAT COUNT-UP ═══════
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = parseInt(el.dataset.count);
+    if (target === 0) { el.textContent = '0'; return; }
+    let current = 0;
+    const step = Math.max(1, Math.floor(target / 40));
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(interval); }
+      el.textContent = current;
+    }, 30);
+    statObserver.unobserve(el);
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-count]').forEach(el => statObserver.observe(el));
 </script>
 </body>
 </html>
