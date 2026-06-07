@@ -24,8 +24,8 @@
   --border: rgba(255,255,255,0.06);
   --border-hover: rgba(255,255,255,0.12);
   --text-primary: #fafafa;
-  --text-secondary: rgba(255,255,255,0.6);
-  --text-muted: rgba(255,255,255,0.4);
+  --text-secondary: rgba(255,255,255,0.72);
+  --text-muted: rgba(255,255,255,0.5);
   --accent: #6366f1;
   --accent-glow: rgba(99,102,241,0.15);
   --accent-bright: #818cf8;
@@ -58,11 +58,20 @@ body::after {
   opacity: 0.018;
 }
 
-/* ═══════════ CANVAS ═══════════ */
-#particles {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  opacity: 0.4;
+/* ═══════════ BRAIN SVG BG ═══════════ */
+.brain-bg {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 70vw; max-width: 800px; height: auto;
+  opacity: 0.12; pointer-events: none; z-index: 0;
 }
+.brain-bg .node { animation: node-pulse 4s ease-in-out infinite; }
+.brain-bg .node:nth-child(2n) { animation-delay: 1s; }
+.brain-bg .node:nth-child(3n) { animation-delay: 2.2s; }
+.brain-bg .trace { stroke-dasharray: 200; stroke-dashoffset: 200; animation: trace-flow 5s linear infinite; }
+.brain-bg .trace:nth-child(2n) { animation-delay: 1.5s; animation-duration: 6s; }
+.brain-bg .trace:nth-child(3n) { animation-delay: 3s; animation-duration: 7s; }
+@keyframes node-pulse { 0%,100%{opacity:.3;r:3} 50%{opacity:1;r:5} }
+@keyframes trace-flow { 0%{stroke-dashoffset:200} 100%{stroke-dashoffset:-200} }
 
 /* ═══════════ NAV ═══════════ */
 .nav {
@@ -102,7 +111,8 @@ body::after {
 .hero {
   position: relative; min-height: 100vh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 140px 24px 100px; text-align: center;
+  padding: 120px 24px 100px; text-align: center;
+  overflow: hidden;
 }
 .hero-glow {
   position: absolute; top: -300px; left: 50%; transform: translateX(-50%);
@@ -133,8 +143,8 @@ body::after {
   animation: fade-up .8s ease-out .1s both;
 }
 .hero-sub {
-  margin-top: 24px; font-size: clamp(16px, 2vw, 19px);
-  color: var(--text-secondary); max-width: 540px; line-height: 1.65; font-weight: 400;
+  margin-top: 24px; font-size: clamp(17px, 2vw, 20px);
+  color: var(--text-secondary); max-width: 560px; line-height: 1.7; font-weight: 400;
   position: relative; z-index: 1;
   animation: fade-up .8s ease-out .2s both;
 }
@@ -200,7 +210,7 @@ section { position: relative; z-index: 1; }
 }
 
 /* ═══════════ ARCHITECTURE ═══════════ */
-.arch-section { padding: 140px 24px; }
+.arch-section { padding: 120px 24px; }
 .arch-visual { max-width: 880px; margin: 0 auto; }
 .arch-tier {
   position: relative; padding: 28px; margin-bottom: 20px;
@@ -273,7 +283,7 @@ section { position: relative; z-index: 1; }
 .arch-mod-sub { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
 
 /* ═══════════ HOW IT WORKS ═══════════ */
-.how-section { padding: 140px 24px; }
+.how-section { padding: 120px 24px; }
 .how-steps {
   max-width: 800px; margin: 0 auto;
   display: grid; grid-template-columns: 1fr; gap: 0;
@@ -304,7 +314,7 @@ section { position: relative; z-index: 1; }
 .how-step-code .m { color: var(--text-muted); }
 
 /* ═══════════ FEATURES ═══════════ */
-.features-section { padding: 140px 24px; }
+.features-section { padding: 120px 24px; }
 .features-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1px; max-width: 1000px; margin: 0 auto;
@@ -365,7 +375,7 @@ section { position: relative; z-index: 1; }
 .compare-row-header .compare-cell { font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
 
 /* ═══════════ CTA ═══════════ */
-.cta-section { padding: 140px 24px; text-align: center; position: relative; }
+.cta-section { padding: 120px 24px; text-align: center; position: relative; }
 .cta-section::before {
   content: ''; position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
   width: 600px; height: 400px; border-radius: 50%;
@@ -419,8 +429,6 @@ section { position: relative; z-index: 1; }
 </head>
 <body>
 
-<!-- Particle Canvas -->
-<canvas id="particles"></canvas>
 
 <!-- Nav -->
 <nav class="nav">
@@ -442,6 +450,45 @@ section { position: relative; z-index: 1; }
 <!-- Hero -->
 <section class="hero">
   <div class="hero-glow"></div>
+  <!-- Brain-Circuit SVG Background -->
+  <svg class="brain-bg" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Left: organic brain curves -->
+    <path class="trace" d="M200 300 C180 250, 220 200, 260 220 C300 240, 280 280, 300 300 C320 320, 340 280, 360 300" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M180 320 C160 360, 200 380, 240 360 C280 340, 260 380, 300 400 C340 420, 320 380, 360 360" stroke="#818cf8" stroke-width="1" fill="none"/>
+    <path class="trace" d="M220 260 C240 220, 280 240, 300 200 C320 160, 350 180, 380 200" stroke="#a78bfa" stroke-width="1" fill="none"/>
+    <path class="trace" d="M160 280 C140 300, 160 340, 200 360 C240 380, 220 340, 250 320" stroke="#6366f1" stroke-width="1.2" fill="none"/>
+    <path class="trace" d="M240 380 C260 400, 300 420, 340 400 C380 380, 360 340, 380 320" stroke="#06b6d4" stroke-width="1" fill="none"/>
+    <!-- Right: circuit board traces -->
+    <path class="trace" d="M420 200 L480 200 L480 260 L540 260 L540 300 L600 300" stroke="#06b6d4" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M420 300 L460 300 L460 340 L520 340 L520 380 L580 380" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M440 240 L500 240 L500 200 L560 200 L560 240 L620 240" stroke="#818cf8" stroke-width="1" fill="none"/>
+    <path class="trace" d="M420 360 L480 360 L480 400 L540 400 L540 440 L600 440" stroke="#a78bfa" stroke-width="1" fill="none"/>
+    <path class="trace" d="M460 280 L520 280 L520 320 L580 320 L580 280 L640 280" stroke="#22c55e" stroke-width="1" fill="none"/>
+    <path class="trace" d="M500 360 L560 360 L560 320 L620 320" stroke="#06b6d4" stroke-width="1" fill="none"/>
+    <!-- Center merge zone -->
+    <path class="trace" d="M360 300 C380 300, 400 290, 420 300" stroke="#6366f1" stroke-width="2" fill="none"/>
+    <path class="trace" d="M380 320 C395 325, 405 310, 420 320" stroke="#818cf8" stroke-width="1.5" fill="none"/>
+    <!-- Nodes: brain side -->
+    <circle class="node" cx="200" cy="300" r="4" fill="#6366f1"/>
+    <circle class="node" cx="260" cy="220" r="3" fill="#818cf8"/>
+    <circle class="node" cx="300" cy="300" r="4" fill="#a78bfa"/>
+    <circle class="node" cx="240" cy="360" r="3" fill="#6366f1"/>
+    <circle class="node" cx="340" cy="400" r="3" fill="#06b6d4"/>
+    <circle class="node" cx="180" cy="320" r="3" fill="#818cf8"/>
+    <circle class="node" cx="380" cy="200" r="3" fill="#a78bfa"/>
+    <!-- Nodes: circuit side -->
+    <circle class="node" cx="480" cy="200" r="3" fill="#06b6d4"/>
+    <circle class="node" cx="540" cy="260" r="4" fill="#6366f1"/>
+    <circle class="node" cx="600" cy="300" r="4" fill="#06b6d4"/>
+    <circle class="node" cx="520" cy="340" r="3" fill="#6366f1"/>
+    <circle class="node" cx="580" cy="380" r="3" fill="#818cf8"/>
+    <circle class="node" cx="540" cy="400" r="3" fill="#a78bfa"/>
+    <circle class="node" cx="620" cy="240" r="3" fill="#22c55e"/>
+    <circle class="node" cx="640" cy="280" r="3" fill="#06b6d4"/>
+    <!-- Center merge nodes -->
+    <circle class="node" cx="400" cy="300" r="5" fill="#6366f1"/>
+    <circle class="node" cx="420" cy="300" r="4" fill="#06b6d4"/>
+  </svg>
   <div class="hero-badge"><span class="hero-badge-dot"></span> v0.1.2 — Now on npm</div>
   <h1>The engineering brain for your AI tools</h1>
   <p class="hero-sub">Give Claude Code, Cursor, and Windsurf persistent knowledge about your codebase. Architecture, conventions, decisions — surviving between every session.</p>
@@ -658,64 +705,6 @@ section { position: relative; z-index: 1; }
 </footer>
 
 <script>
-// ═══════ PARTICLE CANVAS ═══════
-(function() {
-  const canvas = document.getElementById('particles');
-  const ctx = canvas.getContext('2d');
-  let w, h, particles, animId;
-  const isMobile = window.innerWidth < 768;
-  const COUNT = isMobile ? 30 : 70;
-  const CONNECT_DIST = isMobile ? 100 : 150;
-
-  function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  }
-
-  function init() {
-    resize();
-    particles = Array.from({length: COUNT}, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 1.5 + 0.5
-    }));
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > w) p.vx *= -1;
-      if (p.y < 0 || p.y > h) p.vy *= -1;
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(99,102,241,0.5)';
-      ctx.fill();
-
-      for (let j = i + 1; j < particles.length; j++) {
-        const q = particles[j];
-        const dx = p.x - q.x, dy = p.y - q.y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < CONNECT_DIST) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
-          ctx.strokeStyle = `rgba(99,102,241,${0.15 * (1 - dist/CONNECT_DIST)})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
-      }
-    }
-    animId = requestAnimationFrame(draw);
-  }
-
-  init(); draw();
-  window.addEventListener('resize', () => { resize(); });
-})();
-
 // ═══════ SCROLL REVEAL ═══════
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
