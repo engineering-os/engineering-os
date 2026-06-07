@@ -6,7 +6,7 @@
 <title>Engineering OS — Developer Documentation</title>
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 
 :root {
@@ -37,8 +37,8 @@
   --code-text: #e6edf3;
   --radius: 10px;
   --radius-lg: 14px;
-  --font-sans: 'Inter', -apple-system, sans-serif;
-  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-sans: 'Outfit', -apple-system, sans-serif;
+  --font-body: 'DM Sans', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --sidebar-width: 260px;
   --header-height: 56px;
@@ -48,15 +48,19 @@
 
 body {
   font-family: var(--font-body);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.75;
   color: var(--text-primary);
   background: var(--surface-0);
   -webkit-font-smoothing: antialiased;
-  transition: background .3s, color .3s;
+}
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.015;
 }
 
-/* Header */
+/* Header — matches landing page nav */
 .header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   height: var(--header-height);
@@ -67,30 +71,40 @@ body {
 }
 .header-logo {
   font-family: var(--font-sans);
-  font-size: 18px; font-weight: 500;
+  font-size: 15px; font-weight: 700;
   color: var(--text-primary);
   display: flex; align-items: center; gap: 10px;
+  text-decoration: none; letter-spacing: -0.3px;
 }
 .header-logo .icon {
-  width: 28px; height: 28px; border-radius: 6px;
+  width: 28px; height: 28px; border-radius: 8px;
   background: linear-gradient(135deg, var(--accent), var(--purple));
   display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 14px; font-weight: 700;
+  color: white; font-size: 12px; font-weight: 800;
+  box-shadow: 0 0 20px rgba(99,102,241,0.15);
 }
 .header-badge {
   font-size: 11px; font-weight: 500; padding: 2px 8px;
   background: var(--accent-surface); color: var(--accent-text);
   border-radius: 12px; margin-left: 8px;
 }
-.header-nav { margin-left: auto; display: flex; gap: 8px; }
+.header-nav { margin-left: auto; display: flex; gap: 4px; align-items: center; }
 .header-nav a {
   font-family: var(--font-sans); font-size: 13px; font-weight: 500;
-  padding: 8px 16px; border-radius: 20px;
+  padding: 8px 14px; border-radius: 8px;
   color: var(--text-secondary); text-decoration: none;
-  transition: background .15s, color .15s;
+  transition: background .2s, color .2s;
 }
-.header-nav a:hover { background: var(--surface-2); color: var(--text-primary); }
-.header-nav a.active { background: var(--accent-surface); color: var(--accent-text); }
+.header-nav a:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
+.header-nav a.active { color: var(--text-primary); }
+.header-nav .nav-cta {
+  margin-left: 8px; padding: 8px 18px;
+  background: var(--accent); color: white; border-radius: 8px;
+  font-weight: 600; font-size: 13px;
+  box-shadow: 0 0 24px rgba(99,102,241,0.15);
+  transition: transform .2s, box-shadow .2s;
+}
+.header-nav .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 0 40px rgba(99,102,241,0.3); }
 
 /* Sidebar */
 .sidebar {
@@ -438,20 +452,17 @@ li { margin: 6px 0; }
 <!-- Header -->
 <header class="header">
   <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle navigation">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></svg>
   </button>
-  <div class="header-logo">
+  <a href="./index.html" class="header-logo">
     <span class="icon">E</span>
     Engineering OS
-    <span class="header-badge">v0.1.2</span>
-  </div>
+  </a>
   <nav class="header-nav">
     <a href="./index.html">Home</a>
-    <a href="#overview" class="active">Docs</a>
-    <a href="#cli">CLI</a>
-    <a href="#tools-knowledge">API</a>
+    <a href="./docs.html" class="active">Docs</a>
     <a href="https://github.com/engineering-os/engineering-os">GitHub</a>
-    <a href="https://www.npmjs.com/package/engineering-os" style="margin-left:8px;padding:6px 14px;background:var(--accent);color:white;border-radius:8px;font-size:12px;font-weight:600;">Install</a>
+    <a href="https://www.npmjs.com/package/engineering-os" class="nav-cta">Install</a>
   </nav>
 </header>
 
