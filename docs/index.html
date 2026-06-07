@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Engineering OS — The Engineering Brain for AI Tools</title>
-<meta name="description" content="A local MCP server that gives AI coding tools persistent knowledge about your codebase. 47 tools, 8 languages, zero API keys.">
-<meta property="og:title" content="Engineering OS">
-<meta property="og:description" content="The engineering brain for your AI tools. Persistent context, cross-repo intelligence, skill retention.">
+<meta name="description" content="Engineering OS — give your AI coding tools persistent memory. Install engineering-os from npm and your AI remembers your architecture, conventions, and decisions across every session. Open source, 100% local.">
+<meta property="og:title" content="Engineering OS — Your AI Finally Remembers Your Codebase">
+<meta property="og:description" content="Stop re-explaining your project every session. Engineering OS gives Claude Code, Cursor, and Windsurf persistent knowledge about your codebase. npm install -g engineering-os">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://engineering-os.github.io/engineering-os/">
 <meta name="twitter:card" content="summary_large_image">
@@ -473,9 +473,9 @@ section { position: relative; z-index: 1; }
 <!-- Hero -->
 <section class="hero">
   <div class="hero-glow"></div>
-  <div class="hero-badge"><span class="hero-badge-dot"></span> v0.1.2 — Now on npm</div>
+  <div class="hero-badge"><span class="hero-badge-dot"></span> v0.1.2 &mdash; now on npm as <code style="font-size:11px;background:none;padding:0;color:var(--green)">engineering-os</code></div>
   <h1>Your AI finally remembers your codebase</h1>
-  <p class="hero-sub">Stop re-explaining your architecture every session. EOS gives your AI tools the memory they've been missing — so they write code like someone who actually knows your project.</p>
+  <p class="hero-sub">Stop re-explaining your architecture every session. <strong>Engineering OS</strong> gives your AI tools the memory they've been missing&mdash;so they write code like someone who actually knows your project.</p>
   <div class="hero-actions">
     <a href="#how" class="btn btn-primary">Get Started</a>
     <a href="https://github.com/engineering-os/engineering-os" class="btn btn-ghost">
@@ -495,7 +495,7 @@ section { position: relative; z-index: 1; }
   <div class="section-header reveal">
     <div class="section-tag">How it fits together</div>
     <h2 class="section-title">One local server. All your AI tools. Always in sync.</h2>
-    <p class="section-desc">You run EOS once — it learns your codebase and serves that knowledge to whichever AI tool you're using. No cloud, no accounts, just instant answers.</p>
+    <p class="section-desc">Run <code>engineering-os</code> once&mdash;it learns your codebase and serves that knowledge to whichever AI tool you're using. No cloud, no accounts, just instant answers.</p>
   </div>
   <div class="arch-visual">
     <div class="arch-tier reveal">
@@ -545,7 +545,7 @@ section { position: relative; z-index: 1; }
     <div class="how-step reveal">
       <div class="how-step-num">1</div>
       <div>
-        <h3>Point it at your project</h3>
+        <h3>Point Engineering OS at your project</h3>
         <p>One command. It reads your code, figures out how things connect, and builds a local knowledge base. Takes about 10 seconds for most repos.</p>
         <div class="how-step-code"><span class="g">$ npm install -g engineering-os</span>
 <span class="g">$ eos init --claude --cursor</span>
@@ -560,7 +560,7 @@ section { position: relative; z-index: 1; }
       <div class="how-step-num">2</div>
       <div>
         <h3>Your AI just knows things now</h3>
-        <p>Open your editor. Your AI already has access — it'll pull context, recall past decisions, and find code instantly. You didn't configure anything.</p>
+        <p>Open your editor. Your AI already has access&mdash;it'll pull context, recall past decisions, and find code instantly. You didn't configure anything.</p>
         <div class="how-step-code"><span class="m">// Your AI now calls these automatically:</span>
 <span class="g">eos_context</span>({ task: "add retry to uploads" })
 <span class="m">// Returns: routes, architecture, conventions, skills</span>
@@ -621,12 +621,12 @@ section { position: relative; z-index: 1; }
     <div class="usecase-card reveal reveal-delay-1">
       <div class="usecase-card-icon">&#x1F9D1;&#x200D;&#x1F4BB;</div>
       <h3>Solo devs who move fast</h3>
-      <p>After a few sessions, your AI knows your naming conventions, your file structure, your quirks. It codes like a teammate who's been on the project for months.</p>
+      <p>After a few sessions, Engineering OS knows your naming conventions, your file structure, your quirks. Your AI codes like a teammate who's been on the project for months.</p>
     </div>
     <div class="usecase-card reveal reveal-delay-2">
       <div class="usecase-card-icon">&#x1F3E2;</div>
       <h3>Enterprise teams who need guardrails</h3>
-      <p>Security scanning, compliance checks, audit trails, shared conventions — baked in. Every developer on your team gets the same standards enforced automatically.</p>
+      <p>Security scanning, compliance checks, audit trails, shared conventions&mdash;baked in. Every developer on your team gets the same standards enforced by Engineering OS automatically.</p>
     </div>
   </div>
 </section>
@@ -668,8 +668,8 @@ section { position: relative; z-index: 1; }
 
 <!-- CTA -->
 <section class="cta-section">
-  <h2 class="reveal">Try it on your project. Takes 30 seconds.</h2>
-  <p class="reveal">Runs entirely on your machine. Nothing leaves your laptop. No accounts, no keys, no nonsense.</p>
+  <h2 class="reveal">Try Engineering OS on your project. Takes 30 seconds.</h2>
+  <p class="reveal">Runs entirely on your machine. Nothing leaves your laptop. <code>npm install -g engineering-os</code> and you're in.</p>
   <div class="hero-actions reveal">
     <a href="https://www.npmjs.com/package/engineering-os" class="btn btn-primary">Install from npm</a>
     <a href="./docs.html" class="btn btn-ghost">Read the Docs</a>
@@ -685,7 +685,7 @@ section { position: relative; z-index: 1; }
     <a href="https://github.com/engineering-os/engineering-os/blob/main/CONTRIBUTING.md">Contributing</a>
     <a href="https://github.com/engineering-os/engineering-os/blob/main/SECURITY.md">Security</a>
   </div>
-  <p>Engineering OS &middot; Apache 2.0 &middot; Open Source</p>
+  <p><strong>engineering-os</strong> on <a href="https://www.npmjs.com/package/engineering-os">npm</a> &middot; <a href="https://github.com/engineering-os/engineering-os">GitHub</a> &middot; Apache 2.0</p>
 </footer>
 
 <script>
