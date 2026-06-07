@@ -291,6 +291,109 @@ li { margin: 6px 0; }
 .stat-value { font-family: var(--font-sans); font-size: 28px; font-weight: 700; color: var(--accent); }
 .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-tertiary); margin-top: 2px; }
 
+/* Architecture Diagram */
+.arch-diagram {
+  margin: 36px 0; padding: 40px 32px;
+  background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.arch-diagram::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, var(--accent-surface) 0%, transparent 60%);
+  opacity: 0.5; pointer-events: none;
+}
+
+.arch-layer { position: relative; z-index: 1; }
+.arch-layer-label {
+  font-family: var(--font-sans); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--text-tertiary); margin-bottom: 12px; text-align: center;
+}
+.arch-local-badge {
+  display: inline-block; background: var(--green-surface); color: var(--green);
+  padding: 2px 8px; border-radius: 10px; font-size: 9px; letter-spacing: 0.5px;
+  margin-left: 8px; vertical-align: middle; text-transform: uppercase;
+}
+
+.arch-nodes {
+  display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+}
+.arch-node {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 14px 18px; border-radius: 12px;
+  background: var(--surface-1); border: 1px solid var(--border);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+  color: var(--text-primary); transition: transform .2s, box-shadow .2s;
+  min-width: 90px;
+}
+.arch-node:hover { transform: translateY(-2px); box-shadow: var(--shadow-1); }
+.arch-node small { font-size: 10px; color: var(--text-tertiary); font-weight: 400; }
+.arch-node-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.arch-node-purple .arch-node-icon { background: var(--purple-surface); color: var(--purple); }
+.arch-node-green .arch-node-icon { background: var(--green-surface); color: var(--green); }
+.arch-node-orange .arch-node-icon { background: var(--orange-surface); color: var(--orange); }
+.arch-node-dim .arch-node-icon { background: var(--surface-2); color: var(--text-tertiary); }
+.arch-node-solid .arch-node-icon { background: var(--accent-surface); color: var(--accent); }
+
+.arch-connector {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; padding: 16px 0; position: relative;
+}
+.arch-connector-line {
+  position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(to bottom, var(--border), var(--accent), var(--border));
+  opacity: 0.5;
+}
+.arch-connector-label {
+  position: relative; z-index: 1;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  color: var(--accent); background: var(--accent-surface);
+  padding: 4px 12px; border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+.arch-connector-pulse {
+  position: absolute; left: calc(50% - 4px); top: 50%; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--accent);
+  animation: pulse-down 2s ease-in-out infinite;
+}
+@keyframes pulse-down {
+  0%, 100% { opacity: 0; transform: translateY(-20px); }
+  50% { opacity: 1; transform: translateY(20px); }
+}
+
+.arch-modules {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px; max-width: 680px; margin: 0 auto;
+}
+.arch-module {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 16px 10px; border-radius: 10px;
+  background: var(--surface-1); border: 1px solid var(--border-light);
+  transition: transform .2s, border-color .2s;
+  text-align: center;
+}
+.arch-module:hover { transform: scale(1.03); border-color: var(--module-color); }
+.arch-module-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--module-color) 12%, transparent); color: var(--module-color); }
+.arch-module-name { font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.arch-module-detail { font-size: 10px; color: var(--text-tertiary); }
+
+@media (max-width: 960px) {
+  .arch-diagram { padding: 24px 16px; }
+  .arch-nodes { gap: 8px; }
+  .arch-node { padding: 10px 12px; min-width: 72px; font-size: 11px; }
+  .arch-node-icon { width: 30px; height: 30px; }
+  .arch-modules { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .arch-module { padding: 12px 8px; }
+}
+@media (max-width: 480px) {
+  .arch-modules { grid-template-columns: repeat(2, 1fr); }
+  .arch-nodes { gap: 6px; }
+  .arch-node { padding: 8px 10px; min-width: 64px; font-size: 10px; }
+}
+
 /* Mobile menu toggle */
 .mobile-menu-btn {
   display: none;
@@ -457,40 +560,115 @@ li { margin: 6px 0; }
 
 <p style="color: var(--text-secondary); max-width: 640px;">Your AI assistant forgets everything between sessions. It re-explores files, re-debates settled decisions, and misses cross-repo context. EOS fixes this by indexing your codebase once and serving structured knowledge on demand via the <a href="https://modelcontextprotocol.io">Model Context Protocol</a>.</p>
 
-<!-- Architecture Vision Diagram -->
-<div style="margin: 32px 0; padding: 32px; background: var(--surface-1); border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow-x: auto;">
-<pre style="background: none; border: none; padding: 0; margin: 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; color: var(--text-secondary);">
-<span style="color: var(--text-tertiary)">┌─────────────────────────────────────────────────────────────────────────┐</span>
-<span style="color: var(--text-tertiary)">│</span>  <span style="color: var(--accent); font-weight: 600">YOUR AI TOOLS</span>                                                         <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>                                                                         <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   <span style="color: var(--purple)">Claude Code</span>        <span style="color: var(--green)">Cursor</span>        <span style="color: var(--orange)">Windsurf</span>        <span style="color: var(--text-tertiary)">Any MCP Client</span>  <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>       │                 │               │                  │          <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">└───────┼─────────────────┼───────────────┼──────────────────┼──────────┘</span>
-        │                 │               │                  │
-        └────────────┬────┴───────────────┴──────┬───────────┘
-                     │  <span style="color: var(--accent)">MCP Protocol (stdio)</span>       │
-                     ▼                            ▼
-<span style="color: var(--text-tertiary)">┌─────────────────────────────────────────────────────────────────────────┐</span>
-<span style="color: var(--text-tertiary)">│</span>  <span style="color: var(--accent); font-weight: 600">ENGINEERING OS</span>  <span style="color: var(--text-tertiary)">(local server, zero cloud)</span>                            <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>                                                                         <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   ┌──────────┐  ┌───────────┐  ┌──────────┐  ┌───────────────────┐    <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   │<span style="color: var(--green)">Code Index</span>│  │<span style="color: var(--purple)">Service   </span>│  │<span style="color: var(--orange)">Skills   </span>│  │<span style="color: var(--red)">Security Scanner</span>  │    <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   │ FTS5+BM25│  │ Graph     │  │ Store    │  │ OWASP + CVE       │    <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   └──────────┘  └───────────┘  └──────────┘  └───────────────────┘    <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   ┌──────────┐  ┌───────────┐  ┌──────────┐  ┌───────────────────┐    <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   │<span style="color: var(--green)">Decisions </span>│  │<span style="color: var(--purple)">Conventions│  │</span><span style="color: var(--orange)">Workflow </span>│  │<span style="color: var(--red)">Compliance       </span> │    <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   │ YAML     │  │ Enforced  │  │ DAG      │  │ SOC2/HIPAA/PCI    │    <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>   └──────────┘  └───────────┘  └──────────┘  └───────────────────┘    <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>                                                                         <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">└─────────────────────────────────────────────────────────────────────────┘</span>
-                     │                            │
-                     ▼                            ▼
-<span style="color: var(--text-tertiary)">┌──────────────────────────┐    ┌────────────────────────────────────────┐</span>
-<span style="color: var(--text-tertiary)">│</span>  <span style="color: var(--text-primary); font-weight: 500">Your Project</span>             <span style="color: var(--text-tertiary)">│    │</span>  <span style="color: var(--text-primary); font-weight: 500">Linked Repos</span> <span style="color: var(--text-tertiary)">(federated)</span>          <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>  .eos/ (SQLite index)      <span style="color: var(--text-tertiary)">│    │</span>  Backend API  ·  ML Pipeline           <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">│</span>  eos.workspace.yaml        <span style="color: var(--text-tertiary)">│    │</span>  Mobile App   ·  Infra Config          <span style="color: var(--text-tertiary)">│</span>
-<span style="color: var(--text-tertiary)">└──────────────────────────┘    └────────────────────────────────────────┘</span>
-</pre>
+<!-- Architecture Vision Diagram — CSS Visual -->
+<div class="arch-diagram">
+  <div class="arch-layer arch-layer-top">
+    <div class="arch-layer-label">Your AI Tools</div>
+    <div class="arch-nodes">
+      <div class="arch-node arch-node-purple">
+        <div class="arch-node-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <span>Claude Code</span>
+      </div>
+      <div class="arch-node arch-node-green">
+        <div class="arch-node-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <span>Cursor</span>
+      </div>
+      <div class="arch-node arch-node-orange">
+        <div class="arch-node-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span>Windsurf</span>
+      </div>
+      <div class="arch-node arch-node-dim">
+        <div class="arch-node-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </div>
+        <span>Any MCP</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="arch-connector">
+    <div class="arch-connector-line"></div>
+    <div class="arch-connector-label">MCP Protocol</div>
+    <div class="arch-connector-pulse"></div>
+  </div>
+
+  <div class="arch-layer arch-layer-mid">
+    <div class="arch-layer-label">Engineering OS <span class="arch-local-badge">100% Local</span></div>
+    <div class="arch-modules">
+      <div class="arch-module" style="--module-color: var(--green)">
+        <div class="arch-module-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="arch-module-name">Code Index</div>
+        <div class="arch-module-detail">FTS5 + BM25</div>
+      </div>
+      <div class="arch-module" style="--module-color: var(--purple)">
+        <div class="arch-module-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="12" r="3"/><line x1="8.6" y1="7.4" x2="15.4" y2="10.6"/><line x1="8.6" y1="16.6" x2="15.4" y2="13.4"/></svg>
+        </div>
+        <div class="arch-module-name">Service Graph</div>
+        <div class="arch-module-detail">Cross-repo</div>
+      </div>
+      <div class="arch-module" style="--module-color: var(--orange)">
+        <div class="arch-module-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <div class="arch-module-name">Skills</div>
+        <div class="arch-module-detail">Learns over time</div>
+      </div>
+      <div class="arch-module" style="--module-color: var(--red)">
+        <div class="arch-module-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="arch-module-name">Security</div>
+        <div class="arch-module-detail">OWASP + CVE</div>
+      </div>
+      <div class="arch-module" style="--module-color: var(--accent)">
+        <div class="arch-module-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        </div>
+        <div class="arch-module-name">Decisions</div>
+        <div class="arch-module-detail">Never re-debates</div>
+      </div>
+      <div class="arch-module" style="--module-color: var(--green)">
+        <div class="arch-module-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,3 21,3 21,8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21,16 21,21 16,21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        </div>
+        <div class="arch-module-name">Workflow</div>
+        <div class="arch-module-detail">DAG engine</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arch-connector">
+    <div class="arch-connector-line"></div>
+    <div class="arch-connector-label">SQLite (local)</div>
+  </div>
+
+  <div class="arch-layer arch-layer-bottom">
+    <div class="arch-nodes">
+      <div class="arch-node arch-node-solid">
+        <div class="arch-node-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <span>Your Project</span>
+        <small>.eos/ index</small>
+      </div>
+      <div class="arch-node arch-node-solid">
+        <div class="arch-node-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        </div>
+        <span>Linked Repos</span>
+        <small>Federated search</small>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="stats-bar">
