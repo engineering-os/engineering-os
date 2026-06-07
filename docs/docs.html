@@ -416,32 +416,56 @@ li { margin: 8px 0; line-height: 1.7; }
   }
 
   .main { margin-left: 0; }
-  .content { padding: 40px 24px 80px; }
+  .content { padding: 40px 20px 80px; }
 
-  .feature-grid { grid-template-columns: 1fr 1fr; }
-  .arch-modules { grid-template-columns: repeat(2, 1fr); }
+  .arch-diagram { padding: 24px 16px; margin: 24px 0; }
+  .arch-nodes { gap: 8px; }
+  .arch-node { padding: 10px 12px; min-width: 72px; font-size: 11px; }
+  .arch-node-icon { width: 28px; height: 28px; }
+  .arch-modules { grid-template-columns: repeat(2, 1fr); gap: 8px; max-width: none; }
+  .arch-module { padding: 12px 8px; }
+  .arch-connector { padding: 10px 0; }
 
-  h1 { font-size: 28px; }
-  h2 { font-size: 22px; margin: 48px 0 16px; }
-  h3 { font-size: 17px; }
+  .feature-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .feature-card { padding: 18px; }
+  .feature-card h4 { font-size: 13px; }
+  .feature-card p { font-size: 12px; }
 
-  pre { font-size: 13px; padding: 18px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  h1 { font-size: 26px; }
+  h2 { font-size: 21px; margin: 40px 0 14px; }
+  h3 { font-size: 16px; }
+
+  pre { font-size: 12px; padding: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  code { font-size: 12px; }
 
   table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
 
-  .tool-card-header { flex-wrap: wrap; gap: 8px; }
-  .tool-card-body { padding: 18px 20px; }
-  .cmd-sig { font-size: 13px; padding: 10px 16px; overflow-x: auto; }
+  .tool-card-header { flex-wrap: wrap; gap: 8px; padding: 14px 18px; }
+  .tool-card-body { padding: 16px 18px; }
+  .tool-card-desc { font-size: 14px; }
+  .cmd-sig { font-size: 12px; padding: 10px 14px; overflow-x: auto; }
+  .callout { padding: 14px 16px; font-size: 13px; }
+
+  .stats-bar { flex-wrap: wrap; gap: 16px; justify-content: center; }
 }
 
 @media (max-width: 480px) {
-  .header { padding: 0 14px; }
-  .header-logo { font-size: 14px; }
-  .content { padding: 32px 18px 60px; }
+  .header { padding: 0 12px; }
+  .header-logo { font-size: 13px; }
+  .content { padding: 28px 14px 60px; }
+
+  h1 { font-size: 22px; }
+
+  .arch-diagram { padding: 18px 12px; }
+  .arch-nodes { gap: 6px; }
+  .arch-node { padding: 8px 10px; min-width: 60px; font-size: 10px; }
+  .arch-modules { grid-template-columns: 1fr 1fr; gap: 6px; }
+
   .feature-grid { grid-template-columns: 1fr; }
-  .feature-card { padding: 18px; }
-  .tool-card-body { padding: 16px 18px; }
-  .callout { padding: 14px 16px; font-size: 13px; }
+  .feature-card { padding: 16px; }
+
+  .tool-card-body { padding: 14px 14px; }
+  .tool-card-name { font-size: 13px; }
 }
 </style>
 </head>
@@ -536,9 +560,9 @@ li { margin: 8px 0; line-height: 1.7; }
 <!-- Overview -->
 <section id="overview">
 <h1>Engineering OS</h1>
-<p style="font-size:18px; color: var(--text-primary); max-width: 680px; line-height: 1.7;">Give your AI coding tools a proper memory. <strong>Engineering OS</strong> sits on your machine, learns how your project works, and feeds that knowledge to Claude Code, Cursor, or whatever you're using. They stop asking the same questions every session.</p>
+<p style="font-size:18px; color: var(--text-primary); line-height: 1.7;">Give your AI coding tools a proper memory. <strong>Engineering OS</strong> sits on your machine, learns how your project works, and feeds that knowledge to Claude Code, Cursor, or whatever you're using. They stop asking the same questions every session.</p>
 
-<p style="color: var(--text-secondary); max-width: 640px;">You know the drill: every new session, your AI re-explores files, re-debates decisions you already made, and has no idea your frontend talks to three backend services. <code>engineering-os</code> fixes that. One <code>eos init</code> and your AI knows everything. Permanently.</p>
+<p>You know the drill: every new session, your AI re-explores files, re-debates decisions you already made, and has no idea your frontend talks to three backend services. <code>engineering-os</code> fixes that. One <code>eos init</code> and your AI knows everything. Permanently.</p>
 
 <!-- Architecture Vision Diagram — CSS Visual -->
 <div class="arch-diagram">
