@@ -66,16 +66,18 @@ body::after {
   opacity: 0.3; pointer-events: none; z-index: 0;
   filter: drop-shadow(0 0 12px rgba(99,102,241,0.4)) drop-shadow(0 0 40px rgba(99,102,241,0.15));
 }
-.brain-bg .node { animation: node-pulse 3s ease-in-out infinite; }
-.brain-bg .node:nth-child(2n) { animation-delay: 0.8s; }
-.brain-bg .node:nth-child(3n) { animation-delay: 1.6s; }
-.brain-bg .node:nth-child(5n) { animation-delay: 2.4s; }
-.brain-bg .trace { stroke-dasharray: 150; stroke-dashoffset: 150; animation: trace-flow 4s linear infinite; }
-.brain-bg .trace:nth-child(2n) { animation-delay: 1s; animation-duration: 5s; }
-.brain-bg .trace:nth-child(3n) { animation-delay: 2s; animation-duration: 6s; }
-.brain-bg .trace:nth-child(5n) { animation-delay: 0.5s; animation-duration: 3.5s; }
-@keyframes node-pulse { 0%,100%{opacity:.4; transform: scale(1)} 50%{opacity:1; transform: scale(1.8)} }
-@keyframes trace-flow { 0%{stroke-dashoffset:150} 100%{stroke-dashoffset:-150} }
+.brain-bg .node { animation: node-pulse 6s ease-in-out infinite; }
+.brain-bg .node:nth-child(2n) { animation-delay: 1.5s; }
+.brain-bg .node:nth-child(3n) { animation-delay: 3s; }
+.brain-bg .node:nth-child(5n) { animation-delay: 4.5s; }
+.brain-bg .node:nth-child(7n) { animation-delay: 2s; }
+.brain-bg .trace { stroke-dasharray: 300; stroke-dashoffset: 300; animation: synapse-fire 8s ease-in-out infinite; }
+.brain-bg .trace:nth-child(2n) { animation-delay: 2s; animation-duration: 10s; }
+.brain-bg .trace:nth-child(3n) { animation-delay: 4s; animation-duration: 12s; }
+.brain-bg .trace:nth-child(5n) { animation-delay: 1s; animation-duration: 9s; }
+.brain-bg .trace:nth-child(7n) { animation-delay: 5s; animation-duration: 11s; }
+@keyframes node-pulse { 0%,100%{opacity:.3; transform: scale(1)} 40%{opacity:.9; transform: scale(1.4)} 60%{opacity:.7; transform: scale(1.2)} }
+@keyframes synapse-fire { 0%{stroke-dashoffset:300; opacity:.2} 30%{opacity:.8} 50%{stroke-dashoffset:0; opacity:.6} 80%{opacity:.3} 100%{stroke-dashoffset:-300; opacity:.2} }
 
 /* ═══════════ NAV ═══════════ */
 .nav {
@@ -481,57 +483,63 @@ section { position: relative; z-index: 1; }
 
 <!-- Brain-Circuit SVG — fixed page background -->
 <svg class="brain-bg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <!-- Left hemisphere: organic neural pathways -->
-    <path class="trace" d="M120 350 C100 280, 160 220, 220 240 C280 260, 260 320, 300 350 C340 380, 320 300, 370 320" stroke="#6366f1" stroke-width="2" fill="none"/>
-    <path class="trace" d="M100 400 C80 450, 140 480, 200 460 C260 440, 240 490, 300 500 C360 510, 340 460, 380 440" stroke="#818cf8" stroke-width="1.8" fill="none"/>
-    <path class="trace" d="M160 280 C190 230, 240 250, 280 210 C320 170, 360 200, 400 220" stroke="#a78bfa" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M80 320 C60 360, 100 400, 160 420 C220 440, 180 380, 220 350" stroke="#6366f1" stroke-width="1.8" fill="none"/>
-    <path class="trace" d="M200 480 C240 510, 300 530, 360 500 C420 470, 380 420, 420 400" stroke="#06b6d4" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M140 240 C170 200, 220 180, 270 200 C320 220, 290 260, 330 280" stroke="#818cf8" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M180 440 C210 470, 260 460, 290 430 C320 400, 350 420, 390 380" stroke="#a78bfa" stroke-width="1.2" fill="none"/>
-    <!-- Right hemisphere: circuit board traces -->
-    <path class="trace" d="M540 180 L620 180 L620 260 L720 260 L720 320 L800 320" stroke="#06b6d4" stroke-width="2.5" fill="none"/>
-    <path class="trace" d="M540 350 L600 350 L600 400 L700 400 L700 460 L800 460" stroke="#6366f1" stroke-width="2.5" fill="none"/>
-    <path class="trace" d="M580 240 L660 240 L660 180 L760 180 L760 240 L860 240" stroke="#818cf8" stroke-width="1.8" fill="none"/>
-    <path class="trace" d="M560 440 L640 440 L640 500 L740 500 L740 560 L840 560" stroke="#a78bfa" stroke-width="1.8" fill="none"/>
-    <path class="trace" d="M600 300 L680 300 L680 360 L780 360 L780 300 L880 300" stroke="#22c55e" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M620 420 L700 420 L700 360 L780 360" stroke="#06b6d4" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M560 520 L640 520 L640 480 L720 480 L720 520 L800 520" stroke="#6366f1" stroke-width="1.5" fill="none"/>
-    <path class="trace" d="M680 140 L760 140 L760 200 L840 200" stroke="#818cf8" stroke-width="1.2" fill="none"/>
-    <!-- Center merge zone — the bridge -->
-    <path class="trace" d="M400 320 C430 310, 470 300, 520 320" stroke="#6366f1" stroke-width="3" fill="none"/>
-    <path class="trace" d="M420 380 C450 370, 480 360, 540 380" stroke="#818cf8" stroke-width="2.5" fill="none"/>
-    <path class="trace" d="M390 280 C420 270, 460 270, 530 280" stroke="#06b6d4" stroke-width="2" fill="none"/>
-    <path class="trace" d="M410 440 C440 430, 480 420, 550 440" stroke="#a78bfa" stroke-width="2" fill="none"/>
-    <!-- Nodes: brain hemisphere -->
-    <circle class="node" cx="120" cy="350" r="5" fill="#6366f1"/>
-    <circle class="node" cx="220" cy="240" r="4" fill="#818cf8"/>
-    <circle class="node" cx="300" cy="350" r="5" fill="#a78bfa"/>
-    <circle class="node" cx="200" cy="460" r="4" fill="#6366f1"/>
-    <circle class="node" cx="360" cy="500" r="4" fill="#06b6d4"/>
-    <circle class="node" cx="100" cy="400" r="4" fill="#818cf8"/>
-    <circle class="node" cx="400" cy="220" r="4" fill="#a78bfa"/>
-    <circle class="node" cx="160" cy="280" r="3" fill="#6366f1"/>
-    <circle class="node" cx="270" cy="200" r="3" fill="#06b6d4"/>
-    <circle class="node" cx="330" cy="280" r="4" fill="#818cf8"/>
-    <circle class="node" cx="390" cy="380" r="3" fill="#a78bfa"/>
-    <!-- Nodes: circuit hemisphere -->
-    <circle class="node" cx="620" cy="180" r="4" fill="#06b6d4"/>
-    <circle class="node" cx="720" cy="260" r="5" fill="#6366f1"/>
-    <circle class="node" cx="800" cy="320" r="5" fill="#06b6d4"/>
-    <circle class="node" cx="700" cy="400" r="4" fill="#6366f1"/>
-    <circle class="node" cx="800" cy="460" r="5" fill="#818cf8"/>
-    <circle class="node" cx="740" cy="500" r="4" fill="#a78bfa"/>
-    <circle class="node" cx="860" cy="240" r="4" fill="#22c55e"/>
-    <circle class="node" cx="880" cy="300" r="4" fill="#06b6d4"/>
-    <circle class="node" cx="760" cy="180" r="3" fill="#818cf8"/>
-    <circle class="node" cx="840" cy="560" r="4" fill="#6366f1"/>
-    <circle class="node" cx="680" cy="300" r="4" fill="#22c55e"/>
-    <!-- Center merge nodes — largest, most prominent -->
-    <circle class="node" cx="460" cy="310" r="7" fill="#6366f1"/>
-    <circle class="node" cx="500" cy="350" r="6" fill="#06b6d4"/>
-    <circle class="node" cx="480" cy="280" r="5" fill="#818cf8"/>
-    <circle class="node" cx="520" cy="400" r="5" fill="#a78bfa"/>
+    <!-- Neuron cluster 1: upper-left -->
+    <path class="trace" d="M150 200 C170 180, 200 170, 230 190 C260 210, 240 240, 270 250" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M150 200 C130 220, 120 260, 140 280 C160 300, 180 290, 200 310" stroke="#818cf8" stroke-width="1.2" fill="none"/>
+    <path class="trace" d="M150 200 C160 230, 190 240, 210 260" stroke="#a78bfa" stroke-width="1" fill="none"/>
+    <!-- Neuron cluster 2: mid-left -->
+    <path class="trace" d="M200 400 C220 370, 250 360, 280 380 C310 400, 300 430, 330 440" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M200 400 C180 420, 170 460, 200 480 C230 500, 260 490, 280 510" stroke="#818cf8" stroke-width="1.2" fill="none"/>
+    <path class="trace" d="M200 400 C230 410, 250 430, 270 420" stroke="#06b6d4" stroke-width="1" fill="none"/>
+    <!-- Neuron cluster 3: center -->
+    <path class="trace" d="M500 350 C530 320, 560 310, 580 330 C600 350, 590 380, 610 390" stroke="#6366f1" stroke-width="1.8" fill="none"/>
+    <path class="trace" d="M500 350 C480 370, 470 400, 490 420 C510 440, 540 430, 560 450" stroke="#818cf8" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M500 350 C520 360, 540 380, 530 400" stroke="#a78bfa" stroke-width="1.2" fill="none"/>
+    <path class="trace" d="M500 350 C470 340, 450 320, 440 300 C430 280, 450 260, 470 250" stroke="#06b6d4" stroke-width="1.5" fill="none"/>
+    <!-- Neuron cluster 4: upper-right -->
+    <path class="trace" d="M750 200 C770 180, 800 190, 820 210 C840 230, 830 260, 850 270" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M750 200 C730 220, 720 250, 740 270 C760 290, 780 280, 790 300" stroke="#818cf8" stroke-width="1.2" fill="none"/>
+    <path class="trace" d="M750 200 C760 230, 780 240, 800 250" stroke="#a78bfa" stroke-width="1" fill="none"/>
+    <!-- Neuron cluster 5: lower-right -->
+    <path class="trace" d="M780 480 C800 460, 830 450, 850 470 C870 490, 860 520, 880 530" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M780 480 C760 500, 750 530, 770 550 C790 570, 810 560, 830 580" stroke="#818cf8" stroke-width="1.2" fill="none"/>
+    <!-- Axon connections between clusters (long, sweeping curves) -->
+    <path class="trace" d="M270 250 C320 270, 380 290, 440 300 C470 310, 490 330, 500 350" stroke="#6366f1" stroke-width="1.8" fill="none"/>
+    <path class="trace" d="M330 440 C380 430, 420 410, 460 400 C480 390, 490 370, 500 350" stroke="#818cf8" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M610 390 C650 380, 690 350, 720 300 C740 270, 750 230, 750 200" stroke="#a78bfa" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M560 450 C620 470, 680 480, 720 480 C750 480, 770 480, 780 480" stroke="#06b6d4" stroke-width="1.5" fill="none"/>
+    <path class="trace" d="M470 250 C500 220, 560 200, 620 190 C680 180, 720 190, 750 200" stroke="#6366f1" stroke-width="1.2" fill="none"/>
+    <path class="trace" d="M200 310 C230 330, 260 350, 300 360 C360 380, 420 380, 480 370" stroke="#06b6d4" stroke-width="1.2" fill="none"/>
+    <!-- Peripheral dendrites (short, thin) -->
+    <path class="trace" d="M80 150 C100 160, 120 180, 150 200" stroke="#6366f1" stroke-width="0.8" fill="none"/>
+    <path class="trace" d="M60 250 C80 240, 110 220, 140 280" stroke="#818cf8" stroke-width="0.8" fill="none"/>
+    <path class="trace" d="M100 500 C130 490, 160 470, 200 400" stroke="#a78bfa" stroke-width="0.8" fill="none"/>
+    <path class="trace" d="M900 150 C880 170, 850 180, 820 210" stroke="#06b6d4" stroke-width="0.8" fill="none"/>
+    <path class="trace" d="M950 350 C920 340, 890 320, 850 270" stroke="#818cf8" stroke-width="0.8" fill="none"/>
+    <path class="trace" d="M920 600 C900 580, 870 560, 830 580" stroke="#6366f1" stroke-width="0.8" fill="none"/>
+    <path class="trace" d="M50 400 C80 410, 120 420, 170 460" stroke="#06b6d4" stroke-width="0.8" fill="none"/>
+    <!-- Neuron bodies (soma) — larger circles -->
+    <circle class="node" cx="150" cy="200" r="8" fill="#6366f1"/>
+    <circle class="node" cx="200" cy="400" r="7" fill="#818cf8"/>
+    <circle class="node" cx="500" cy="350" r="10" fill="#6366f1"/>
+    <circle class="node" cx="750" cy="200" r="7" fill="#a78bfa"/>
+    <circle class="node" cx="780" cy="480" r="7" fill="#06b6d4"/>
+    <!-- Secondary neurons (smaller) -->
+    <circle class="node" cx="270" cy="250" r="5" fill="#818cf8"/>
+    <circle class="node" cx="330" cy="440" r="5" fill="#6366f1"/>
+    <circle class="node" cx="610" cy="390" r="5" fill="#a78bfa"/>
+    <circle class="node" cx="470" cy="250" r="4" fill="#06b6d4"/>
+    <circle class="node" cx="560" cy="450" r="4" fill="#818cf8"/>
+    <circle class="node" cx="720" cy="300" r="4" fill="#6366f1"/>
+    <!-- Synaptic junctions (tiny dots along axons) -->
+    <circle class="node" cx="380" cy="290" r="2.5" fill="#6366f1"/>
+    <circle class="node" cx="420" cy="410" r="2.5" fill="#818cf8"/>
+    <circle class="node" cx="650" cy="370" r="2.5" fill="#a78bfa"/>
+    <circle class="node" cx="680" cy="480" r="2.5" fill="#06b6d4"/>
+    <circle class="node" cx="300" cy="360" r="2.5" fill="#06b6d4"/>
+    <circle class="node" cx="600" cy="200" r="2.5" fill="#6366f1"/>
+    <circle class="node" cx="440" cy="300" r="3" fill="#818cf8"/>
+    <circle class="node" cx="530" cy="400" r="2.5" fill="#a78bfa"/>
   </svg>
 
 <!-- Hero -->
