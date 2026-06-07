@@ -141,13 +141,11 @@ body::after {
   margin-left: var(--sidebar-width);
   margin-top: var(--header-height);
   min-height: calc(100vh - var(--header-height));
-  display: flex; justify-content: center;
 }
 .content {
   width: 100%;
-  max-width: 820px;
-  padding: 56px 48px 120px;
-  margin: 0 auto;
+  max-width: none;
+  padding: 56px 60px 120px;
 }
 .content > section { scroll-margin-top: calc(var(--header-height) + 24px); }
 
@@ -417,8 +415,8 @@ li { margin: 8px 0; line-height: 1.7; }
     box-shadow: 4px 0 24px rgba(0,0,0,.4);
   }
 
-  .main { margin-left: 0; justify-content: flex-start; }
-  .content { padding: 40px 28px 80px; max-width: 100%; }
+  .main { margin-left: 0; }
+  .content { padding: 40px 24px 80px; }
 
   .feature-grid { grid-template-columns: 1fr; }
 
