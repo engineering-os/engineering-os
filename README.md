@@ -12,20 +12,26 @@ eos init --claude
 
 That's it. Your AI now has persistent project knowledge. Permanently.
 
+<p align="center">
+  <img src="docs/demo/demo.gif" alt="Engineering OS Demo" width="700">
+</p>
+
 ---
 
 ## The Problem
 
 Every new session, your AI re-explores files, re-debates decisions you already made, and has no idea your frontend talks to three backend services.
 
-| Today (without Engineering OS) | With Engineering OS |
-|---|---|
-| "Let me explore your project structure..." | Already knows. Starts working immediately. |
-| "Should we use Redux or Zustand?" | "You decided on Zustand last month. Here's why." |
-| Suggests code that breaks another service | Sees the dependency graph. Avoids breakage. |
-| You explain the same gotcha every session | Learned it once. Warns you proactively. |
-| grep-ing for 30s trying to find that function | Instant answer. It's pre-indexed. |
-| Security review is something you do "later" | Already scanned. Flags issues as you code. |
+
+| Today (without Engineering OS)                | With Engineering OS                              |
+| --------------------------------------------- | ------------------------------------------------ |
+| "Let me explore your project structure..."    | Already knows. Starts working immediately.       |
+| "Should we use Redux or Zustand?"             | "You decided on Zustand last month. Here's why." |
+| Suggests code that breaks another service     | Sees the dependency graph. Avoids breakage.      |
+| You explain the same gotcha every session     | Learned it once. Warns you proactively.          |
+| grep-ing for 30s trying to find that function | Instant answer. It's pre-indexed.                |
+| Security review is something you do "later"   | Already scanned. Flags issues as you code.       |
+
 
 ## How It Works
 
@@ -79,15 +85,17 @@ eos refresh --incremental
 
 ## CLI Commands
 
-| Command | What it does |
-|---------|-------------|
+
+| Command                      | What it does                                   |
+| ---------------------------- | ---------------------------------------------- |
 | `eos init --claude --cursor` | Index your project + generate AI context files |
-| `eos serve` | Start the MCP server |
-| `eos refresh --incremental` | Update knowledge after code changes |
-| `eos link <name> <path>` | Link a sibling repository |
-| `eos workspace init` | Create team-shared config (checked into git) |
-| `eos index --watch` | Continuous re-indexing as you code |
-| `eos status` | Show knowledge health and drift |
+| `eos serve`                  | Start the MCP server                           |
+| `eos refresh --incremental`  | Update knowledge after code changes            |
+| `eos link <name> <path>`     | Link a sibling repository                      |
+| `eos workspace init`         | Create team-shared config (checked into git)   |
+| `eos index --watch`          | Continuous re-indexing as you code             |
+| `eos status`                 | Show knowledge health and drift                |
+
 
 ## Works With
 

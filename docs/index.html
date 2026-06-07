@@ -11,6 +11,7 @@
 <meta property="og:url" content="https://engineering-os.github.io/engineering-os/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/asciinema-player@3.8.2/dist/bundle/asciinema-player.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -436,6 +437,21 @@ section { position: relative; z-index: 1; }
 .cta-section p { margin-top: 16px; color: var(--text-secondary); font-size: 16px; position: relative; }
 .cta-section .hero-actions { margin-top: 32px; position: relative; }
 
+/* ═══════════ DEMO ═══════════ */
+.demo-section { padding: 72px 24px; }
+.demo-terminal {
+  max-width: 680px; margin: 0 auto;
+  border-radius: 10px; overflow: hidden;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+#demo-player { }
+#demo-player .ap-control-bar, #demo-player .ap-start-button, #demo-player .ap-overlay { display: none !important; }
+
+@media (max-width: 768px) {
+  .demo-section { padding: 48px 16px; }
+}
+
 /* ═══════════ FOOTER ═══════════ */
 .footer {
   padding: 56px 24px; text-align: center;
@@ -494,7 +510,15 @@ section { position: relative; z-index: 1; }
   .how-step-num { width: 36px; height: 36px; font-size: 14px; border-radius: 10px; }
   .how-step-code { font-size: 10px; padding: 10px 12px; white-space: pre; overflow-x: auto; }
   .compare-row { grid-template-columns: 1fr; }
-  .compare-cell:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  .compare-row-header { display: none; }
+  .compare-cell:first-child {
+    border-right: none; border-bottom: none;
+    color: var(--text-muted); font-size: 11px;
+    padding: 14px 14px 4px; opacity: 0.7;
+  }
+  .compare-cell:first-child::before { content: "✗ Without: "; color: var(--red); font-weight: 600; }
+  .compare-cell:last-child { padding: 4px 14px 14px; color: var(--text-primary); font-weight: 500; }
+  .compare-cell:last-child::before { content: "✓ With EOS: "; color: var(--green); font-weight: 600; font-size: 11px; }
   .trust-section { padding: 40px 16px; }
 }
 
@@ -559,6 +583,17 @@ section { position: relative; z-index: 1; }
 <!-- Background AI whisper -->
 <div class="ai-whisper" aria-hidden="true"></div>
 
+<!-- Demo Section -->
+<section class="demo-section" id="demo">
+  <div class="section-header reveal">
+    <div class="section-tag">See it in action</div>
+    <h2 class="section-title">Install, init, and you're done.</h2>
+    <p class="section-desc">Your AI recalls decisions, enforces conventions, learns from every session, and plans across repos. This is what that looks like.</p>
+  </div>
+  <div class="demo-terminal reveal">
+    <div id="demo-player"></div>
+  </div>
+</section>
 
 <!-- Architecture -->
 <section class="arch-section" id="architecture">
@@ -977,6 +1012,23 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   requestAnimationFrame(draw);
   window.addEventListener('resize', init);
 })();
+</script>
+<script src="https://unpkg.com/asciinema-player@3.8.2/dist/bundle/asciinema-player.min.js"></script>
+<script>
+AsciinemaPlayer.create('./demo/demo.cast', document.getElementById('demo-player'), {
+  cols: 80,
+  rows: 20,
+  autoPlay: true,
+  loop: true,
+  speed: 1.2,
+  fit: 'width',
+  controls: false,
+  terminalFontFamily: "'JetBrains Mono', monospace",
+  terminalFontSize: '12px',
+  idleTimeLimit: 1.5,
+  poster: 'npt:0:3',
+  theme: 'dracula'
+});
 </script>
 </body>
 </html>
