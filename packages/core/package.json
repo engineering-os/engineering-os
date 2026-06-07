@@ -40,8 +40,7 @@
     "@modelcontextprotocol/sdk": "^1.0.0",
     "better-sqlite3": "^11.0.0",
     "fast-glob": "^3.3.0",
-    "js-yaml": "^4.1.0",
-    "glob": "^10.3.0"
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.0",

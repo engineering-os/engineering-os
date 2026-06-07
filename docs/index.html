@@ -6,7 +6,7 @@
 <title>Engineering OS | The Engineering Brain for AI Tools</title>
 <meta name="description" content="Engineering OS — give your AI coding tools persistent memory. Install engineering-os from npm and your AI remembers your architecture, conventions, and decisions across every session. Open source, 100% local.">
 <meta property="og:title" content="Engineering OS | Your AI Finally Remembers Your Codebase">
-<meta property="og:description" content="Stop re-explaining your project every session. Engineering OS gives Claude Code, Cursor, and Windsurf persistent knowledge about your codebase. npm install -g engineering-os">
+<meta property="og:description" content="Stop re-explaining your project every session. Engineering OS gives Claude Code, Cursor, Codex, and any MCP-compatible AI code editor persistent knowledge about your codebase. npm install -g engineering-os">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://engineering-os.github.io/engineering-os/">
 <meta name="twitter:card" content="summary_large_image">
@@ -177,6 +177,42 @@ body::after {
 
 @keyframes fade-up { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
+/* AI Whisper — fixed corner terminal log */
+.ai-whisper {
+  position: fixed; bottom: 28px; left: 28px;
+  z-index: 2; pointer-events: none;
+  font-family: var(--mono); font-size: 13px;
+  line-height: 2;
+  color: rgba(180,190,255,0.7);
+  max-width: 480px;
+}
+.ai-whisper-line {
+  display: block; white-space: nowrap; overflow: hidden;
+  opacity: 0; transform: translateY(4px); filter: blur(0);
+  transition: opacity 0.4s, transform 0.4s, filter 0.4s;
+}
+.ai-whisper-line.visible {
+  opacity: 1; transform: translateY(0); filter: blur(0);
+}
+.ai-whisper-line.blurred {
+  opacity: 0.3; filter: blur(1.2px); transform: translateY(0);
+  transition: opacity 0.5s, filter 0.5s;
+}
+.ai-whisper-line.fading {
+  opacity: 0; filter: blur(3px); transform: translateY(-6px);
+  transition: opacity 0.4s, filter 0.4s, transform 0.4s;
+}
+.ai-whisper-cursor {
+  display: inline-block; width: 2px; height: 14px;
+  background: rgba(160,170,255,0.7);
+  margin-left: 2px; vertical-align: middle;
+  animation: cursor-blink 0.8s step-end infinite;
+}
+@keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@media (max-width: 768px) {
+  .ai-whisper { display: none; }
+}
+
 
 /* ═══════════ SECTION COMMON ═══════════ */
 section { position: relative; z-index: 1; }
@@ -212,13 +248,19 @@ section { position: relative; z-index: 1; }
 }
 .arch-tier-nodes { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .arch-chip {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 16px; border-radius: 10px;
-  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-  font-size: 13px; font-weight: 500; color: var(--text-primary); transition: all .25s;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  font-size: 14px; font-weight: 500; color: var(--text-primary); transition: all .25s;
 }
 .arch-chip:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); border-color: var(--border-hover); }
-.arch-chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.arch-chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 8px var(--dot-color, currentColor); outline: 2px solid rgba(255,255,255,0.08); outline-offset: 2px; }
+.arch-chip-logo {
+  width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; font-family: var(--font-display);
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
 
 /* Rotating gradient border on EOS tier */
 @property --border-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
@@ -338,14 +380,16 @@ section { position: relative; z-index: 1; }
   border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
 }
 .trust-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 24px; }
-.trust-logos { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; align-items: center; }
+.trust-logos { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; align-items: center; }
 .trust-logo {
-  padding: 10px 20px; border-radius: 8px;
+  padding: 14px 24px; border-radius: 12px;
   background: var(--bg-card); border: 1px solid var(--border);
-  font-size: 13px; font-weight: 600; color: var(--text-secondary);
-  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600; color: var(--text-primary);
+  display: flex; align-items: center; gap: 10px;
+  transition: border-color .2s, background .2s;
 }
-.trust-logo svg { opacity: 0.6; }
+.trust-logo:hover { border-color: var(--border-hover); background: var(--bg-card-hover); }
+.trust-logo svg { opacity: 0.9; flex-shrink: 0; }
 
 /* ═══════════ COMPARISON ═══════════ */
 .compare-section { padding: 72px 24px; }
@@ -487,7 +531,11 @@ section { position: relative; z-index: 1; }
     <span style="color:var(--text-muted)">$</span> <code>npm install -g engineering-os</code>
     <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g engineering-os');this.innerHTML='&#x2713;';setTimeout(()=>this.innerHTML='&#x1F4CB;',1500)" title="Copy">&#x1F4CB;</button>
   </div>
+
 </section>
+
+<!-- Background AI whisper -->
+<div class="ai-whisper" aria-hidden="true"></div>
 
 
 <!-- Architecture -->
@@ -501,11 +549,13 @@ section { position: relative; z-index: 1; }
     <div class="arch-tier reveal">
       <div class="arch-tier-label">AI Clients</div>
       <div class="arch-tier-nodes">
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--purple)"></div>Claude Code</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--green)"></div>Cursor</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--orange)"></div>Windsurf</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div>VS Code</div>
-        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--text-muted)"></div>Any MCP Client</div>
+        <div class="arch-chip"><span class="arch-chip-logo" style="background:var(--purple);color:#fff">A</span>Claude Code</div>
+        <div class="arch-chip"><span class="arch-chip-logo" style="background:var(--green);color:#fff">C</span>Cursor</div>
+        <div class="arch-chip"><span class="arch-chip-logo" style="background:var(--orange);color:#fff">O</span>Codex</div>
+        <div class="arch-chip"><span class="arch-chip-logo" style="background:var(--cyan);color:#fff">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.13a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479l1.322 1.204a.999.999 0 0 0 1.276.057l4.12-3.13 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"/></svg>
+        </span>VS Code</div>
+        <div class="arch-chip"><span class="arch-chip-logo" style="background:var(--text-muted);color:#fff">+</span>Any AI Editor</div>
       </div>
     </div>
     <div class="arch-flow"><div class="arch-flow-line"></div><div class="arch-flow-tag">MCP Protocol (stdio)</div></div>
@@ -635,17 +685,26 @@ section { position: relative; z-index: 1; }
 <div class="trust-section reveal">
   <div class="trust-label">Works with</div>
   <div class="trust-logos">
-    <div class="trust-logo">&#x1F4DC; Claude Code</div>
-    <div class="trust-logo">&#x25B6; Cursor</div>
-    <div class="trust-logo">&#x1F32A; Windsurf</div>
-    <div class="trust-logo">&#x1F4BB; VS Code</div>
-    <div class="trust-logo">&#x1F527; Any MCP Client</div>
-  </div>
-  <div class="trust-logos" style="margin-top: 16px;">
-    <div class="trust-logo">TypeScript</div>
-    <div class="trust-logo">SQLite</div>
-    <div class="trust-logo">MCP Protocol</div>
-    <div class="trust-logo">Apache 2.0</div>
+    <div class="trust-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="#D97706" opacity="0.15"/><path d="M8 9.5c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v5c0 1.1-.9 2-2 2h-4c-1.1 0-2-.9-2-2v-5z" stroke="#D97706" stroke-width="1.5"/><path d="M10 12h4M12 10v4" stroke="#D97706" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Claude Code
+    </div>
+    <div class="trust-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" fill="#22C55E" opacity="0.15"/><path d="M7 12h3l2-4 2 4h3" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Cursor
+    </div>
+    <div class="trust-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#6366F1" opacity="0.15"/><path d="M12 6v12M8 10l4-4 4 4M8 14l4 4 4-4" stroke="#6366F1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Codex
+    </div>
+    <div class="trust-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" fill="#06B6D4" opacity="0.15"/><path d="M8 10l3 3 5-5" stroke="#06B6D4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="8" y1="21" x2="16" y2="21" stroke="#06B6D4" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="17" x2="12" y2="21" stroke="#06B6D4" stroke-width="1.5"/></svg>
+      VS Code
+    </div>
+    <div class="trust-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#A78BFA" opacity="0.15"/><circle cx="12" cy="12" r="3" stroke="#A78BFA" stroke-width="1.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Any MCP Editor
+    </div>
   </div>
 </div>
 
@@ -694,6 +753,69 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// AI Whisper — terminal log, types line by line, keeps max 3 visible
+(function() {
+  const lines = [
+    '"Let me explore your project structure..." — never again.',
+    'Your AI just re-debated a decision you settled in March.',
+    'Somewhere, an AI is grepping for a file that moved 3 commits ago.',
+    'Context windows forget. engineering-os doesn\'t.',
+    'Day 1 and day 100 should feel the same for your AI.',
+    'Smart enough to write code. Too forgetful to remember where.',
+    'You shouldn\'t have to onboard your AI every morning.',
+    'AI without project memory is just expensive autocomplete.',
+    'The gap between "smart" and "useful" is context.',
+    'Your conventions exist. Your AI just can\'t see them yet.',
+    'Persistent memory. Not a feature request. A requirement.',
+    'The missing layer between your code and your AI.',
+  ];
+  const container = document.querySelector('.ai-whisper');
+  let idx = 0;
+
+  function addLine() {
+    const line = lines[idx];
+    const span = document.createElement('span');
+    span.className = 'ai-whisper-line';
+    span.innerHTML = '<span class="ai-whisper-cursor"></span>';
+    container.appendChild(span);
+
+    // Blur previous lines, then reveal new one
+    const prev = container.querySelectorAll('.ai-whisper-line.visible');
+    prev.forEach(p => { p.classList.add('blurred'); p.classList.remove('visible'); });
+
+    let charIdx = 0;
+    const textNode = document.createTextNode('');
+    span.insertBefore(textNode, span.firstChild);
+
+    // New line is visible (no blur)
+    requestAnimationFrame(() => span.classList.add('visible'));
+
+    const typeInterval = setInterval(() => {
+      textNode.textContent = '> ' + line.slice(0, charIdx + 1);
+      charIdx++;
+      if (charIdx >= line.length) {
+        clearInterval(typeInterval);
+        span.querySelector('.ai-whisper-cursor').remove();
+        trimLines();
+        idx = (idx + 1) % lines.length;
+        setTimeout(addLine, 3500);
+      }
+    }, 30);
+  }
+
+  function trimLines() {
+    const all = container.querySelectorAll('.ai-whisper-line');
+    if (all.length > 1) {
+      const oldest = all[0];
+      oldest.classList.remove('blurred');
+      oldest.classList.add('fading');
+      setTimeout(() => oldest.remove(), 600);
+    }
+  }
+
+  setTimeout(addLine, 1500);
+})();
 
 // ═══════ NETWORK CANVAS — decision graph with data flow ═══════
 (function() {
