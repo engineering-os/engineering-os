@@ -474,8 +474,8 @@ section { position: relative; z-index: 1; }
 <section class="hero">
   <div class="hero-glow"></div>
   <div class="hero-badge"><span class="hero-badge-dot"></span> v0.1.2 — Now on npm</div>
-  <h1>The engineering brain for your AI tools</h1>
-  <p class="hero-sub">Give Claude Code, Cursor, and Windsurf persistent knowledge about your codebase. Architecture, conventions, decisions — surviving between every session.</p>
+  <h1>Your AI finally remembers your codebase</h1>
+  <p class="hero-sub">Stop re-explaining your architecture every session. EOS gives your AI tools the memory they've been missing — so they write code like someone who actually knows your project.</p>
   <div class="hero-actions">
     <a href="#how" class="btn btn-primary">Get Started</a>
     <a href="https://github.com/engineering-os/engineering-os" class="btn btn-ghost">
@@ -493,9 +493,9 @@ section { position: relative; z-index: 1; }
 <!-- Architecture -->
 <section class="arch-section" id="architecture">
   <div class="section-header reveal">
-    <div class="section-tag">Architecture</div>
-    <h2 class="section-title">One server. Every AI tool. Full context.</h2>
-    <p class="section-desc">EOS indexes your codebase once and serves structured knowledge to any AI tool via the Model Context Protocol.</p>
+    <div class="section-tag">How it fits together</div>
+    <h2 class="section-title">One local server. All your AI tools. Always in sync.</h2>
+    <p class="section-desc">You run EOS once — it learns your codebase and serves that knowledge to whichever AI tool you're using. No cloud, no accounts, just instant answers.</p>
   </div>
   <div class="arch-visual">
     <div class="arch-tier reveal">
@@ -538,15 +538,15 @@ section { position: relative; z-index: 1; }
 <!-- How it works -->
 <section class="how-section" id="how">
   <div class="section-header reveal">
-    <div class="section-tag">Quick Start</div>
-    <h2 class="section-title">Three steps. Permanent intelligence.</h2>
+    <div class="section-tag">Get started in 2 minutes</div>
+    <h2 class="section-title">Install, init, and you're done.</h2>
   </div>
   <div class="how-steps">
     <div class="how-step reveal">
       <div class="how-step-num">1</div>
       <div>
-        <h3>Index your project</h3>
-        <p>EOS scans all source files, discovers architecture, builds a service graph, and stores everything in local SQLite.</p>
+        <h3>Point it at your project</h3>
+        <p>One command. It reads your code, figures out how things connect, and builds a local knowledge base. Takes about 10 seconds for most repos.</p>
         <div class="how-step-code"><span class="g">$ npm install -g engineering-os</span>
 <span class="g">$ eos init --claude --cursor</span>
 
@@ -559,8 +559,8 @@ section { position: relative; z-index: 1; }
     <div class="how-step reveal reveal-delay-1">
       <div class="how-step-num">2</div>
       <div>
-        <h3>AI connects automatically</h3>
-        <p>Open Claude Code or Cursor. The generated config tells your AI to call EOS tools. No manual wiring — it just works.</p>
+        <h3>Your AI just knows things now</h3>
+        <p>Open your editor. Your AI already has access — it'll pull context, recall past decisions, and find code instantly. You didn't configure anything.</p>
         <div class="how-step-code"><span class="m">// Your AI now calls these automatically:</span>
 <span class="g">eos_context</span>({ task: "add retry to uploads" })
 <span class="m">// Returns: routes, architecture, conventions, skills</span>
@@ -575,8 +575,8 @@ section { position: relative; z-index: 1; }
     <div class="how-step reveal reveal-delay-2">
       <div class="how-step-num">3</div>
       <div>
-        <h3>Knowledge compounds</h3>
-        <p>Every session, your AI learns more. Gotchas, patterns, and connections accumulate — making each session smarter than the last.</p>
+        <h3>It gets smarter every day</h3>
+        <p>Found a tricky bug? Discovered a hidden dependency? Your AI remembers it next time. The more you use it, the better it gets at your specific codebase.</p>
         <div class="how-step-code"><span class="m">// AI discovers something → persists it forever:</span>
 <span class="g">eos_learn</span>({
   type: "gotcha",
@@ -593,40 +593,40 @@ section { position: relative; z-index: 1; }
 <!-- Features -->
 <section class="features-section" id="features">
   <div class="section-header reveal">
-    <div class="section-tag">Capabilities</div>
-    <h2 class="section-title">Everything your AI needs to ship effectively</h2>
+    <div class="section-tag">What you get</div>
+    <h2 class="section-title">The stuff your AI should've had from day one</h2>
   </div>
   <div class="features-grid reveal">
-    <div class="feature-item"><div class="feature-icon" style="background:var(--accent-glow);color:var(--accent-bright)">&#x1F9E0;</div><h3>Persistent Context</h3><p>Architecture, routes, conventions, and decisions survive across every session. Zero re-exploration.</p></div>
-    <div class="feature-item"><div class="feature-icon" style="background:var(--green-glow);color:var(--green)">&#x1F517;</div><h3>Cross-Repo Intelligence</h3><p>Federated search across all linked services. AI sees your full microservices topology instantly.</p></div>
-    <div class="feature-item"><div class="feature-icon" style="background:rgba(245,158,11,0.1);color:var(--orange)">&#x1F4DA;</div><h3>Skill Retention</h3><p>AI learns gotchas, patterns, and connections. Knowledge compounds session over session.</p></div>
-    <div class="feature-item"><div class="feature-icon" style="background:rgba(239,68,68,0.1);color:var(--red)">&#x1F6E1;</div><h3>Security Scanning</h3><p>OWASP Top 10, CVE detection across 7 ecosystems, STRIDE threat modeling, compliance checks.</p></div>
-    <div class="feature-item"><div class="feature-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan)">&#x1F50D;</div><h3>Instant Search</h3><p>Pre-indexed FTS5 with BM25 ranking and synonym expansion. Milliseconds, not seconds.</p></div>
-    <div class="feature-item"><div class="feature-icon" style="background:rgba(167,139,250,0.1);color:var(--purple)">&#x1F3D7;</div><h3>Auto-Discovery</h3><p>Detects services, layers, patterns. Supports Express, NestJS, Spring Boot, Ktor, and 8 languages.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:var(--accent-glow);color:var(--accent-bright)">&#x1F9E0;</div><h3>Never explains twice</h3><p>Your architecture, conventions, and team decisions persist forever. No more "here's how our project works" at the start of every session.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:var(--green-glow);color:var(--green)">&#x1F517;</div><h3>Sees all your repos</h3><p>Working on a mobile app that talks to a backend that uses an ML pipeline? Link them. Your AI sees the full picture, not just one folder.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:rgba(245,158,11,0.1);color:var(--orange)">&#x1F4DA;</div><h3>Learns your tricks</h3><p>That weird workaround you found last week? That gotcha with the upload service? Your AI remembers — and warns you before you hit it again.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:rgba(239,68,68,0.1);color:var(--red)">&#x1F6E1;</div><h3>Catches security issues</h3><p>Scans for secrets, injection flaws, and known CVEs across your dependencies. You don't have to remember to check — it does it for you.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan)">&#x1F50D;</div><h3>Finds code instantly</h3><p>Ask "where's the auth middleware?" and get the answer in milliseconds. No more grepping through 500 files hoping you spelled it right.</p></div>
+    <div class="feature-item"><div class="feature-icon" style="background:rgba(167,139,250,0.1);color:var(--purple)">&#x1F3D7;</div><h3>Maps your architecture</h3><p>It figures out your services, layers, and patterns automatically. Works with whatever stack you're running — from Express to Spring Boot to Ktor.</p></div>
   </div>
 </section>
 
 <!-- Use Cases -->
 <section class="usecases-section">
   <div class="section-header reveal">
-    <div class="section-tag">Use Cases</div>
-    <h2 class="section-title">Built for teams that ship with AI</h2>
+    <div class="section-tag">Who it's for</div>
+    <h2 class="section-title">Whether you're one dev or fifty</h2>
   </div>
   <div class="usecases-grid">
     <div class="usecase-card reveal">
       <div class="usecase-card-icon">&#x1F4F1;</div>
-      <h3>Multi-repo mobile team</h3>
-      <p>Link your React Native app, Spring Boot BFF, ML pipeline, and infra. AI sees the full picture across all repos.</p>
+      <h3>Teams with multiple repos</h3>
+      <p>Your mobile app calls your BFF which calls your ML service. Link them all — your AI understands the full system, not just the file it's looking at.</p>
     </div>
     <div class="usecase-card reveal reveal-delay-1">
       <div class="usecase-card-icon">&#x1F9D1;&#x200D;&#x1F4BB;</div>
-      <h3>Solo developer</h3>
-      <p>EOS learns your conventions session by session. After a week, your AI writes code exactly how you would.</p>
+      <h3>Solo devs who move fast</h3>
+      <p>After a few sessions, your AI knows your naming conventions, your file structure, your quirks. It codes like a teammate who's been on the project for months.</p>
     </div>
     <div class="usecase-card reveal reveal-delay-2">
       <div class="usecase-card-icon">&#x1F3E2;</div>
-      <h3>Enterprise team</h3>
-      <p>Security scanning, SOC2/HIPAA compliance, audit trails, team conventions — shared across all developers.</p>
+      <h3>Enterprise teams who need guardrails</h3>
+      <p>Security scanning, compliance checks, audit trails, shared conventions — baked in. Every developer on your team gets the same standards enforced automatically.</p>
     </div>
   </div>
 </section>
@@ -652,24 +652,24 @@ section { position: relative; z-index: 1; }
 <!-- Comparison -->
 <section class="compare-section">
   <div class="section-header reveal">
-    <div class="section-tag">Why EOS</div>
-    <h2 class="section-title">Before and after</h2>
+    <div class="section-tag">The difference</div>
+    <h2 class="section-title">What changes when your AI has a memory</h2>
   </div>
   <div class="compare-table reveal">
-    <div class="compare-row compare-row-header"><div class="compare-cell">&#x2715; Without EOS</div><div class="compare-cell">&#x2713; With EOS</div></div>
-    <div class="compare-row"><div class="compare-cell">AI forgets between sessions</div><div class="compare-cell">Knowledge persists forever</div></div>
-    <div class="compare-row"><div class="compare-cell">30s exploring files before working</div><div class="compare-cell">Full context in one tool call</div></div>
-    <div class="compare-row"><div class="compare-cell">Re-debates settled decisions</div><div class="compare-cell">Decisions recalled instantly</div></div>
-    <div class="compare-row"><div class="compare-cell">Sees one repo at a time</div><div class="compare-cell">Full service graph available</div></div>
-    <div class="compare-row"><div class="compare-cell">Same gotcha every session</div><div class="compare-cell">Skills compound over time</div></div>
-    <div class="compare-row"><div class="compare-cell">No security awareness</div><div class="compare-cell">Continuous OWASP + CVE scanning</div></div>
+    <div class="compare-row compare-row-header"><div class="compare-cell">&#x2715; Today (without EOS)</div><div class="compare-cell">&#x2713; With EOS</div></div>
+    <div class="compare-row"><div class="compare-cell">"Let me explore your project structure..."</div><div class="compare-cell">Already knows — starts working immediately</div></div>
+    <div class="compare-row"><div class="compare-cell">"Should we use Redux or Zustand?"</div><div class="compare-cell">"You decided on Zustand last month. Here's why."</div></div>
+    <div class="compare-row"><div class="compare-cell">Suggests code that breaks another service</div><div class="compare-cell">Knows the dependency graph — avoids breakage</div></div>
+    <div class="compare-row"><div class="compare-cell">You explain the same gotcha every session</div><div class="compare-cell">Learned it once — warns you proactively</div></div>
+    <div class="compare-row"><div class="compare-cell">grep-ing for 30s trying to find that function</div><div class="compare-cell">Instant answer — it's pre-indexed</div></div>
+    <div class="compare-row"><div class="compare-cell">Security review is something you do "later"</div><div class="compare-cell">Already scanned — flags issues as you code</div></div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta-section">
-  <h2 class="reveal">Ready to give your AI a brain?</h2>
-  <p class="reveal">100% local. Zero API keys. Works offline. Open source.</p>
+  <h2 class="reveal">Try it on your project. Takes 30 seconds.</h2>
+  <p class="reveal">Runs entirely on your machine. Nothing leaves your laptop. No accounts, no keys, no nonsense.</p>
   <div class="hero-actions reveal">
     <a href="https://www.npmjs.com/package/engineering-os" class="btn btn-primary">Install from npm</a>
     <a href="./docs.html" class="btn btn-ghost">Read the Docs</a>
