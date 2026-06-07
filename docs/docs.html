@@ -141,10 +141,13 @@ body::after {
   margin-left: var(--sidebar-width);
   margin-top: var(--header-height);
   min-height: calc(100vh - var(--header-height));
+  display: flex; justify-content: center;
 }
 .content {
-  max-width: 880px;
-  padding: 48px 56px 100px;
+  width: 100%;
+  max-width: 820px;
+  padding: 56px 48px 120px;
+  margin: 0 auto;
 }
 .content > section { scroll-margin-top: calc(var(--header-height) + 24px); }
 
@@ -401,7 +404,7 @@ li { margin: 8px 0; line-height: 1.7; }
 /* Responsive */
 @media (max-width: 960px) {
   .mobile-menu-btn { display: block; }
-  .header-nav a:not(#theme-toggle) { display: none; }
+  .header-nav a:not(.nav-cta) { display: none; }
 
   .sidebar {
     transform: translateX(-100%);
@@ -411,39 +414,34 @@ li { margin: 8px 0; line-height: 1.7; }
   }
   .sidebar.open {
     transform: translateX(0);
-    box-shadow: 4px 0 24px rgba(0,0,0,.15);
+    box-shadow: 4px 0 24px rgba(0,0,0,.4);
   }
 
-  .main { margin-left: 0; }
-  .content { padding: 32px 20px 60px; }
-
-  .stats-bar { flex-wrap: wrap; gap: 20px; justify-content: center; }
-  .stat { min-width: 80px; }
+  .main { margin-left: 0; justify-content: flex-start; }
+  .content { padding: 40px 28px 80px; max-width: 100%; }
 
   .feature-grid { grid-template-columns: 1fr; }
 
-  h1 { font-size: 26px; }
-  h2 { font-size: 20px; margin: 40px 0 12px; }
-  h3 { font-size: 16px; }
+  h1 { font-size: 28px; }
+  h2 { font-size: 22px; margin: 48px 0 16px; }
+  h3 { font-size: 17px; }
 
-  pre { font-size: 13px; padding: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  pre { font-size: 13px; padding: 18px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
   table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
 
   .tool-card-header { flex-wrap: wrap; gap: 8px; }
-  .cmd-sig { font-size: 13px; padding: 8px 14px; overflow-x: auto; }
+  .tool-card-body { padding: 18px 20px; }
+  .cmd-sig { font-size: 13px; padding: 10px 16px; overflow-x: auto; }
 }
 
 @media (max-width: 480px) {
-  .header { padding: 0 16px; }
-  .header-logo { font-size: 16px; }
-  .header-badge { display: none; }
-  .content { padding: 24px 16px 48px; }
-  .stats-bar { gap: 12px; padding: 16px 0; }
-  .stat-value { font-size: 22px; }
-  .feature-card { padding: 16px; }
-  .tool-card-body { padding: 12px 16px; }
-  .callout { padding: 12px 14px; font-size: 12px; }
+  .header { padding: 0 14px; }
+  .header-logo { font-size: 14px; }
+  .content { padding: 32px 18px 60px; }
+  .feature-card { padding: 18px; }
+  .tool-card-body { padding: 16px 18px; }
+  .callout { padding: 14px 16px; font-size: 13px; }
 }
 </style>
 </head>
