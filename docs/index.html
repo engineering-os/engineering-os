@@ -42,7 +42,7 @@
   --radius-lg: 20px;
 }
 
-html { scroll-behavior: smooth; scroll-snap-type: y proximity; }
+html { scroll-behavior: smooth; }
 body {
   font-family: var(--font);
   background: var(--bg);
@@ -115,7 +115,6 @@ body::after {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 100px 24px 60px; text-align: center;
   overflow: hidden;
-  scroll-snap-align: none;
 }
 .hero-glow {
   position: absolute; top: -300px; left: 50%; transform: translateX(-50%);
@@ -189,7 +188,7 @@ body::after {
 
 
 /* ═══════════ SECTION COMMON ═══════════ */
-section { position: relative; z-index: 1; scroll-snap-align: start; scroll-margin-top: 56px; }
+section { position: relative; z-index: 1; }
 .section-header { text-align: center; margin-bottom: 40px; }
 .section-tag {
   display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase;
@@ -206,7 +205,7 @@ section { position: relative; z-index: 1; scroll-snap-align: start; scroll-margi
 }
 
 /* ═══════════ ARCHITECTURE ═══════════ */
-.arch-section { padding: 72px 24px; scroll-snap-align: none; }
+.arch-section { padding: 72px 24px; }
 .arch-visual { max-width: 880px; margin: 0 auto; }
 .arch-tier {
   position: relative; padding: 28px; margin-bottom: 20px;
@@ -346,7 +345,6 @@ section { position: relative; z-index: 1; scroll-snap-align: start; scroll-margi
 .trust-section {
   padding: 56px 24px; text-align: center;
   border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-  scroll-snap-align: start; scroll-margin-top: 56px;
 }
 .trust-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 24px; }
 .trust-logos { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; align-items: center; }
@@ -416,12 +414,22 @@ section { position: relative; z-index: 1; scroll-snap-align: start; scroll-margi
   .how-step-num { width: 40px; height: 40px; font-size: 15px; }
 }
 
-/* Scroll reveal */
-.reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s cubic-bezier(0.16,1,0.3,1), transform .7s cubic-bezier(0.16,1,0.3,1); }
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: .1s; }
-.reveal-delay-2 { transition-delay: .2s; }
-.reveal-delay-3 { transition-delay: .3s; }
+/* Scroll animations */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0s, transform 0s;
+  will-change: opacity, transform;
+}
+.reveal.visible {
+  opacity: 1; transform: translateY(0);
+  transition: opacity .9s cubic-bezier(0.22,1,0.36,1), transform .9s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal-delay-1 { transition-delay: .12s; }
+.reveal-delay-2 { transition-delay: .24s; }
+.reveal-delay-3 { transition-delay: .36s; }
+
+/* Parallax layers */
+[data-speed] { will-change: transform; transition: transform .1s linear; }
 </style>
 </head>
 <body>
@@ -446,9 +454,9 @@ section { position: relative; z-index: 1; scroll-snap-align: start; scroll-margi
 
 <!-- Hero -->
 <section class="hero">
-  <div class="hero-glow"></div>
+  <div class="hero-glow" data-speed="0.3"></div>
   <!-- Brain-Circuit SVG Background -->
-  <svg class="brain-bg" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg class="brain-bg" data-speed="0.15" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
     <!-- Left: organic brain curves -->
     <path class="trace" d="M200 300 C180 250, 220 200, 260 220 C300 240, 280 280, 300 300 C320 320, 340 280, 360 300" stroke="#6366f1" stroke-width="1.5" fill="none"/>
     <path class="trace" d="M180 320 C160 360, 200 380, 240 360 C280 340, 260 380, 300 400 C340 420, 320 380, 360 360" stroke="#818cf8" stroke-width="1" fill="none"/>
@@ -702,30 +710,44 @@ section { position: relative; z-index: 1; scroll-snap-align: start; scroll-margi
 </footer>
 
 <script>
-// ═══════ SCROLL REVEAL ═══════
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+// ═══════ SMOOTH SCROLL ENGINE ═══════
+(function() {
+  let scrollY = 0;
+  let currentY = 0;
+  let rafId = null;
+  const ease = 0.08;
 
-// ═══════ STAT COUNT-UP ═══════
-const statObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const el = entry.target;
-    const target = parseInt(el.dataset.count);
-    if (target === 0) { el.textContent = '0'; return; }
-    let current = 0;
-    const step = Math.max(1, Math.floor(target / 40));
-    const interval = setInterval(() => {
-      current += step;
-      if (current >= target) { current = target; clearInterval(interval); }
-      el.textContent = current;
-    }, 30);
-    statObserver.unobserve(el);
-  });
-}, { threshold: 0.5 });
-document.querySelectorAll('[data-count]').forEach(el => statObserver.observe(el));
+  const parallaxEls = document.querySelectorAll('[data-speed]');
+  const revealEls = document.querySelectorAll('.reveal');
+
+  // Reveal observer
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // Parallax on scroll
+  function updateParallax() {
+    currentY += (scrollY - currentY) * ease;
+
+    parallaxEls.forEach(el => {
+      const speed = parseFloat(el.dataset.speed);
+      const yOffset = currentY * speed;
+      el.style.transform = `translate(-50%, calc(-50% + ${yOffset}px))`;
+    });
+
+    if (Math.abs(scrollY - currentY) > 0.5) {
+      rafId = requestAnimationFrame(updateParallax);
+    } else {
+      rafId = null;
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    scrollY = window.pageYOffset;
+    if (!rafId) rafId = requestAnimationFrame(updateParallax);
+  }, { passive: true });
+})();
 </script>
 </body>
 </html>
