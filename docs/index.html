@@ -61,8 +61,8 @@ body::after {
 
 /* ═══════════ BRAIN SVG BG ═══════════ */
 .brain-bg {
-  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: 110vw; max-width: 1200px; height: auto;
+  position: fixed; top: 0; left: 0;
+  width: 100vw; height: 100vh;
   opacity: 0.3; pointer-events: none; z-index: 0;
   filter: drop-shadow(0 0 12px rgba(99,102,241,0.4)) drop-shadow(0 0 40px rgba(99,102,241,0.15));
 }
@@ -76,13 +76,6 @@ body::after {
 .brain-bg .trace:nth-child(5n) { animation-delay: 0.5s; animation-duration: 3.5s; }
 @keyframes node-pulse { 0%,100%{opacity:.4; transform: scale(1)} 50%{opacity:1; transform: scale(1.8)} }
 @keyframes trace-flow { 0%{stroke-dashoffset:150} 100%{stroke-dashoffset:-150} }
-
-@media (max-width: 768px) {
-  .brain-bg { width: 140vw; max-width: none; opacity: 0.28; }
-}
-@media (max-width: 480px) {
-  .brain-bg { width: 180vw; opacity: 0.25; }
-}
 
 /* ═══════════ NAV ═══════════ */
 .nav {
@@ -487,7 +480,7 @@ section { position: relative; z-index: 1; }
 </nav>
 
 <!-- Brain-Circuit SVG — fixed page background -->
-<svg class="brain-bg" viewBox="0 0 1000 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg class="brain-bg" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" fill="none" xmlns="http://www.w3.org/2000/svg">
     <!-- Left hemisphere: organic neural pathways -->
     <path class="trace" d="M120 350 C100 280, 160 220, 220 240 C280 260, 260 320, 300 350 C340 380, 320 300, 370 320" stroke="#6366f1" stroke-width="2" fill="none"/>
     <path class="trace" d="M100 400 C80 450, 140 480, 200 460 C260 440, 240 490, 300 500 C360 510, 340 460, 380 440" stroke="#818cf8" stroke-width="1.8" fill="none"/>
