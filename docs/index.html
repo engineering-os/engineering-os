@@ -42,13 +42,14 @@
   --radius-lg: 20px;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
 body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text-primary);
   line-height: 1.7;
   overflow-x: hidden;
+  width: 100%;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -62,8 +63,9 @@ body::after {
 /* ═══════════ NETWORK BG ═══════════ */
 #network-bg {
   position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100vw; height: 100vh;
   pointer-events: none; z-index: 0;
+  max-width: 100%;
 }
 
 /* ═══════════ NAV ═══════════ */
@@ -98,7 +100,23 @@ body::after {
   transition: transform .2s, box-shadow .2s !important;
 }
 .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 0 40px rgba(99,102,241,0.3) !important; }
-.nav-mobile { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; padding: 8px; }
+.nav-mobile { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; padding: 8px; z-index: 101; }
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed; top: 0; right: 0;
+    width: 240px; height: 100vh;
+    background: var(--bg-elevated);
+    border-left: 1px solid var(--border);
+    flex-direction: column; align-items: stretch;
+    padding: 72px 20px 20px;
+    transform: translateX(100%);
+    transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -4px 0 24px rgba(0,0,0,.4);
+  }
+  .nav-links.show { transform: translateX(0); }
+  .nav-links a { display: block !important; padding: 12px 16px; font-size: 15px; border-radius: 8px; }
+  .nav-links .nav-cta { margin-left: 0 !important; margin-top: 12px; text-align: center; padding: 12px 18px !important; }
+}
 
 /* ═══════════ HERO ═══════════ */
 .hero {
@@ -319,8 +337,9 @@ section { position: relative; z-index: 1; }
 .how-step {
   display: grid; grid-template-columns: 60px 1fr; gap: 24px;
   padding: 28px 0; border-bottom: 1px solid var(--border);
-  align-items: start;
+  align-items: start; min-width: 0;
 }
+.how-step > div { min-width: 0; }
 .how-step:last-child { border-bottom: none; }
 .how-step-num {
   width: 48px; height: 48px; border-radius: 14px;
@@ -334,8 +353,9 @@ section { position: relative; z-index: 1; }
   margin-top: 16px; padding: 16px 20px;
   background: var(--bg-elevated); border: 1px solid var(--border);
   border-radius: 10px; font-family: var(--mono); font-size: 13px;
-  color: var(--text-secondary); line-height: 1.7; overflow-x: auto;
-  white-space: pre;
+  color: var(--text-secondary); line-height: 1.7;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  white-space: pre; max-width: 100%;
 }
 .how-step-code .g { color: var(--green); }
 .how-step-code .c { color: var(--cyan); }
@@ -433,24 +453,24 @@ section { position: relative; z-index: 1; }
 }
 @media (max-width: 768px) {
   .nav { padding: 12px 16px; }
-  .nav-links a:not(.nav-cta) { display: none; }
   .nav-mobile { display: block; }
   .hero { padding: 100px 20px 50px; min-height: auto; }
   .hero h1 { letter-spacing: -1.5px; font-size: clamp(32px, 8vw, 48px); }
   .hero-sub { font-size: 16px; max-width: 90%; }
   .hero-actions { flex-direction: column; align-items: center; }
   .btn { width: 100%; max-width: 280px; justify-content: center; }
-  .hero-install { font-size: 12px; padding: 12px 16px; }
+  .hero-install { font-size: 11px; padding: 10px 14px; max-width: 90vw; overflow-x: auto; }
   .arch-section, .how-section, .features-section, .usecases-section, .compare-section, .cta-section { padding: 48px 20px; }
   .features-grid { grid-template-columns: 1fr; }
   .usecases-grid { grid-template-columns: 1fr; }
   .arch-modules-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .arch-tier-nodes { gap: 8px; }
-  .arch-chip { font-size: 12px; padding: 8px 12px; }
+  .arch-chip { font-size: 11px; padding: 8px 10px; gap: 6px; }
+  .arch-chip-logo { width: 20px; height: 20px; font-size: 9px; }
   .how-step { grid-template-columns: 44px 1fr; gap: 14px; padding: 24px 0; }
   .how-step h3 { font-size: 16px; }
   .how-step p { font-size: 13px; }
-  .how-step-code { font-size: 11.5px; padding: 14px 16px; }
+  .how-step-code { font-size: 11px; padding: 12px 14px; white-space: pre; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .compare-table { margin-top: 32px; }
   .compare-cell { padding: 12px 14px; font-size: 12px; }
   .trust-logos { gap: 8px; }
@@ -470,7 +490,9 @@ section { position: relative; z-index: 1; }
   .arch-mod { padding: 12px 8px; }
   .arch-mod-icon { font-size: 18px; }
   .arch-mod-name { font-size: 11px; }
+  .how-step { grid-template-columns: 36px 1fr; gap: 10px; }
   .how-step-num { width: 36px; height: 36px; font-size: 14px; border-radius: 10px; }
+  .how-step-code { font-size: 10px; padding: 10px 12px; white-space: pre; overflow-x: auto; }
   .compare-row { grid-template-columns: 1fr; }
   .compare-cell:first-child { border-right: none; border-bottom: 1px solid var(--border); }
   .trust-section { padding: 40px 16px; }
@@ -753,6 +775,11 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Mobile nav: close on link tap
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('show'));
+});
 
 // AI Whisper — terminal log, types line by line, keeps max 3 visible
 (function() {
