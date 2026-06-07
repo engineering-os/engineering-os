@@ -1,5 +1,9 @@
 # Engineering OS
 
+[![GitHub stars](https://img.shields.io/github/stars/engineering-os/engineering-os?style=social)](https://github.com/engineering-os/engineering-os)
+[![npm](https://img.shields.io/npm/v/engineering-os?color=6366f1)](https://www.npmjs.com/package/engineering-os)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](./LICENSE)
+
 **Your AI finally remembers your codebase.**
 
 Stop re-explaining your architecture every session. Engineering OS gives Claude Code, Cursor, Codex, and any MCP-compatible AI code editor the memory they've always been missing. They finally write code like someone who actually knows your project.
