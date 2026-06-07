@@ -368,7 +368,7 @@ li { margin: 6px 0; }
   <div class="header-logo">
     <span class="icon">E</span>
     Engineering OS
-    <span class="header-badge">v0.1.0</span>
+    <span class="header-badge">v0.1.2</span>
   </div>
   <nav class="header-nav">
     <a href="#overview" class="active">Docs</a>
@@ -436,6 +436,7 @@ li { margin: 6px 0; }
   </div>
   <div class="nav-group">
     <div class="nav-group-title">Reference</div>
+    <a class="nav-item" href="#all-tools">All 47 Tools</a>
     <a class="nav-item" href="#languages">Language Support</a>
     <a class="nav-item" href="#config">Configuration</a>
   </div>
@@ -951,7 +952,7 @@ eos_context({ task: "add retry logic to file upload" })
   <span class="badge badge-new">New</span>
 </div>
 <div class="tool-card-body">
-  <div class="tool-card-desc">Multi-agent feature planning pipeline. Takes a plain-English requirement and produces a structured execution plan using 11 specialized agent personas (Product Refiner, Tech Refiner, Planner, FE/BE/DevOps/Security/AI/FullStack Engineers, QA, Reviewer).</div>
+  <div class="tool-card-desc">Autonomous feature planning pipeline. Takes a plain-English requirement, validates it against your architecture, maps affected services, and produces a structured execution plan with specialist assignments (frontend, backend, DevOps, security, etc.).</div>
   <table>
   <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
   <tr><td><code>requirement</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>What to build — plain English requirement</td></tr>
@@ -1018,7 +1019,89 @@ eos_build({
 </div>
 </div>
 
-<p>Additional security tools: <code>eos_security_audit</code> (full OWASP audit), <code>eos_threat_model</code> (STRIDE analysis), <code>eos_dependency_check</code> (CVE scanning across all package managers), <code>eos_compliance_check</code> (SOC2/HIPAA/PCI-DSS), <code>eos_posture_score</code> (security trend tracking).</p>
+<h3>All Security & Compliance Tools</h3>
+<table>
+<tr><th>Tool</th><th>Purpose</th></tr>
+<tr><td><code>eos_security_scan</code></td><td>Scan for secrets, injection, XSS, path traversal, insecure configs</td></tr>
+<tr><td><code>eos_security_audit</code></td><td>Full OWASP Top 10 audit with CWE mapping</td></tr>
+<tr><td><code>eos_threat_model</code></td><td>STRIDE-based threat modeling with data flow analysis</td></tr>
+<tr><td><code>eos_dependency_check</code></td><td>CVE scanning across all package managers (npm, pip, Go, Maven, Gradle, Cargo, Gem)</td></tr>
+<tr><td><code>eos_compliance_check</code></td><td>Framework compliance (SOC2, HIPAA, PCI-DSS)</td></tr>
+<tr><td><code>eos_posture_score</code></td><td>Security posture scoring (0-100) with trend tracking</td></tr>
+<tr><td><code>eos_security_conventions</code></td><td>View/manage security coding standards</td></tr>
+</table>
+</section>
+
+<!-- All Tools Reference -->
+<section id="all-tools">
+<h2>Complete Tool Reference (47 Tools)</h2>
+<p>Every MCP tool available when connected to the Engineering OS server.</p>
+
+<h3>Knowledge & Search</h3>
+<table>
+<tr><th>Tool</th><th>Purpose</th></tr>
+<tr><td><code>eos_context</code></td><td>Full project context for a task (primary entry point)</td></tr>
+<tr><td><code>eos_search</code></td><td>Full-text search across code, docs, decisions</td></tr>
+<tr><td><code>eos_search_all</code></td><td>Federated search across all linked repositories</td></tr>
+<tr><td><code>eos_explain</code></td><td>Explain a service/module at system level</td></tr>
+<tr><td><code>eos_index</code></td><td>Trigger re-indexing of files</td></tr>
+<tr><td><code>eos_health</code></td><td>Knowledge quality metrics (coverage, staleness, drift)</td></tr>
+<tr><td><code>eos_status</code></td><td>Workflow state, progress, and budget usage</td></tr>
+<tr><td><code>eos_export</code></td><td>Export knowledge as portable JSON archive</td></tr>
+</table>
+
+<h3>Architecture & Dependencies</h3>
+<table>
+<tr><th>Tool</th><th>Purpose</th></tr>
+<tr><td><code>eos_architecture</code></td><td>View discovered architecture (services, layers, patterns)</td></tr>
+<tr><td><code>eos_graph</code></td><td>Query the service dependency graph</td></tr>
+<tr><td><code>eos_impact</code></td><td>Analyze blast radius of a change</td></tr>
+<tr><td><code>eos_contracts</code></td><td>List API contracts between services</td></tr>
+<tr><td><code>eos_discover_contracts</code></td><td>Auto-discover API contracts from code</td></tr>
+<tr><td><code>eos_dependencies</code></td><td>Show what depends on a file/module</td></tr>
+<tr><td><code>eos_cross_context</code></td><td>Get context from linked repos</td></tr>
+<tr><td><code>eos_owners</code></td><td>Find code owners for files/modules</td></tr>
+</table>
+
+<h3>Conventions & Decisions</h3>
+<table>
+<tr><th>Tool</th><th>Purpose</th></tr>
+<tr><td><code>eos_conventions</code></td><td>View project coding conventions</td></tr>
+<tr><td><code>eos_patterns</code></td><td>Find coding patterns to follow</td></tr>
+<tr><td><code>eos_decide</code></td><td>Record an engineering decision</td></tr>
+<tr><td><code>eos_recall_decision</code></td><td>Check if a decision was already made</td></tr>
+<tr><td><code>eos_alternatives</code></td><td>Explore alternative approaches with tradeoffs</td></tr>
+</table>
+
+<h3>Learning & Skills</h3>
+<table>
+<tr><th>Tool</th><th>Purpose</th></tr>
+<tr><td><code>eos_learn</code></td><td>Record a discovery for future sessions</td></tr>
+<tr><td><code>eos_recall_skills</code></td><td>Recall relevant learned skills</td></tr>
+</table>
+
+<h3>Workflow & Planning</h3>
+<table>
+<tr><th>Tool</th><th>Purpose</th></tr>
+<tr><td><code>eos_build</code></td><td>Autonomous feature planning pipeline</td></tr>
+<tr><td><code>eos_refine</code></td><td>Refine a requirement into structured spec</td></tr>
+<tr><td><code>eos_plan</code></td><td>Generate execution plan with parallel task groups</td></tr>
+<tr><td><code>eos_review</code></td><td>Architecture-aware code review</td></tr>
+<tr><td><code>eos_validate</code></td><td>Validate code against project standards</td></tr>
+<tr><td><code>eos_marketplace</code></td><td>Browse and install workflow templates</td></tr>
+</table>
+
+<h3>Multi-Repo & Team</h3>
+<table>
+<tr><th>Tool</th><th>Purpose</th></tr>
+<tr><td><code>eos_link_repo</code></td><td>Link a repository for federated features</td></tr>
+<tr><td><code>eos_unlink_repo</code></td><td>Remove a linked repository</td></tr>
+<tr><td><code>eos_team_sync</code></td><td>Manage team conventions and policies</td></tr>
+<tr><td><code>eos_analytics</code></td><td>Usage analytics and tool stats</td></tr>
+<tr><td><code>eos_audit_log</code></td><td>Query the audit trail of all tool calls</td></tr>
+<tr><td><code>eos_audit_report</code></td><td>Generate exportable audit report</td></tr>
+</table>
+
 </section>
 
 <!-- Language & Framework Support -->
@@ -1200,7 +1283,7 @@ eos refresh --since=HEAD~5</code></pre>
 
 <footer style="text-align:center; padding: 48px 0 32px; border-top: 1px solid var(--border-light); margin-top: 64px;">
   <p style="color: var(--text-tertiary); font-size: 12px;">
-    Engineering OS v0.1.0 · 47 MCP Tools · 341 Tests · 25K Lines<br>
+    Engineering OS v0.1.2 · 47 MCP Tools · 341 Tests · 26K Lines<br>
     100% Local · Zero API Keys · Works Offline
   </p>
 </footer>
