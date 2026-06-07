@@ -428,8 +428,6 @@ section { position: relative; z-index: 1; }
 .reveal-delay-2 { transition-delay: .24s; }
 .reveal-delay-3 { transition-delay: .36s; }
 
-/* Parallax layers */
-[data-speed] { will-change: transform; transition: transform .1s linear; }
 </style>
 </head>
 <body>
@@ -454,9 +452,9 @@ section { position: relative; z-index: 1; }
 
 <!-- Hero -->
 <section class="hero">
-  <div class="hero-glow" data-speed="0.3"></div>
+  <div class="hero-glow"></div>
   <!-- Brain-Circuit SVG Background -->
-  <svg class="brain-bg" data-speed="0.15" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg class="brain-bg" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
     <!-- Left: organic brain curves -->
     <path class="trace" d="M200 300 C180 250, 220 200, 260 220 C300 240, 280 280, 300 300 C320 320, 340 280, 360 300" stroke="#6366f1" stroke-width="1.5" fill="none"/>
     <path class="trace" d="M180 320 C160 360, 200 380, 240 360 C280 340, 260 380, 300 400 C340 420, 320 380, 360 360" stroke="#818cf8" stroke-width="1" fill="none"/>
@@ -710,44 +708,11 @@ section { position: relative; z-index: 1; }
 </footer>
 
 <script>
-// ═══════ SMOOTH SCROLL ENGINE ═══════
-(function() {
-  let scrollY = 0;
-  let currentY = 0;
-  let rafId = null;
-  const ease = 0.08;
-
-  const parallaxEls = document.querySelectorAll('[data-speed]');
-  const revealEls = document.querySelectorAll('.reveal');
-
-  // Reveal observer
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
-  revealEls.forEach(el => revealObserver.observe(el));
-
-  // Parallax on scroll
-  function updateParallax() {
-    currentY += (scrollY - currentY) * ease;
-
-    parallaxEls.forEach(el => {
-      const speed = parseFloat(el.dataset.speed);
-      const yOffset = currentY * speed;
-      el.style.transform = `translate(-50%, calc(-50% + ${yOffset}px))`;
-    });
-
-    if (Math.abs(scrollY - currentY) > 0.5) {
-      rafId = requestAnimationFrame(updateParallax);
-    } else {
-      rafId = null;
-    }
-  }
-
-  window.addEventListener('scroll', () => {
-    scrollY = window.pageYOffset;
-    if (!rafId) rafId = requestAnimationFrame(updateParallax);
-  }, { passive: true });
-})();
+// Reveal on scroll — simple, no forced scrolling
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
