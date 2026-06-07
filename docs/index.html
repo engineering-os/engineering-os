@@ -3,1707 +3,633 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Engineering OS — Developer Documentation</title>
+<title>Engineering OS — The Engineering Brain for AI Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Mono:wght@400;500&family=Roboto:wght@300;400;500;700&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 :root {
-  --surface-0: #f8fafb;
-  --surface-1: #ffffff;
-  --surface-2: #f1f3f4;
-  --surface-3: #e8eaed;
-  --text-primary: #202124;
-  --text-secondary: #5f6368;
-  --text-tertiary: #80868b;
-  --accent: #1a73e8;
-  --accent-hover: #1557b0;
-  --accent-surface: #e8f0fe;
-  --accent-text: #185abc;
-  --green: #188038;
-  --green-surface: #e6f4ea;
-  --orange: #e37400;
-  --orange-surface: #fef7e0;
-  --red: #d93025;
-  --red-surface: #fce8e6;
-  --purple: #7627bb;
-  --purple-surface: #f3e8fd;
-  --border: #dadce0;
-  --border-light: #e8eaed;
-  --shadow-1: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
-  --shadow-2: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
-  --code-bg: #1e1e1e;
-  --code-text: #d4d4d4;
-  --radius: 8px;
-  --radius-lg: 12px;
-  --font-sans: 'Google Sans', 'Roboto', -apple-system, sans-serif;
-  --font-body: 'Roboto', -apple-system, sans-serif;
-  --font-mono: 'Google Sans Mono', 'Roboto Mono', monospace;
-  --sidebar-width: 272px;
-  --header-height: 64px;
+  --bg: #09090b;
+  --bg-elevated: #111114;
+  --bg-card: rgba(255,255,255,0.03);
+  --bg-card-hover: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.06);
+  --border-hover: rgba(255,255,255,0.12);
+  --text-primary: #fafafa;
+  --text-secondary: rgba(255,255,255,0.6);
+  --text-muted: rgba(255,255,255,0.4);
+  --accent: #6366f1;
+  --accent-glow: rgba(99,102,241,0.15);
+  --accent-bright: #818cf8;
+  --green: #22c55e;
+  --green-glow: rgba(34,197,94,0.12);
+  --orange: #f59e0b;
+  --purple: #a78bfa;
+  --red: #ef4444;
+  --cyan: #06b6d4;
+  --font: 'Inter', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --radius: 12px;
+  --radius-lg: 20px;
 }
 
-[data-theme="dark"] {
-  --surface-0: #0d1117;
-  --surface-1: #161b22;
-  --surface-2: #21262d;
-  --surface-3: #30363d;
-  --text-primary: #f0f6fc;
-  --text-secondary: #c9d1d9;
-  --text-tertiary: #8b949e;
-  --accent: #58a6ff;
-  --accent-hover: #79c0ff;
-  --accent-surface: #1c2d41;
-  --accent-text: #79c0ff;
-  --green: #3fb950;
-  --green-surface: #1b2e1f;
-  --orange: #d29922;
-  --orange-surface: #2e2418;
-  --red: #f85149;
-  --red-surface: #3d1a1a;
-  --purple: #bc8cff;
-  --purple-surface: #2a1f3d;
-  --border: #30363d;
-  --border-light: #21262d;
-  --shadow-1: 0 2px 6px rgba(0,0,0,.4);
-  --shadow-2: 0 4px 12px rgba(0,0,0,.5);
-  --code-bg: #0d1117;
-  --code-text: #e6edf3;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
+html { scroll-behavior: smooth; }
 body {
-  font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.75;
+  font-family: var(--font);
+  background: var(--bg);
   color: var(--text-primary);
-  background: var(--surface-0);
+  line-height: 1.7;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  transition: background .3s, color .3s;
 }
 
-/* Header */
-.header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  height: var(--header-height);
-  background: var(--surface-1);
+/* Noise texture overlay */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.015;
+}
+
+/* ═══════════ NAVIGATION ═══════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 16px 32px;
+  background: rgba(9,9,11,0.7);
+  backdrop-filter: blur(20px) saturate(1.4);
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; padding: 0 24px;
-  box-shadow: 0 1px 2px rgba(0,0,0,.05);
-  transition: background .3s, border-color .3s;
+  display: flex; align-items: center;
+  transition: all .3s;
 }
-.header-logo {
-  font-family: var(--font-sans);
-  font-size: 18px; font-weight: 500;
-  color: var(--text-primary);
+.nav-logo {
   display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 15px; letter-spacing: -0.3px;
 }
-.header-logo .icon {
-  width: 28px; height: 28px; border-radius: 6px;
-  background: linear-gradient(135deg, var(--accent), #4285f4);
+.nav-logo-mark {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
   display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 14px; font-weight: 700;
+  font-size: 12px; font-weight: 800; color: white;
+  box-shadow: 0 0 20px var(--accent-glow);
 }
-.header-badge {
-  font-size: 11px; font-weight: 500; padding: 2px 8px;
-  background: var(--accent-surface); color: var(--accent-text);
-  border-radius: 12px; margin-left: 8px;
-}
-.header-nav { margin-left: auto; display: flex; gap: 8px; }
-.header-nav a {
-  font-family: var(--font-sans); font-size: 13px; font-weight: 500;
-  padding: 8px 16px; border-radius: 20px;
+.nav-links { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+.nav-links a {
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
   color: var(--text-secondary); text-decoration: none;
-  transition: background .15s, color .15s;
+  transition: color .2s, background .2s;
 }
-.header-nav a:hover { background: var(--surface-2); color: var(--text-primary); }
-.header-nav a.active { background: var(--accent-surface); color: var(--accent-text); }
+.nav-links a:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+.nav-cta {
+  margin-left: 8px; padding: 8px 18px !important;
+  background: var(--accent) !important; color: white !important;
+  border-radius: 8px; font-weight: 600 !important; font-size: 13px;
+  box-shadow: 0 0 24px var(--accent-glow);
+  transition: transform .2s, box-shadow .2s !important;
+}
+.nav-cta:hover { transform: translateY(-1px); box-shadow: 0 0 40px rgba(99,102,241,0.3) !important; }
 
-/* Sidebar */
-.sidebar {
-  position: fixed; top: var(--header-height); left: 0; bottom: 0;
-  width: var(--sidebar-width); background: var(--surface-1);
-  border-right: 1px solid var(--border-light);
-  overflow-y: auto; padding: 16px 0;
-  font-size: 14px;
-  transition: background .3s;
-}
-.sidebar::-webkit-scrollbar { width: 4px; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-.nav-group { padding: 8px 0; }
-.nav-group-title {
-  font-family: var(--font-sans); font-size: 11px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .8px;
-  color: var(--text-tertiary); padding: 8px 24px 4px;
-}
-.nav-item {
-  display: block; padding: 6px 24px 6px 28px;
-  color: var(--text-secondary); text-decoration: none;
-  border-left: 3px solid transparent;
-  transition: all .12s;
-  font-weight: 400;
-}
-.nav-item:hover { color: var(--text-primary); background: var(--surface-2); }
-.nav-item.active {
-  color: var(--accent); font-weight: 500;
-  border-left-color: var(--accent); background: var(--accent-surface);
-}
-
-/* Main content */
-.main {
-  margin-left: var(--sidebar-width);
-  margin-top: var(--header-height);
-  min-height: calc(100vh - var(--header-height));
-}
-.content {
-  max-width: 840px;
-  padding: 40px 48px 80px;
-}
-.content > section { scroll-margin-top: calc(var(--header-height) + 24px); }
-
-/* Typography */
-h1 { font-family: var(--font-sans); font-size: 32px; font-weight: 400; line-height: 1.25; margin-bottom: 16px; color: var(--text-primary); }
-h2 { font-family: var(--font-sans); font-size: 24px; font-weight: 400; margin: 56px 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light); }
-h3 { font-family: var(--font-sans); font-size: 18px; font-weight: 500; margin: 36px 0 12px; }
-h4 { font-family: var(--font-sans); font-size: 15px; font-weight: 500; margin: 24px 0 8px; }
-p { margin: 0 0 16px; color: var(--text-secondary); line-height: 1.75; }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-strong { font-weight: 500; color: var(--text-primary); }
-
-/* Code */
-code {
-  font-family: var(--font-mono); font-size: 13px;
-  background: var(--surface-2); padding: 2px 6px;
-  border-radius: 4px; color: var(--text-primary);
-}
-pre {
-  background: var(--surface-2); color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 20px 24px;
-  overflow-x: auto; margin: 16px 0;
-  font-size: 14px; line-height: 1.6;
-}
-pre code { background: none; padding: 0; color: inherit; }
-.code-title {
-  background: var(--surface-3); color: var(--accent);
-  padding: 8px 24px; border-radius: var(--radius) var(--radius) 0 0;
-  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
-  margin-bottom: -1px;
-}
-.code-title + pre { border-radius: 0 0 var(--radius) var(--radius); margin-top: 0; }
-
-/* Command signature — single-line, no full code block needed */
-.cmd-sig {
-  font-family: var(--font-mono); font-size: 15px; font-weight: 500;
-  color: var(--accent); background: var(--accent-surface);
-  padding: 10px 18px; border-radius: var(--radius);
-  border-left: 4px solid var(--accent);
-  margin: 12px 0 16px; display: block;
-}
-
-/* File tree (not code, just structured text) */
-.file-tree {
-  font-family: var(--font-mono); font-size: 13px; line-height: 2;
-  color: var(--text-secondary); padding: 16px 20px;
-  background: var(--surface-1); border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg); margin: 16px 0;
-}
-.file-tree .dir { color: var(--accent); font-weight: 500; }
-.file-tree .comment { color: var(--text-tertiary); font-style: italic; }
-
-/* Tables */
-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
-th { text-align: left; font-family: var(--font-sans); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; color: var(--text-tertiary); padding: 12px 16px; border-bottom: 2px solid var(--border); }
-td { padding: 12px 16px; border-bottom: 1px solid var(--border-light); color: var(--text-secondary); vertical-align: top; }
-td:first-child { font-weight: 500; color: var(--text-primary); }
-tr:hover td { background: var(--surface-2); }
-
-/* Lists */
-ul, ol { margin: 8px 0 16px 20px; color: var(--text-secondary); }
-li { margin: 6px 0; }
-
-/* Cards */
-.tool-card {
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  margin: 16px 0; overflow: hidden;
-  background: var(--surface-1);
-  transition: box-shadow .2s;
-}
-.tool-card:hover { box-shadow: var(--shadow-1); }
-.tool-card-header {
-  display: flex; align-items: center; gap: 12px;
-  padding: 16px 20px; background: var(--surface-2);
-  border-bottom: 1px solid var(--border-light);
-}
-.tool-card-name {
-  font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--accent);
-}
-.tool-card-body { padding: 16px 20px; }
-.tool-card-desc { font-size: 15px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.6; }
-
-/* Badges */
-.badge {
-  display: inline-flex; align-items: center;
-  font-family: var(--font-sans); font-size: 11px; font-weight: 500;
-  padding: 2px 8px; border-radius: 4px;
-  text-transform: uppercase; letter-spacing: .3px;
-}
-.badge-required { background: var(--red-surface); color: var(--red); }
-.badge-optional { background: var(--surface-2); color: var(--text-tertiary); }
-.badge-new { background: var(--green-surface); color: var(--green); }
-
-/* Callouts */
-.callout {
-  border-radius: var(--radius);
-  padding: 16px 20px; margin: 16px 0;
-  display: flex; gap: 12px;
-  font-size: 13px; line-height: 1.6;
-}
-.callout-icon { flex-shrink: 0; font-size: 18px; margin-top: 1px; }
-.callout-note { background: var(--accent-surface); border-left: 4px solid var(--accent); }
-.callout-tip { background: var(--green-surface); border-left: 4px solid var(--green); }
-.callout-warning { background: var(--orange-surface); border-left: 4px solid var(--orange); }
-
-/* Feature grid */
-.feature-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px; margin: 20px 0;
-}
-.feature-card {
-  background: var(--surface-1); border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg); padding: 20px;
-  transition: box-shadow .2s, transform .2s;
-}
-.feature-card:hover { box-shadow: var(--shadow-1); transform: translateY(-1px); }
-.feature-card-icon { font-size: 28px; margin-bottom: 12px; }
-.feature-card h4 { font-size: 14px; margin: 0 0 6px; }
-.feature-card p { font-size: 12px; margin: 0; color: var(--text-tertiary); }
-
-/* Stats bar */
-.stats-bar {
-  display: flex; gap: 32px; padding: 20px 0; margin: 16px 0 32px;
-  border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);
-}
-.stat { text-align: center; }
-.stat-value { font-family: var(--font-sans); font-size: 28px; font-weight: 700; color: var(--accent); }
-.stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-tertiary); margin-top: 2px; }
-
-/* Architecture Diagram */
-.arch-diagram {
-  margin: 36px 0; padding: 40px 32px;
-  background: linear-gradient(135deg, var(--surface-1), var(--surface-2));
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  position: relative;
+/* ═══════════ HERO ═══════════ */
+.hero {
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 120px 24px 80px; text-align: center;
   overflow: hidden;
 }
-.arch-diagram::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, var(--accent-surface) 0%, transparent 60%);
-  opacity: 0.5; pointer-events: none;
+.hero-glow {
+  position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 800px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 60%);
+  filter: blur(60px); pointer-events: none;
+  animation: glow-pulse 6s ease-in-out infinite alternate;
+}
+@keyframes glow-pulse { 0%{opacity:.6;transform:translateX(-50%) scale(1)} 100%{opacity:1;transform:translateX(-50%) scale(1.1)} }
+
+.hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 20%, transparent 80%);
 }
 
-.arch-layer { position: relative; z-index: 1; }
-.arch-layer-label {
-  font-family: var(--font-sans); font-size: 11px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 1.2px;
-  color: var(--text-tertiary); margin-bottom: 12px; text-align: center;
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px; border-radius: 100px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  font-size: 12px; font-weight: 500; color: var(--text-secondary);
+  margin-bottom: 32px;
+  animation: fade-up .8s ease-out;
 }
-.arch-local-badge {
-  display: inline-block; background: var(--green-surface); color: var(--green);
-  padding: 2px 8px; border-radius: 10px; font-size: 9px; letter-spacing: 0.5px;
-  margin-left: 8px; vertical-align: middle; text-transform: uppercase;
+.hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.hero h1 {
+  font-size: clamp(40px, 7vw, 72px); font-weight: 800;
+  letter-spacing: -2px; line-height: 1.05;
+  max-width: 800px;
+  background: linear-gradient(180deg, var(--text-primary) 40%, var(--text-secondary) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: fade-up .8s ease-out .1s both;
+}
+.hero-sub {
+  margin-top: 24px; font-size: clamp(16px, 2vw, 20px);
+  color: var(--text-secondary); max-width: 560px; line-height: 1.6; font-weight: 400;
+  animation: fade-up .8s ease-out .2s both;
+}
+.hero-actions {
+  display: flex; gap: 12px; margin-top: 40px; flex-wrap: wrap; justify-content: center;
+  animation: fade-up .8s ease-out .3s both;
+}
+.btn {
+  padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  transition: all .2s;
+}
+.btn-primary {
+  background: var(--accent); color: white;
+  box-shadow: 0 0 30px var(--accent-glow), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(99,102,241,0.3); }
+.btn-ghost {
+  background: var(--bg-card); color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
+
+.hero-install {
+  margin-top: 48px; padding: 14px 24px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: 10px; font-family: var(--mono); font-size: 14px;
+  color: var(--text-secondary); display: inline-flex; align-items: center; gap: 12px;
+  animation: fade-up .8s ease-out .4s both;
+}
+.hero-install code { color: var(--green); }
+.hero-install .copy-btn {
+  background: none; border: none; color: var(--text-muted); cursor: pointer;
+  padding: 4px; border-radius: 4px; transition: color .2s;
+}
+.hero-install .copy-btn:hover { color: var(--text-primary); }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.arch-nodes {
-  display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;
+/* ═══════════ STATS ═══════════ */
+.stats {
+  display: flex; justify-content: center; gap: 48px; padding: 48px 24px;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
 }
-.arch-node {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 14px 18px; border-radius: 12px;
-  background: var(--surface-1); border: 1px solid var(--border);
-  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
-  color: var(--text-primary); transition: transform .2s, box-shadow .2s;
-  min-width: 90px;
-}
-.arch-node:hover { transform: translateY(-2px); box-shadow: var(--shadow-1); }
-.arch-node small { font-size: 10px; color: var(--text-tertiary); font-weight: 400; }
-.arch-node-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
-.arch-node-purple .arch-node-icon { background: var(--purple-surface); color: var(--purple); }
-.arch-node-green .arch-node-icon { background: var(--green-surface); color: var(--green); }
-.arch-node-orange .arch-node-icon { background: var(--orange-surface); color: var(--orange); }
-.arch-node-dim .arch-node-icon { background: var(--surface-2); color: var(--text-tertiary); }
-.arch-node-solid .arch-node-icon { background: var(--accent-surface); color: var(--accent); }
+.stat-item { text-align: center; }
+.stat-value { font-size: 36px; font-weight: 800; letter-spacing: -1px; color: var(--text-primary); }
+.stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
 
-.arch-connector {
+/* ═══════════ ARCHITECTURE VISUAL ═══════════ */
+.arch-section {
+  padding: 120px 24px; position: relative; overflow: hidden;
+}
+.arch-section .section-header { text-align: center; margin-bottom: 64px; }
+.section-tag {
+  display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--accent-bright); margin-bottom: 16px;
+}
+.section-title {
+  font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -1px;
+  max-width: 600px; margin: 0 auto;
+}
+.section-desc {
+  margin-top: 16px; font-size: 16px; color: var(--text-secondary);
+  max-width: 480px; margin-left: auto; margin-right: auto;
+}
+
+.arch-visual {
+  max-width: 900px; margin: 0 auto; position: relative;
+}
+
+/* Glass panels */
+.arch-tier {
+  position: relative; padding: 28px; margin-bottom: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  transition: border-color .3s;
+}
+.arch-tier:hover { border-color: var(--border-hover); }
+.arch-tier-label {
+  position: absolute; top: -10px; left: 24px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--accent-bright); background: var(--bg);
+  padding: 2px 12px; border-radius: 4px;
+}
+
+.arch-tier-nodes {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+.arch-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  font-size: 13px; font-weight: 500; color: var(--text-primary);
+  transition: all .25s;
+}
+.arch-chip:hover { background: rgba(255,255,255,0.07); transform: translateY(-1px); border-color: var(--border-hover); }
+.arch-chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* Flow arrow */
+.arch-flow {
   display: flex; align-items: center; justify-content: center;
-  gap: 12px; padding: 16px 0; position: relative;
+  padding: 12px 0; position: relative;
 }
-.arch-connector-line {
-  position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
-  background: linear-gradient(to bottom, var(--border), var(--accent), var(--border));
-  opacity: 0.5;
+.arch-flow-line {
+  width: 2px; height: 32px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  position: relative;
 }
-.arch-connector-label {
-  position: relative; z-index: 1;
-  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
-  color: var(--accent); background: var(--accent-surface);
-  padding: 4px 12px; border-radius: 20px;
-  letter-spacing: 0.3px;
+.arch-flow-line::after {
+  content: ''; position: absolute; bottom: -4px; left: -3px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
+  animation: flow-pulse 1.5s ease-in-out infinite;
 }
-.arch-connector-pulse {
-  position: absolute; left: calc(50% - 4px); top: 50%; width: 8px; height: 8px;
-  border-radius: 50%; background: var(--accent);
-  animation: pulse-down 2s ease-in-out infinite;
-}
-@keyframes pulse-down {
-  0%, 100% { opacity: 0; transform: translateY(-20px); }
-  50% { opacity: 1; transform: translateY(20px); }
+@keyframes flow-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.6)} }
+.arch-flow-tag {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  font-family: var(--mono); font-size: 10px; color: var(--accent-bright);
+  background: var(--bg); padding: 2px 10px; border-radius: 4px;
+  white-space: nowrap;
 }
 
-.arch-modules {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 10px; max-width: 680px; margin: 0 auto;
+/* Module grid inside middle tier */
+.arch-modules-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
 }
-.arch-module {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  padding: 16px 10px; border-radius: 10px;
-  background: var(--surface-1); border: 1px solid var(--border-light);
-  transition: transform .2s, border-color .2s;
-  text-align: center;
+.arch-mod {
+  padding: 16px 12px; border-radius: 10px; text-align: center;
+  background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+  transition: all .25s;
 }
-.arch-module:hover { transform: scale(1.03); border-color: var(--module-color); }
-.arch-module-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--module-color) 12%, transparent); color: var(--module-color); }
-.arch-module-name { font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--text-primary); }
-.arch-module-detail { font-size: 10px; color: var(--text-tertiary); }
+.arch-mod:hover { background: rgba(255,255,255,0.05); border-color: var(--border-hover); transform: translateY(-2px); }
+.arch-mod-icon { font-size: 20px; margin-bottom: 6px; }
+.arch-mod-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.arch-mod-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-@media (max-width: 960px) {
-  .arch-diagram { padding: 24px 16px; }
-  .arch-nodes { gap: 8px; }
-  .arch-node { padding: 10px 12px; min-width: 72px; font-size: 11px; }
-  .arch-node-icon { width: 30px; height: 30px; }
-  .arch-modules { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .arch-module { padding: 12px 8px; }
+/* ═══════════ FEATURES ═══════════ */
+.features-section { padding: 120px 24px; }
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px; max-width: 1000px; margin: 0 auto;
+  background: var(--border); border-radius: var(--radius-lg); overflow: hidden;
+}
+.feature-item {
+  padding: 36px 32px; background: var(--bg);
+  transition: background .3s;
+}
+.feature-item:hover { background: var(--bg-elevated); }
+.feature-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 16px;
+}
+.feature-item h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.feature-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+/* ═══════════ CODE EXAMPLE ═══════════ */
+.code-section { padding: 80px 24px 120px; }
+.code-demo {
+  max-width: 700px; margin: 0 auto;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.code-demo-header {
+  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.code-demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+.code-demo-body {
+  padding: 24px; font-family: var(--mono); font-size: 13px; line-height: 1.8;
+  color: var(--text-secondary); overflow-x: auto;
+}
+.code-demo-body .cmd { color: var(--green); }
+.code-demo-body .comment { color: var(--text-muted); }
+.code-demo-body .output { color: var(--cyan); }
+
+/* ═══════════ COMPARISON TABLE ═══════════ */
+.compare-section { padding: 80px 24px; }
+.compare-table {
+  max-width: 700px; margin: 48px auto 0;
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.compare-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+}
+.compare-row:last-child { border-bottom: none; }
+.compare-row-header { background: var(--bg-elevated); }
+.compare-cell {
+  padding: 14px 20px; font-size: 13px; color: var(--text-secondary);
+}
+.compare-cell:first-child { border-right: 1px solid var(--border); }
+.compare-row-header .compare-cell { font-weight: 600; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+.compare-cell .check { color: var(--green); margin-right: 6px; }
+.compare-cell .cross { color: var(--red); margin-right: 6px; opacity: .6; }
+
+/* ═══════════ CTA ═══════════ */
+.cta-section {
+  padding: 120px 24px; text-align: center; position: relative;
+}
+.cta-section::before {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+  filter: blur(80px); pointer-events: none;
+}
+.cta-section h2 {
+  font-size: clamp(28px, 4vw, 40px); font-weight: 700; letter-spacing: -1px;
+  position: relative;
+}
+.cta-section p { margin-top: 16px; color: var(--text-secondary); font-size: 16px; position: relative; }
+.cta-section .hero-actions { margin-top: 32px; position: relative; }
+
+/* ═══════════ FOOTER ═══════════ */
+.footer {
+  padding: 48px 24px; text-align: center;
+  border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+}
+.footer a { color: var(--text-secondary); text-decoration: none; }
+.footer a:hover { color: var(--text-primary); }
+.footer-links { display: flex; justify-content: center; gap: 24px; margin-bottom: 16px; }
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 768px) {
+  .nav { padding: 12px 16px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero { padding: 100px 20px 60px; }
+  .stats { flex-wrap: wrap; gap: 24px; padding: 32px 20px; }
+  .stat-value { font-size: 28px; }
+  .arch-section, .features-section, .code-section, .compare-section, .cta-section { padding: 80px 16px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .arch-modules-grid { grid-template-columns: repeat(2, 1fr); }
+  .compare-cell { padding: 12px 14px; font-size: 12px; }
+  .hero-install { font-size: 12px; padding: 12px 16px; }
 }
 @media (max-width: 480px) {
-  .arch-modules { grid-template-columns: repeat(2, 1fr); }
-  .arch-nodes { gap: 6px; }
-  .arch-node { padding: 8px 10px; min-width: 64px; font-size: 10px; }
+  .arch-modules-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .arch-chip { font-size: 11px; padding: 8px 12px; }
+  .hero h1 { letter-spacing: -1px; }
 }
 
-/* Mobile menu toggle */
-.mobile-menu-btn {
-  display: none;
-  background: none; border: none; cursor: pointer;
-  padding: 8px; border-radius: 8px; color: var(--text-primary);
-  transition: background .15s;
-}
-.mobile-menu-btn:hover { background: var(--surface-2); }
-.mobile-menu-btn svg { display: block; }
-
-/* Sidebar overlay */
-.sidebar-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.4); z-index: 998;
-  opacity: 0; transition: opacity .3s;
-}
-.sidebar-overlay.visible { display: block; opacity: 1; }
-
-/* Responsive */
-@media (max-width: 960px) {
-  .mobile-menu-btn { display: block; }
-  .header-nav a:not(#theme-toggle) { display: none; }
-
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform .3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 999;
-    box-shadow: none;
-  }
-  .sidebar.open {
-    transform: translateX(0);
-    box-shadow: 4px 0 24px rgba(0,0,0,.15);
-  }
-
-  .main { margin-left: 0; }
-  .content { padding: 32px 20px 60px; }
-
-  .stats-bar { flex-wrap: wrap; gap: 20px; justify-content: center; }
-  .stat { min-width: 80px; }
-
-  .feature-grid { grid-template-columns: 1fr; }
-
-  h1 { font-size: 26px; }
-  h2 { font-size: 20px; margin: 40px 0 12px; }
-  h3 { font-size: 16px; }
-
-  pre { font-size: 13px; padding: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
-  table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
-
-  .tool-card-header { flex-wrap: wrap; gap: 8px; }
-  .cmd-sig { font-size: 13px; padding: 8px 14px; overflow-x: auto; }
-}
-
-@media (max-width: 480px) {
-  .header { padding: 0 16px; }
-  .header-logo { font-size: 16px; }
-  .header-badge { display: none; }
-  .content { padding: 24px 16px 48px; }
-  .stats-bar { gap: 12px; padding: 16px 0; }
-  .stat-value { font-size: 22px; }
-  .feature-card { padding: 16px; }
-  .tool-card-body { padding: 12px 16px; }
-  .callout { padding: 12px 14px; font-size: 12px; }
-}
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-  <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle navigation">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-  <div class="header-logo">
-    <span class="icon">E</span>
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-mark">E</div>
     Engineering OS
-    <span class="header-badge">v0.1.2</span>
   </div>
-  <nav class="header-nav">
-    <a href="#overview" class="active">Docs</a>
-    <a href="#cli">CLI</a>
-    <a href="#tools-knowledge">API</a>
+  <div class="nav-links">
+    <a href="#architecture">How it works</a>
+    <a href="#features">Features</a>
     <a href="https://github.com/engineering-os/engineering-os">GitHub</a>
-    <button onclick="toggleTheme()" id="theme-toggle" title="Toggle dark mode" style="background:none;border:1px solid var(--border);border-radius:20px;padding:6px 12px;cursor:pointer;font-size:14px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;transition:all .2s;">
-      <span id="theme-icon">🌙</span>
+    <a href="https://www.npmjs.com/package/engineering-os" class="nav-cta">Install</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-badge">
+    <span class="hero-badge-dot"></span>
+    v0.1.2 — Now on npm
+  </div>
+
+  <h1>The engineering brain for your AI tools</h1>
+
+  <p class="hero-sub">A local MCP server that gives Claude Code, Cursor, and Windsurf persistent knowledge about your codebase. Architecture, conventions, decisions — all surviving between sessions.</p>
+
+  <div class="hero-actions">
+    <a href="#quickstart" class="btn btn-primary">Get Started</a>
+    <a href="https://github.com/engineering-os/engineering-os" class="btn btn-ghost">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      Star on GitHub
+    </a>
+  </div>
+
+  <div class="hero-install" id="quickstart">
+    <span>$</span> <code>npm install -g engineering-os</code>
+    <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g engineering-os')">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
     </button>
-  </nav>
-</header>
+  </div>
+</section>
 
-<!-- Sidebar overlay (mobile) -->
-<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<!-- Stats -->
+<div class="stats">
+  <div class="stat-item"><div class="stat-value">47</div><div class="stat-label">MCP Tools</div></div>
+  <div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Languages</div></div>
+  <div class="stat-item"><div class="stat-value">341</div><div class="stat-label">Tests</div></div>
+  <div class="stat-item"><div class="stat-value">0</div><div class="stat-label">API Keys</div></div>
+</div>
 
-<!-- Sidebar -->
-<aside class="sidebar">
-  <div class="nav-group">
-    <div class="nav-group-title">Get Started</div>
-    <a class="nav-item active" href="#overview">Overview</a>
-    <a class="nav-item" href="#quickstart">Quick Start</a>
+<!-- Architecture -->
+<section class="arch-section" id="architecture">
+  <div class="section-header reveal">
+    <div class="section-tag">Architecture</div>
+    <h2 class="section-title">One server. Every AI tool. Full context.</h2>
+    <p class="section-desc">EOS indexes once, serves everywhere. Your AI tools call it via MCP and get instant, structured answers.</p>
   </div>
-  <div class="nav-group">
-    <div class="nav-group-title">Guides</div>
-    <a class="nav-item" href="#guide-workspace">Workspace Setup</a>
-    <a class="nav-item" href="#guide-crossrepo">Cross-Repo Linking</a>
-    <a class="nav-item" href="#guide-skills">Skill Retention</a>
-    <a class="nav-item" href="#guide-integrations">AI Tool Integrations</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-group-title">CLI Reference</div>
-    <a class="nav-item" href="#cli">All Commands</a>
-    <a class="nav-item" href="#cli-init">eos init</a>
-    <a class="nav-item" href="#cli-serve">eos serve</a>
-    <a class="nav-item" href="#cli-refresh">eos refresh</a>
-    <a class="nav-item" href="#cli-workspace">eos workspace</a>
-    <a class="nav-item" href="#cli-link">eos link</a>
-    <a class="nav-item" href="#cli-index">eos index</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-group-title">API — Knowledge</div>
-    <a class="nav-item" href="#tool-context">eos_context</a>
-    <a class="nav-item" href="#tool-search">eos_search</a>
-    <a class="nav-item" href="#tool-explain">eos_explain</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-group-title">API — Architecture</div>
-    <a class="nav-item" href="#tool-graph">eos_graph</a>
-    <a class="nav-item" href="#tool-impact">eos_impact</a>
-    <a class="nav-item" href="#tool-contracts">eos_contracts</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-group-title">API — Learning</div>
-    <a class="nav-item" href="#tool-learn">eos_learn</a>
-    <a class="nav-item" href="#tool-recall">eos_recall_skills</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-group-title">API — Workflow</div>
-    <a class="nav-item" href="#tool-build">eos_build</a>
-    <a class="nav-item" href="#tool-decide">eos_decide</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-group-title">API — Security</div>
-    <a class="nav-item" href="#tool-security">eos_security_scan</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-group-title">Reference</div>
-    <a class="nav-item" href="#all-tools">All 47 Tools</a>
-    <a class="nav-item" href="#languages">Language Support</a>
-    <a class="nav-item" href="#config">Configuration</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-group-title">Help</div>
-    <a class="nav-item" href="#troubleshooting">Troubleshooting</a>
-  </div>
-</aside>
 
-<!-- Main Content -->
-<div class="main">
-<div class="content">
-
-<!-- Overview -->
-<section id="overview">
-<h1>Engineering OS</h1>
-<p style="font-size:18px; color: var(--text-primary); max-width: 680px; line-height: 1.7;">The engineering brain for your AI coding tools. A local MCP server that gives Claude Code, Cursor, and Windsurf persistent knowledge about your codebase — architecture, conventions, decisions, and cross-service dependencies that survive between sessions.</p>
-
-<p style="color: var(--text-secondary); max-width: 640px;">Your AI assistant forgets everything between sessions. It re-explores files, re-debates settled decisions, and misses cross-repo context. EOS fixes this by indexing your codebase once and serving structured knowledge on demand via the <a href="https://modelcontextprotocol.io">Model Context Protocol</a>.</p>
-
-<!-- Architecture Vision Diagram — CSS Visual -->
-<div class="arch-diagram">
-  <div class="arch-layer arch-layer-top">
-    <div class="arch-layer-label">Your AI Tools</div>
-    <div class="arch-nodes">
-      <div class="arch-node arch-node-purple">
-        <div class="arch-node-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <span>Claude Code</span>
+  <div class="arch-visual reveal">
+    <!-- Top tier: AI Tools -->
+    <div class="arch-tier">
+      <div class="arch-tier-label">AI Clients</div>
+      <div class="arch-tier-nodes">
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--purple)"></div> Claude Code</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--green)"></div> Cursor</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--orange)"></div> Windsurf</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--text-muted)"></div> VS Code</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--text-muted)"></div> Any MCP Client</div>
       </div>
-      <div class="arch-node arch-node-green">
-        <div class="arch-node-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        </div>
-        <span>Cursor</span>
+    </div>
+
+    <!-- Flow arrow -->
+    <div class="arch-flow">
+      <div class="arch-flow-line"></div>
+      <div class="arch-flow-tag">MCP Protocol (stdio)</div>
+    </div>
+
+    <!-- Middle tier: EOS Engine -->
+    <div class="arch-tier" style="border-color: var(--accent-glow); box-shadow: 0 0 60px var(--accent-glow);">
+      <div class="arch-tier-label">Engineering OS Engine</div>
+      <div class="arch-modules-grid">
+        <div class="arch-mod"><div class="arch-mod-icon">&#x1F50D;</div><div class="arch-mod-name">Code Search</div><div class="arch-mod-sub">FTS5 + BM25</div></div>
+        <div class="arch-mod"><div class="arch-mod-icon">&#x1F310;</div><div class="arch-mod-name">Service Graph</div><div class="arch-mod-sub">Cross-repo topology</div></div>
+        <div class="arch-mod"><div class="arch-mod-icon">&#x1F9E0;</div><div class="arch-mod-name">Skill Memory</div><div class="arch-mod-sub">Persists forever</div></div>
+        <div class="arch-mod"><div class="arch-mod-icon">&#x1F6E1;</div><div class="arch-mod-name">Security</div><div class="arch-mod-sub">OWASP + CVE</div></div>
+        <div class="arch-mod"><div class="arch-mod-icon">&#x1F4CB;</div><div class="arch-mod-name">Decisions</div><div class="arch-mod-sub">Never re-debates</div></div>
+        <div class="arch-mod"><div class="arch-mod-icon">&#x26A1;</div><div class="arch-mod-name">Workflows</div><div class="arch-mod-sub">DAG execution</div></div>
       </div>
-      <div class="arch-node arch-node-orange">
-        <div class="arch-node-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        </div>
-        <span>Windsurf</span>
-      </div>
-      <div class="arch-node arch-node-dim">
-        <div class="arch-node-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        </div>
-        <span>Any MCP</span>
+    </div>
+
+    <!-- Flow arrow -->
+    <div class="arch-flow">
+      <div class="arch-flow-line"></div>
+      <div class="arch-flow-tag">SQLite (local, zero cloud)</div>
+    </div>
+
+    <!-- Bottom tier: Repos -->
+    <div class="arch-tier">
+      <div class="arch-tier-label">Your Codebase</div>
+      <div class="arch-tier-nodes">
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div> Primary Project</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div> Backend API</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div> ML Pipeline</div>
+        <div class="arch-chip"><div class="arch-chip-dot" style="background:var(--cyan)"></div> Infra Config</div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="arch-connector">
-    <div class="arch-connector-line"></div>
-    <div class="arch-connector-label">MCP Protocol</div>
-    <div class="arch-connector-pulse"></div>
+<!-- Features -->
+<section class="features-section" id="features">
+  <div class="section-header reveal">
+    <div class="section-tag">Capabilities</div>
+    <h2 class="section-title">Everything your AI needs to be effective</h2>
   </div>
 
-  <div class="arch-layer arch-layer-mid">
-    <div class="arch-layer-label">Engineering OS <span class="arch-local-badge">100% Local</span></div>
-    <div class="arch-modules">
-      <div class="arch-module" style="--module-color: var(--green)">
-        <div class="arch-module-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </div>
-        <div class="arch-module-name">Code Index</div>
-        <div class="arch-module-detail">FTS5 + BM25</div>
-      </div>
-      <div class="arch-module" style="--module-color: var(--purple)">
-        <div class="arch-module-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="12" r="3"/><line x1="8.6" y1="7.4" x2="15.4" y2="10.6"/><line x1="8.6" y1="16.6" x2="15.4" y2="13.4"/></svg>
-        </div>
-        <div class="arch-module-name">Service Graph</div>
-        <div class="arch-module-detail">Cross-repo</div>
-      </div>
-      <div class="arch-module" style="--module-color: var(--orange)">
-        <div class="arch-module-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        </div>
-        <div class="arch-module-name">Skills</div>
-        <div class="arch-module-detail">Learns over time</div>
-      </div>
-      <div class="arch-module" style="--module-color: var(--red)">
-        <div class="arch-module-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <div class="arch-module-name">Security</div>
-        <div class="arch-module-detail">OWASP + CVE</div>
-      </div>
-      <div class="arch-module" style="--module-color: var(--accent)">
-        <div class="arch-module-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-        </div>
-        <div class="arch-module-name">Decisions</div>
-        <div class="arch-module-detail">Never re-debates</div>
-      </div>
-      <div class="arch-module" style="--module-color: var(--green)">
-        <div class="arch-module-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16,3 21,3 21,8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21,16 21,21 16,21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-        </div>
-        <div class="arch-module-name">Workflow</div>
-        <div class="arch-module-detail">DAG engine</div>
-      </div>
+  <div class="features-grid reveal">
+    <div class="feature-item">
+      <div class="feature-icon" style="background:var(--accent-glow);color:var(--accent-bright)">&#x1F9E0;</div>
+      <h3>Persistent Context</h3>
+      <p>Architecture, routes, conventions, and decisions survive across sessions. Your AI never starts from zero again.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:var(--green-glow);color:var(--green)">&#x1F517;</div>
+      <h3>Cross-Repo Intelligence</h3>
+      <p>Federated search across all linked services. AI sees your full microservices topology instantly.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:rgba(245,158,11,0.1);color:var(--orange)">&#x1F4DA;</div>
+      <h3>Skill Retention</h3>
+      <p>AI learns gotchas, patterns, and hidden connections from every session. Knowledge compounds over time.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:rgba(239,68,68,0.1);color:var(--red)">&#x1F6E1;</div>
+      <h3>Security Scanning</h3>
+      <p>OWASP Top 10, CVE detection across 7 ecosystems, STRIDE threat modeling, SOC2/HIPAA compliance.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:rgba(6,182,212,0.1);color:var(--cyan)">&#x1F50D;</div>
+      <h3>Instant Code Search</h3>
+      <p>Pre-indexed FTS5 with BM25 ranking and synonym expansion. Results in milliseconds, not seconds.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon" style="background:rgba(167,139,250,0.1);color:var(--purple)">&#x1F3D7;</div>
+      <h3>Architecture Discovery</h3>
+      <p>Auto-detects services, layers, patterns, conventions. Supports Express, NestJS, Spring Boot, Ktor, and more.</p>
     </div>
   </div>
+</section>
 
-  <div class="arch-connector">
-    <div class="arch-connector-line"></div>
-    <div class="arch-connector-label">SQLite (local)</div>
+<!-- Code Demo -->
+<section class="code-section">
+  <div class="section-header reveal">
+    <div class="section-tag">Quick Start</div>
+    <h2 class="section-title">Three commands. Full intelligence.</h2>
   </div>
 
-  <div class="arch-layer arch-layer-bottom">
-    <div class="arch-nodes">
-      <div class="arch-node arch-node-solid">
-        <div class="arch-node-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <span>Your Project</span>
-        <small>.eos/ index</small>
-      </div>
-      <div class="arch-node arch-node-solid">
-        <div class="arch-node-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-        </div>
-        <span>Linked Repos</span>
-        <small>Federated search</small>
-      </div>
+  <div class="code-demo reveal">
+    <div class="code-demo-header">
+      <div class="code-demo-dot" style="background:#ff5f57"></div>
+      <div class="code-demo-dot" style="background:#febc2e"></div>
+      <div class="code-demo-dot" style="background:#28c840"></div>
+    </div>
+    <div class="code-demo-body">
+<span class="comment"># Install globally</span>
+<span class="cmd">$ npm install -g engineering-os</span>
+
+<span class="comment"># Initialize in your project</span>
+<span class="cmd">$ cd your-project && eos init --claude --cursor</span>
+
+<span class="output">&#x2713; Repository indexed (847 files, 4201 chunks)</span>
+<span class="output">&#x2713; Architecture discovered (12 services, 3 patterns)</span>
+<span class="output">&#x2713; Graph built (156 calls, 4 contracts)</span>
+<span class="output">&#x2713; CLAUDE.md generated</span>
+<span class="output">&#x2713; .cursor/rules/ generated (5 files)</span>
+<span class="output">&#x2728; Engineering OS initialized!</span>
+
+<span class="comment"># Link sibling services for full topology</span>
+<span class="cmd">$ eos link backend ../backend-api</span>
+<span class="cmd">$ eos link ml-pipeline ../ml-service</span>
+
+<span class="comment"># Done. Open Claude Code or Cursor — EOS is active.</span>
     </div>
   </div>
-</div>
+</section>
 
-<div class="stats-bar">
-  <div class="stat"><div class="stat-value">47</div><div class="stat-label">MCP Tools</div></div>
-  <div class="stat"><div class="stat-value">8</div><div class="stat-label">Languages</div></div>
-  <div class="stat"><div class="stat-value">11</div><div class="stat-label">CLI Commands</div></div>
-  <div class="stat"><div class="stat-value">0</div><div class="stat-label">API Keys Required</div></div>
-</div>
-
-<div class="feature-grid">
-  <div class="feature-card">
-    <div class="feature-card-icon">🧠</div>
-    <h4>Persistent Context</h4>
-    <p>Architecture, conventions, and decisions survive across sessions. AI never starts from zero.</p>
+<!-- Comparison -->
+<section class="compare-section">
+  <div class="section-header reveal">
+    <div class="section-tag">Why EOS</div>
+    <h2 class="section-title">Before and after</h2>
   </div>
-  <div class="feature-card">
-    <div class="feature-card-icon">🔗</div>
-    <h4>Cross-Repo Intelligence</h4>
-    <p>Federated search across all your services. AI sees your FE → BFF → backend → ML pipeline topology.</p>
+
+  <div class="compare-table reveal">
+    <div class="compare-row compare-row-header">
+      <div class="compare-cell"><span class="cross">&#x2715;</span> Without EOS</div>
+      <div class="compare-cell"><span class="check">&#x2713;</span> With EOS</div>
+    </div>
+    <div class="compare-row"><div class="compare-cell">AI forgets between sessions</div><div class="compare-cell">Knowledge persists forever</div></div>
+    <div class="compare-row"><div class="compare-cell">30s exploring files before working</div><div class="compare-cell">Full context in one tool call</div></div>
+    <div class="compare-row"><div class="compare-cell">Re-debates settled decisions</div><div class="compare-cell">Decisions recalled instantly</div></div>
+    <div class="compare-row"><div class="compare-cell">Sees one repo at a time</div><div class="compare-cell">Full service graph available</div></div>
+    <div class="compare-row"><div class="compare-cell">Same gotcha every session</div><div class="compare-cell">Skills accumulate over time</div></div>
+    <div class="compare-row"><div class="compare-cell">No security awareness</div><div class="compare-cell">Continuous OWASP + CVE scanning</div></div>
   </div>
-  <div class="feature-card">
-    <div class="feature-card-icon">📚</div>
-    <h4>Skill Retention</h4>
-    <p>AI learns gotchas, patterns, and connections from every session. Knowledge compounds over time.</p>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="reveal">Ready to give your AI a brain?</h2>
+  <p class="reveal">100% local. Zero API keys. Works offline. Apache 2.0.</p>
+  <div class="hero-actions reveal">
+    <a href="https://www.npmjs.com/package/engineering-os" class="btn btn-primary">Install from npm</a>
+    <a href="https://github.com/engineering-os/engineering-os" class="btn btn-ghost">View Source</a>
   </div>
-  <div class="feature-card">
-    <div class="feature-card-icon">🔒</div>
-    <h4>100% Local</h4>
-    <p>SQLite on your machine. No cloud. No telemetry. No API keys. Works offline. Your code never leaves.</p>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="https://github.com/engineering-os/engineering-os">GitHub</a>
+    <a href="https://www.npmjs.com/package/engineering-os">npm</a>
+    <a href="https://github.com/engineering-os/engineering-os/blob/main/CONTRIBUTING.md">Contributing</a>
+    <a href="https://github.com/engineering-os/engineering-os/blob/main/SECURITY.md">Security</a>
   </div>
-  <div class="feature-card">
-    <div class="feature-card-icon">🛡️</div>
-    <h4>Security Built-In</h4>
-    <p>OWASP scanning, CVE detection across 7 ecosystems, STRIDE threat modeling, compliance checks.</p>
-  </div>
-  <div class="feature-card">
-    <div class="feature-card-icon">⚡</div>
-    <h4>Any AI Tool</h4>
-    <p>Works with Claude Code, Cursor, Windsurf, VS Code — anything that speaks MCP protocol.</p>
-  </div>
-</div>
-
-<h3>The Problem</h3>
-<table>
-<tr><th>Without EOS</th><th>With EOS</th></tr>
-<tr><td>AI forgets between sessions</td><td>Knowledge persists across all sessions</td></tr>
-<tr><td>AI explores files for 30s before working</td><td>AI gets full context in one <code>eos_context</code> call</td></tr>
-<tr><td>AI re-debates settled architecture decisions</td><td>Decisions are recalled instantly</td></tr>
-<tr><td>AI sees one repo at a time</td><td>Full cross-repo service graph available</td></tr>
-<tr><td>Same gotcha rediscovered every session</td><td>Skills accumulate and auto-inject</td></tr>
-<tr><td>No convention enforcement</td><td>Coding standards enforced automatically</td></tr>
-<tr><td>Security review is manual</td><td>Continuous OWASP + CVE scanning</td></tr>
-</table>
-</section>
-
-<!-- Quick Start -->
-<section id="quickstart">
-<h2>Quick Start</h2>
-
-<h3>1. Install</h3>
-<div class="code-title">Terminal</div>
-<pre><code>npm install -g engineering-os</code></pre>
-
-<h3>2. Initialize in your project</h3>
-<div class="code-title">Terminal</div>
-<pre><code>cd your-project
-eos init --claude --cursor
-
-# Output:
-# ✓ Repository indexed (847 files, 4201 chunks)
-# ✓ Architecture discovered (12 services, 3 patterns)
-# ✓ Graph built (156 calls, 4 contracts)
-# ✓ CLAUDE.md generated
-# ✓ .cursor/rules/ generated (5 files)
-# ✨ Engineering OS initialized!</code></pre>
-
-<h3>3. That's it — start coding</h3>
-<p>Open Claude Code or Cursor. Your AI now has full project knowledge. It will:</p>
-<ul>
-  <li>Call <code>eos_context</code> before starting any task (gets routes, architecture, conventions)</li>
-  <li>Use <code>eos_search</code> instead of grep/find (pre-indexed, instant results)</li>
-  <li>Recall past decisions with <code>eos_recall_decision</code> (never re-debates)</li>
-  <li>Learn from the session with <code>eos_learn</code> (gotchas persist forever)</li>
-</ul>
-
-<div class="callout callout-tip">
-  <span class="callout-icon">💡</span>
-  <div><strong>No manual wiring needed.</strong> The generated <code>CLAUDE.md</code> steers your AI to call EOS tools automatically. The <code>.mcp.json</code> tells Claude Code where the server is. Just code.</div>
-</div>
-
-<h3>4. Cross-repo (optional)</h3>
-<div class="code-title">Terminal</div>
-<pre><code># Link sibling services for full architecture awareness
-eos link backend-api ../backend-api
-eos link mobile-app ../mobile-app
-
-# Or declare in eos.workspace.yaml (team-shared, checked into git)
-eos workspace add-repo backend-api ../backend-api --role bff</code></pre>
-
-<h3>5. Keep fresh</h3>
-<div class="code-title">Terminal</div>
-<pre><code># Auto-refresh after code changes (add to git post-commit hook)
-eos refresh --incremental
-
-# Or continuous watch mode
-eos index --watch</code></pre>
-
-<div class="callout callout-note">
-  <span class="callout-icon">📘</span>
-  <div><strong>For library/SDK authors:</strong> You can import the core engine directly — <code>require('engineering-os')</code> gives you the full knowledge engine, graph store, and MCP server as a programmatic API.</div>
-</div>
-</section>
-
-<!-- Guide: Workspace -->
-<section id="guide-workspace">
-<h2>Workspace Setup</h2>
-<p>Create <code>eos.workspace.yaml</code> in your project root. This file is checked into git — your entire team shares the same conventions and decisions.</p>
-
-<div class="code-title">eos.workspace.yaml</div>
-<pre><code># Team-shared project configuration — checked into git
-name: acme-mobile
-type: react-native-monorepo
-org: acme-corp
-
-# Linked repositories in your ecosystem
-repos:
-  - name: acme-gateway
-    path: ../gateway          # API gateway configuration
-    role: api-gateway
-  - name: acme-api
-    path: ../backend          # Main backend service (Spring Boot / Express)
-    role: backend-service
-  - name: acme-ml
-    path: ../ml-pipeline      # Data science / ML inference
-    role: ml-pipeline
-
-# Coding conventions (enforced across all AI sessions)
-conventions:
-  - name: error-handling
-    rule: "Use Result&lt;T&gt; pattern in services. Only controllers throw HTTP exceptions."
-  - name: state-management
-    rule: "Zustand stores only. No Redux. One store per domain."
-  - name: api-calls
-    rule: "All network calls go through the shared HTTP client. Never use raw fetch/axios."
-  - name: file-naming
-    rule: "kebab-case for files, PascalCase for components, camelCase for hooks"
-
-# Settled decisions (AI will not re-debate these)
-decisions:
-  - title: "Redis for session store"
-    decision: "Use Redis Cluster for all session management"
-    rationale: "Sub-ms read latency, built-in expiry, horizontal scaling proven at load"
-  - title: "API Gateway pattern"
-    decision: "All client traffic routes through the gateway service"
-    rationale: "Centralizes rate limiting, auth validation, and request transformation"
-
-# Which AI tool context files to generate
-ai:
-  tools: [claude, cursor]
-  mcp: true</code></pre>
-
-<p>Or build incrementally with the CLI:</p>
-<pre><code># Create the workspace file with auto-detected project info
-eos workspace init
-
-# Add conventions one by one
-eos workspace add-convention "testing" "Co-locate test files with source. Use vitest."
-eos workspace add-convention "imports" "Use absolute imports via path aliases, not relative ../../"
-
-# Record architectural decisions
-eos workspace add-decision "Message Queue" "Kafka for event streaming" --rationale "Ordered delivery, replay capability, team expertise"
-
-# Link sibling repositories
-eos workspace add-repo gateway ../gateway --role api-gateway
-eos workspace add-repo backend ../backend --role backend-service</code></pre>
-</section>
-
-<!-- Guide: Cross-Repo -->
-<section id="guide-crossrepo">
-<h2>Cross-Repo Linking</h2>
-<p>Declare linked repos in your workspace yaml. On <code>eos init</code>, they're automatically linked. When the AI calls <code>eos_context</code>, it returns data from all linked services.</p>
-
-<h4>Step 1: Declare linked services in workspace yaml</h4>
-<pre><code># In eos.workspace.yaml — declares the services your project talks to
-repos:
-  - name: order-service
-    path: ../order-service     # relative path to sibling repo
-    role: backend-service      # role helps EOS understand the relationship
-  - name: payment-gateway
-    path: ../payments
-    role: payment-service
-  - name: infra
-    path: ../infrastructure
-    role: devops</code></pre>
-
-<h4>Step 2: Initialize (auto-links everything)</h4>
-<pre><code>eos init --claude
-# Output:
-# ✓ Linked 3 repo(s) from workspace config
-# ✓ Graph built (42 calls, 2 contracts)
-# ✓ 5 connection(s) auto-linked</code></pre>
-
-<h4>Step 3: Verify — AI now sees cross-repo context</h4>
-<p>When Claude calls <code>eos_context</code>, the response includes all linked services — their routes, file structure, GraphQL subgraphs, and infrastructure topology. Your AI knows the full architecture without exploring any files.</p>
-
-<div class="callout callout-note">
-  <span class="callout-icon">📘</span>
-  <div><strong>Global mode:</strong> <code>eos serve --global</code> starts the MCP server from any directory on your machine. It auto-detects which registered repo you're in and serves the right context. Other registered repos remain available for cross-repo search.</div>
-</div>
-</section>
-
-<!-- Guide: Skills -->
-<section id="guide-skills">
-<h2>Skill Retention</h2>
-<p>EOS learns from every session. When the AI discovers something, it persists via <code>eos_learn</code>. Future sessions recall relevant skills automatically.</p>
-
-<h4>Recording a skill</h4>
-<p>When your AI discovers something during a session — a bug pattern, a non-obvious requirement, or a hidden dependency — it records it for all future sessions:</p>
-<pre><code>// AI discovered that file uploads must be ordered (not obvious from code)
-eos_learn({
-  type: "gotcha",
-  name: "Chunked upload ordering",
-  content: "File chunks must be uploaded sequentially — out-of-order chunks cause silent data corruption in the stitching service",
-  context: "file upload feature, S3 multipart uploads",
-  tags: ["upload", "s3", "multipart", "ordering"]
-})
-
-// AI learned a multi-step workflow pattern
-eos_learn({
-  type: "pattern",
-  name: "Adding a new screen",
-  content: "1. Create folder in src/screens/{Name}/ 2. Add index.tsx with screen component 3. Add route to src/navigation/types.ts 4. Register in RootNavigator.tsx 5. Create local Zustand store if needed",
-  context: "creating new screens in the mobile app",
-  tags: ["screen", "navigation", "mobile"]
-})
-
-// AI discovered a cross-service connection not visible in code
-eos_learn({
-  type: "connection",
-  name: "Order completion triggers analytics",
-  content: "When order-service publishes 'order.completed' to Kafka, the analytics-pipeline consumes it and updates BigQuery within ~30s",
-  context: "order lifecycle, analytics pipeline",
-  tags: ["kafka", "analytics", "order", "bigquery"]
-})</code></pre>
-
-<h4>Skill types</h4>
-<table>
-<tr><th>Type</th><th>Purpose</th><th>Example</th></tr>
-<tr><td><code>gotcha</code></td><td>Avoid mistakes</td><td>"Never useMemo FlatList items"</td></tr>
-<tr><td><code>pattern</code></td><td>How to do X</td><td>"To add a screen: create folder, add to nav..."</td></tr>
-<tr><td><code>connection</code></td><td>Service topology</td><td>"order-service → Kafka → analytics-pipeline"</td></tr>
-<tr><td><code>convention</code></td><td>Team rules</td><td>"Error handling uses Result&lt;T&gt;"</td></tr>
-<tr><td><code>shortcut</code></td><td>File locations</td><td>"Auth middleware: src/middleware/auth.ts"</td></tr>
-</table>
-
-<p>Skills auto-inject into tool responses when context matches. Confidence escalates with usage (medium → high after 5 applications).</p>
-</section>
-
-<!-- Guide: Integrations -->
-<section id="guide-integrations">
-<h2>AI Tool Integrations</h2>
-
-<h3>Claude Code</h3>
-<p>Claude Code connects via MCP. Two files are generated:</p>
-<pre><code>// .mcp.json — tells Claude Code where the EOS server is
-// (auto-created by eos init, no manual setup needed)
-{
-  "mcpServers": {
-    "engineering-os": {
-      "command": "eos",
-      "args": ["serve"]
-    }
-  }
-}
-
-// CLAUDE.md — enforcement rules that instruct Claude:
-// • ALWAYS call eos_context before starting work
-// • NEVER use grep/find — use eos_search instead
-// • ALWAYS call eos_learn when discovering something
-// • NEVER make architecture decisions without eos_recall_decision</code></pre>
-
-<h3>Cursor</h3>
-<p>Cursor loads per-topic rule files from <code>.cursor/rules/</code>. EOS generates 5 files, each serving a specific purpose:</p>
-<pre><code>eos init --cursor
-
-# Generated files (all prefixed eos- to avoid conflicts with your rules):
-# .cursor/rules/eos-system.md        → "Use EOS tools, don't explore"
-# .cursor/rules/eos-conventions.md   → Project coding standards
-# .cursor/rules/eos-architecture.md  → Service map and key directories
-# .cursor/rules/eos-decisions.md     → Settled decisions (don't re-debate)
-# .cursor/rules/eos-service-map.md   → Cross-repo dependency graph</code></pre>
-
-<h3>Windsurf</h3>
-<p>Single rules file with EOS tool instructions:</p>
-<pre><code>eos init --windsurf
-# Creates: .windsurfrules (same steering approach as CLAUDE.md)</code></pre>
-
-<h3>Any MCP Client</h3>
-<span class="cmd-sig">{ "command": "eos", "args": ["serve"], "transport": "stdio" }</span>
-</section>
-
-<!-- CLI Reference -->
-<section id="cli">
-<h2>CLI Reference</h2>
-<table>
-<tr><th>Command</th><th>Description</th></tr>
-<tr><td><code>eos init</code></td><td>Initialize EOS — index, discover architecture, generate AI files</td></tr>
-<tr><td><code>eos serve</code></td><td>Start the MCP server</td></tr>
-<tr><td><code>eos refresh</code></td><td>Update knowledge after code changes</td></tr>
-<tr><td><code>eos workspace</code></td><td>Manage team-shared workspace config</td></tr>
-<tr><td><code>eos link</code></td><td>Link a repository for cross-repo features</td></tr>
-<tr><td><code>eos unlink</code></td><td>Remove a linked repository</td></tr>
-<tr><td><code>eos index</code></td><td>Re-index the repository</td></tr>
-<tr><td><code>eos status</code></td><td>Show knowledge stats and drift</td></tr>
-<tr><td><code>eos enable</code></td><td>Re-enable EOS</td></tr>
-<tr><td><code>eos disable</code></td><td>Suspend EOS (non-destructive)</td></tr>
-<tr><td><code>eos marketplace</code></td><td>Browse workflow templates</td></tr>
-</table>
-</section>
-
-<section id="cli-init">
-<h3>eos init</h3>
-<p>Initialize Engineering OS in the current repository.</p>
-<span class="cmd-sig">eos init [options]</span>
-<table>
-<tr><th>Option</th><th>Description</th></tr>
-<tr><td><code>--claude</code></td><td>Generate CLAUDE.md steering file</td></tr>
-<tr><td><code>--cursor</code></td><td>Generate .cursor/rules/eos-*.md files</td></tr>
-<tr><td><code>--copilot</code></td><td>Generate .github/copilot-instructions.md</td></tr>
-<tr><td><code>--windsurf</code></td><td>Generate .windsurfrules</td></tr>
-<tr><td><code>--all</code></td><td>All AI tool files</td></tr>
-<tr><td><code>-f, --force</code></td><td>Force re-initialization</td></tr>
-</table>
-</section>
-
-<section id="cli-serve">
-<h3>eos serve</h3>
-<p>Start the MCP server. Works from any directory.</p>
-<span class="cmd-sig">eos serve [options]</span>
-<table>
-<tr><th>Option</th><th>Description</th></tr>
-<tr><td><code>--global</code></td><td>Serve all registered repos. Auto-detects primary from CWD.</td></tr>
-<tr><td><code>-p, --path</code></td><td>Specific project root</td></tr>
-</table>
-</section>
-
-<section id="cli-refresh">
-<h3>eos refresh</h3>
-<p>Update EOS knowledge after code changes.</p>
-<span class="cmd-sig">eos refresh [options]</span>
-<table>
-<tr><th>Option</th><th>Description</th></tr>
-<tr><td><code>--incremental</code></td><td>Only files changed since last refresh</td></tr>
-<tr><td><code>--since &lt;ref&gt;</code></td><td>Files changed since git ref (e.g., HEAD~1)</td></tr>
-<tr><td><code>--full</code></td><td>Re-scan everything</td></tr>
-</table>
-<div class="callout callout-tip">
-  <span class="callout-icon">💡</span>
-  <div>Add <code>eos refresh --since=HEAD~1</code> to your git post-commit hook for automatic freshness.</div>
-</div>
-</section>
-
-<section id="cli-workspace">
-<h3>eos workspace</h3>
-<pre><code>eos workspace init
-eos workspace show
-eos workspace add-convention &lt;name&gt; &lt;rule&gt;
-eos workspace add-decision &lt;title&gt; &lt;decision&gt; [--rationale &lt;why&gt;]
-eos workspace add-repo &lt;name&gt; &lt;path&gt; [--role &lt;role&gt;]</code></pre>
-</section>
-
-<section id="cli-link">
-<h3>eos link / unlink</h3>
-<span class="cmd-sig">eos link &lt;name&gt; &lt;path&gt;</span>
-<span class="cmd-sig">eos unlink &lt;name&gt;</span>
-</section>
-
-<section id="cli-index">
-<h3>eos index</h3>
-<table>
-<tr><th>Usage</th><th>Description</th></tr>
-<tr><td><code>eos index</code></td><td>Incremental — only changed files</td></tr>
-<tr><td><code>eos index --force</code></td><td>Full re-index from scratch</td></tr>
-<tr><td><code>eos index --watch</code></td><td>Continuous watch mode</td></tr>
-<tr><td><code>eos index --paths src/auth</code></td><td>Index specific paths only</td></tr>
-</table>
-</section>
-
-<!-- MCP Tools: Knowledge -->
-<section id="tools-knowledge">
-<h2>API Reference — Knowledge Tools</h2>
-
-<div class="tool-card" id="tool-context">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_context</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Returns full project context for a task. This is the <strong>primary entry point</strong> — call it before starting any work. The response includes everything the AI needs to make informed decisions without exploring files.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>task</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>What you're about to work on (used for relevance matching)</td></tr>
-  <tr><td><code>maxTokens</code></td><td>number</td><td><span class="badge badge-optional">Optional</span></td><td>Token budget for response (default: 8000)</td></tr>
-  </table>
-  <h4 style="margin-top:16px">Response includes:</h4>
-  <ul>
-    <li><strong>Project identity</strong> — name, type, tech stack, org</li>
-    <li><strong>API routes</strong> — all detected endpoints with file:line locations</li>
-    <li><strong>Linked services</strong> — routes, GraphQL subgraphs, file structure of cross-repo dependencies</li>
-    <li><strong>Conventions</strong> — team coding standards from workspace yaml</li>
-    <li><strong>Decisions</strong> — settled architecture choices with rationale</li>
-    <li><strong>Task-relevant code</strong> — FTS5-matched files and function signatures</li>
-    <li><strong>File content excerpts</strong> — first 30 lines of top-matched files</li>
-    <li><strong>Recent git history</strong> — last 5 commits for change awareness</li>
-    <li><strong>Test patterns</strong> — example test file structure for consistency</li>
-    <li><strong>Learned skills</strong> — relevant gotchas and patterns from past sessions</li>
-  </ul>
-  <pre><code>// Example: AI calls this at session start
-eos_context({ task: "add retry logic to file upload" })
-
-// Returns ~1200 tokens of focused context:
-// - Project overview (type, stack, packages)
-// - Routes showing upload endpoints
-// - Linked services (backend handling uploads)
-// - Convention: "All network calls through shared HTTP client"
-// - Skill: "⚠️ Chunks must be uploaded in order"
-// - Relevant files: src/services/upload.ts, src/hooks/useUpload.ts</code></pre>
-</div>
-</div>
-
-<div class="tool-card" id="tool-search">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_search</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Full-text search across code, docs, decisions, and patterns. Pre-indexed with FTS5 + query expansion.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>query</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>Search query</td></tr>
-  <tr><td><code>scope</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>code | docs | decisions | all</td></tr>
-  <tr><td><code>limit</code></td><td>number</td><td><span class="badge badge-optional">Optional</span></td><td>Max results (default: 10)</td></tr>
-  </table>
-</div>
-</div>
-
-<div class="tool-card" id="tool-explain">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_explain</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Explain a service/module at system level — boundaries, purpose, public APIs, dependencies.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>target</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>Service or module name</td></tr>
-  </table>
-</div>
-</div>
-</section>
-
-<!-- MCP Tools: Architecture -->
-<section id="tools-architecture">
-<h2>API Reference — Architecture Tools</h2>
-
-<div class="tool-card" id="tool-graph">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_graph</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Query the cross-repo service dependency graph. List services, connections, find paths, generate Mermaid diagrams.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>action</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>list-services | list-connections | find-path | diagram | stats</td></tr>
-  <tr><td><code>repo</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Filter by repository</td></tr>
-  <tr><td><code>from</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Source service (find-path)</td></tr>
-  <tr><td><code>to</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Target service (find-path)</td></tr>
-  <tr><td><code>protocol</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>rest | grpc | graphql | event | import | database</td></tr>
-  </table>
-</div>
-</div>
-
-<div class="tool-card" id="tool-impact">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_impact</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Analyze what would break if you change a file, service, or endpoint. Returns risk level, affected services, affected contracts.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>type</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>file | service | endpoint</td></tr>
-  <tr><td><code>target</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>File path, service ID, or endpoint path</td></tr>
-  <tr><td><code>repo</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Repository name</td></tr>
-  <tr><td><code>method</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>HTTP method (for endpoint)</td></tr>
-  </table>
-</div>
-</div>
-
-<div class="tool-card" id="tool-contracts">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_contracts</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">List API contracts between services — OpenAPI, gRPC protos, GraphQL schemas, event schemas.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>repo</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Filter by repository</td></tr>
-  <tr><td><code>type</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>openapi | grpc | graphql | event-schema</td></tr>
-  <tr><td><code>id</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Specific contract ID</td></tr>
-  </table>
-</div>
-</div>
-</section>
-
-<!-- MCP Tools: Learning -->
-<section id="tools-learning">
-<h2>API Reference — Learning Tools</h2>
-
-<div class="tool-card" id="tool-learn">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_learn</span>
-  <span class="badge badge-new">New</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Record a discovery for future sessions. Persists permanently in <code>.eos/knowledge/skills/</code>.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>type</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>gotcha | pattern | convention | connection | shortcut</td></tr>
-  <tr><td><code>content</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>What was learned</td></tr>
-  <tr><td><code>name</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Short name</td></tr>
-  <tr><td><code>context</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>When this applies</td></tr>
-  <tr><td><code>tags</code></td><td>string[]</td><td><span class="badge badge-optional">Optional</span></td><td>Tags for searchability</td></tr>
-  </table>
-</div>
-</div>
-
-<div class="tool-card" id="tool-recall">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_recall_skills</span>
-  <span class="badge badge-new">New</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Recall learned skills relevant to the current task.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>query</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>What you're working on</td></tr>
-  <tr><td><code>type</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Filter by skill type</td></tr>
-  </table>
-</div>
-</div>
-</section>
-
-<!-- MCP Tools: Workflow -->
-<section id="tools-workflow">
-<h2>API Reference — Workflow Tools</h2>
-
-<div class="tool-card" id="tool-build">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_build</span>
-  <span class="badge badge-new">New</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Autonomous feature planning pipeline. Takes a plain-English requirement, validates it against your architecture, maps affected services, and produces a structured execution plan with specialist assignments (frontend, backend, DevOps, security, etc.).</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>requirement</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>What to build — plain English requirement</td></tr>
-  <tr><td><code>mode</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td><code>plan-only</code> (default) — just the plan. <code>implement</code> — plan + specialist prompts. <code>full</code> — plan + implement + test + review.</td></tr>
-  <tr><td><code>repos</code></td><td>string[]</td><td><span class="badge badge-optional">Optional</span></td><td>Limit scope to specific repos</td></tr>
-  </table>
-  <h4 style="margin-top:16px">Output structure:</h4>
-  <ul>
-    <li><strong>Product Spec</strong> — user stories, acceptance criteria, rollout strategy, risks</li>
-    <li><strong>Tech Spec</strong> — affected services, reuse opportunities, new work items, constraints</li>
-    <li><strong>Execution Plan</strong> — ordered steps, each assigned to a specialist (FE-Engineer, BE-Engineer, DevOps-Engineer, etc.), with risk assessment and parallelization groups</li>
-  </ul>
-  <pre><code>// Example
-eos_build({
-  requirement: "Add real-time order status notifications with WebSocket",
-  mode: "plan-only"
-})
-
-// Returns structured plan:
-// Product Spec: user stories, acceptance criteria
-// Tech Spec: affects order-service (Kafka producer), notification-service (WebSocket),
-//            mobile-app (UI component). Reuse: existing WebSocket infra from chat.
-// Execution Plan:
-//   Step 1 [BE-Engineer]: Add Kafka event to order-service
-//   Step 2 [BE-Engineer]: WebSocket subscription in notification-service
-//   Step 3 [FE-Engineer]: Status badge component in mobile app
-//   Step 4 [DevOps-Engineer]: Scale WebSocket pods for load</code></pre>
-</div>
-</div>
-
-<div class="tool-card" id="tool-decide">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_decide</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Record an engineering decision with rationale, alternatives, and context.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>title</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>Decision title</td></tr>
-  <tr><td><code>decision</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>What was decided</td></tr>
-  <tr><td><code>rationale</code></td><td>string</td><td><span class="badge badge-required">Required</span></td><td>Why</td></tr>
-  <tr><td><code>alternatives</code></td><td>array</td><td><span class="badge badge-optional">Optional</span></td><td>Options considered</td></tr>
-  </table>
-</div>
-</div>
-</section>
-
-<!-- MCP Tools: Security -->
-<section id="tools-security">
-<h2>API Reference — Security Tools</h2>
-
-<div class="tool-card" id="tool-security">
-<div class="tool-card-header">
-  <span class="tool-card-name">eos_security_scan</span>
-</div>
-<div class="tool-card-body">
-  <div class="tool-card-desc">Scan for secrets, SQL injection, XSS, path traversal, and insecure configs. Supports inline ignore comments.</div>
-  <table>
-  <tr><th>Parameter</th><th>Type</th><th></th><th>Description</th></tr>
-  <tr><td><code>paths</code></td><td>string[]</td><td><span class="badge badge-optional">Optional</span></td><td>Specific paths to scan</td></tr>
-  <tr><td><code>categories</code></td><td>string[]</td><td><span class="badge badge-optional">Optional</span></td><td>secrets | injection | xss | config</td></tr>
-  <tr><td><code>severity</code></td><td>string</td><td><span class="badge badge-optional">Optional</span></td><td>Minimum: critical | high | medium | low</td></tr>
-  </table>
-</div>
-</div>
-
-<h3>All Security & Compliance Tools</h3>
-<table>
-<tr><th>Tool</th><th>Purpose</th></tr>
-<tr><td><code>eos_security_scan</code></td><td>Scan for secrets, injection, XSS, path traversal, insecure configs</td></tr>
-<tr><td><code>eos_security_audit</code></td><td>Full OWASP Top 10 audit with CWE mapping</td></tr>
-<tr><td><code>eos_threat_model</code></td><td>STRIDE-based threat modeling with data flow analysis</td></tr>
-<tr><td><code>eos_dependency_check</code></td><td>CVE scanning across all package managers (npm, pip, Go, Maven, Gradle, Cargo, Gem)</td></tr>
-<tr><td><code>eos_compliance_check</code></td><td>Framework compliance (SOC2, HIPAA, PCI-DSS)</td></tr>
-<tr><td><code>eos_posture_score</code></td><td>Security posture scoring (0-100) with trend tracking</td></tr>
-<tr><td><code>eos_security_conventions</code></td><td>View/manage security coding standards</td></tr>
-</table>
-</section>
-
-<!-- All Tools Reference -->
-<section id="all-tools">
-<h2>Complete Tool Reference (47 Tools)</h2>
-<p>Every MCP tool available when connected to the Engineering OS server.</p>
-
-<h3>Knowledge & Search</h3>
-<table>
-<tr><th>Tool</th><th>Purpose</th></tr>
-<tr><td><code>eos_context</code></td><td>Full project context for a task (primary entry point)</td></tr>
-<tr><td><code>eos_search</code></td><td>Full-text search across code, docs, decisions</td></tr>
-<tr><td><code>eos_search_all</code></td><td>Federated search across all linked repositories</td></tr>
-<tr><td><code>eos_explain</code></td><td>Explain a service/module at system level</td></tr>
-<tr><td><code>eos_index</code></td><td>Trigger re-indexing of files</td></tr>
-<tr><td><code>eos_health</code></td><td>Knowledge quality metrics (coverage, staleness, drift)</td></tr>
-<tr><td><code>eos_status</code></td><td>Workflow state, progress, and budget usage</td></tr>
-<tr><td><code>eos_export</code></td><td>Export knowledge as portable JSON archive</td></tr>
-</table>
-
-<h3>Architecture & Dependencies</h3>
-<table>
-<tr><th>Tool</th><th>Purpose</th></tr>
-<tr><td><code>eos_architecture</code></td><td>View discovered architecture (services, layers, patterns)</td></tr>
-<tr><td><code>eos_graph</code></td><td>Query the service dependency graph</td></tr>
-<tr><td><code>eos_impact</code></td><td>Analyze blast radius of a change</td></tr>
-<tr><td><code>eos_contracts</code></td><td>List API contracts between services</td></tr>
-<tr><td><code>eos_discover_contracts</code></td><td>Auto-discover API contracts from code</td></tr>
-<tr><td><code>eos_dependencies</code></td><td>Show what depends on a file/module</td></tr>
-<tr><td><code>eos_cross_context</code></td><td>Get context from linked repos</td></tr>
-<tr><td><code>eos_owners</code></td><td>Find code owners for files/modules</td></tr>
-</table>
-
-<h3>Conventions & Decisions</h3>
-<table>
-<tr><th>Tool</th><th>Purpose</th></tr>
-<tr><td><code>eos_conventions</code></td><td>View project coding conventions</td></tr>
-<tr><td><code>eos_patterns</code></td><td>Find coding patterns to follow</td></tr>
-<tr><td><code>eos_decide</code></td><td>Record an engineering decision</td></tr>
-<tr><td><code>eos_recall_decision</code></td><td>Check if a decision was already made</td></tr>
-<tr><td><code>eos_alternatives</code></td><td>Explore alternative approaches with tradeoffs</td></tr>
-</table>
-
-<h3>Learning & Skills</h3>
-<table>
-<tr><th>Tool</th><th>Purpose</th></tr>
-<tr><td><code>eos_learn</code></td><td>Record a discovery for future sessions</td></tr>
-<tr><td><code>eos_recall_skills</code></td><td>Recall relevant learned skills</td></tr>
-</table>
-
-<h3>Workflow & Planning</h3>
-<table>
-<tr><th>Tool</th><th>Purpose</th></tr>
-<tr><td><code>eos_build</code></td><td>Autonomous feature planning pipeline</td></tr>
-<tr><td><code>eos_refine</code></td><td>Refine a requirement into structured spec</td></tr>
-<tr><td><code>eos_plan</code></td><td>Generate execution plan with parallel task groups</td></tr>
-<tr><td><code>eos_review</code></td><td>Architecture-aware code review</td></tr>
-<tr><td><code>eos_validate</code></td><td>Validate code against project standards</td></tr>
-<tr><td><code>eos_marketplace</code></td><td>Browse and install workflow templates</td></tr>
-</table>
-
-<h3>Multi-Repo & Team</h3>
-<table>
-<tr><th>Tool</th><th>Purpose</th></tr>
-<tr><td><code>eos_link_repo</code></td><td>Link a repository for federated features</td></tr>
-<tr><td><code>eos_unlink_repo</code></td><td>Remove a linked repository</td></tr>
-<tr><td><code>eos_team_sync</code></td><td>Manage team conventions and policies</td></tr>
-<tr><td><code>eos_analytics</code></td><td>Usage analytics and tool stats</td></tr>
-<tr><td><code>eos_audit_log</code></td><td>Query the audit trail of all tool calls</td></tr>
-<tr><td><code>eos_audit_report</code></td><td>Generate exportable audit report</td></tr>
-</table>
-
-</section>
-
-<!-- Language & Framework Support -->
-<section id="languages">
-<h2>Language &amp; Framework Support</h2>
-
-<h3>Code Indexing</h3>
-<p>EOS extracts functions, classes, interfaces, imports, and exports from these languages:</p>
-<table>
-<tr><th>Language</th><th>Extensions</th><th>Extracts</th></tr>
-<tr><td>TypeScript</td><td>.ts, .tsx</td><td>Functions, classes, interfaces, types, exports</td></tr>
-<tr><td>JavaScript</td><td>.js, .jsx, .mjs</td><td>Functions, classes, exports</td></tr>
-<tr><td>Python</td><td>.py</td><td>Functions, classes, decorators</td></tr>
-<tr><td>Go</td><td>.go</td><td>Functions, structs, interfaces, methods</td></tr>
-<tr><td>Rust</td><td>.rs</td><td>Functions, structs, traits, impls</td></tr>
-<tr><td>Java</td><td>.java</td><td>Classes, methods, interfaces, annotations</td></tr>
-<tr><td>Ruby</td><td>.rb</td><td>Classes, modules, methods</td></tr>
-<tr><td>Kotlin <span class="badge badge-new">New</span></td><td>.kt, .kts</td><td>Classes, functions, data classes, sealed classes, Composables, extensions</td></tr>
-</table>
-
-<h3>Route Scanning</h3>
-<table>
-<tr><th>Framework</th><th>Language</th><th>Patterns Detected</th></tr>
-<tr><td>Express</td><td>TypeScript/JS</td><td>app.get(), router.get(), router.route()</td></tr>
-<tr><td>NestJS</td><td>TypeScript</td><td>@Controller() + @Get()/@Post() decorators</td></tr>
-<tr><td>Fastify</td><td>TypeScript/JS</td><td>fastify.get(), fastify.route()</td></tr>
-<tr><td>Next.js</td><td>TypeScript/JS</td><td>app/api/*/route.ts file conventions</td></tr>
-<tr><td>Vert.x</td><td>Java</td><td>router.get(), @Route annotations</td></tr>
-<tr><td>Ktor <span class="badge badge-new">New</span></td><td>Kotlin</td><td>routing { get("/path") { } }</td></tr>
-<tr><td>Spring Boot <span class="badge badge-new">New</span></td><td>Java/Kotlin</td><td>@GetMapping, @PostMapping, @RequestMapping</td></tr>
-<tr><td>Android Nav <span class="badge badge-new">New</span></td><td>Kotlin</td><td>NavHost composable() routes</td></tr>
-</table>
-
-<h3>Dependency Auditing (CVE Scanning)</h3>
-<table>
-<tr><th>Ecosystem</th><th>Manifest Files</th><th>Known CVEs</th></tr>
-<tr><td>npm</td><td>package.json</td><td>20 (lodash, axios, express, jsonwebtoken...)</td></tr>
-<tr><td>Python</td><td>requirements.txt, pyproject.toml</td><td>12 (requests, django, flask, cryptography...)</td></tr>
-<tr><td>Go</td><td>go.mod</td><td>6 (golang.org/x/crypto, x/net...)</td></tr>
-<tr><td>Java/Maven</td><td>pom.xml</td><td>10 (log4j, jackson, spring-core...)</td></tr>
-<tr><td>Gradle <span class="badge badge-new">New</span></td><td>build.gradle, build.gradle.kts, libs.versions.toml</td><td>18 (log4j, okhttp, spring, commons-text...)</td></tr>
-<tr><td>Rust</td><td>Cargo.toml</td><td>5 (hyper, openssl-src...)</td></tr>
-<tr><td>Ruby</td><td>Gemfile</td><td>6 (rails, nokogiri, rack...)</td></tr>
-</table>
-</section>
-
-<!-- Configuration -->
-<section id="config">
-<h2>Configuration Reference</h2>
-
-<h3>eos.workspace.yaml</h3>
-<table>
-<tr><th>Field</th><th>Type</th><th>Description</th></tr>
-<tr><td><code>name</code></td><td>string</td><td>Project name</td></tr>
-<tr><td><code>type</code></td><td>string</td><td>Project type (monorepo, react-native, spring-boot, etc.)</td></tr>
-<tr><td><code>org</code></td><td>string</td><td>Organization name</td></tr>
-<tr><td><code>repos</code></td><td>array</td><td>Linked repositories (name, path, role)</td></tr>
-<tr><td><code>conventions</code></td><td>array</td><td>Team conventions (name, rule)</td></tr>
-<tr><td><code>decisions</code></td><td>array</td><td>Engineering decisions (title, decision, rationale)</td></tr>
-<tr><td><code>ai.tools</code></td><td>string[]</td><td>AI tools to generate files for ([claude, cursor])</td></tr>
-<tr><td><code>ai.mcp</code></td><td>boolean</td><td>Whether to configure MCP auto-connect</td></tr>
-</table>
-
-<h3>Storage Layout</h3>
-<div class="file-tree">
-<span class="dir">.eos/</span> <span class="comment">— Machine-local (gitignored)</span><br>
-├── <span class="dir">index/</span>metadata.db <span class="comment">— SQLite FTS5 search index</span><br>
-├── <span class="dir">graph/</span>services.db <span class="comment">— Service dependency graph</span><br>
-├── <span class="dir">knowledge/</span><br>
-│   ├── <span class="dir">decisions/</span> <span class="comment">— Engineering decisions (YAML)</span><br>
-│   ├── <span class="dir">architecture/</span> <span class="comment">— Services, patterns, conventions</span><br>
-│   └── <span class="dir">skills/</span> <span class="comment">— Learned skills (YAML)</span><br>
-├── graph/service-map.json <span class="comment">— JSON export for Cursor adapter</span><br>
-└── .last-refresh <span class="comment">— Timestamp for incremental refresh</span><br>
-<br>
-<span class="dir">eos.workspace.yaml</span> <span class="comment">— Team-shared (in git)</span><br>
-<span class="dir">CLAUDE.md</span> <span class="comment">— Generated steering file (in git)</span><br>
-<span class="dir">.cursor/rules/eos-*.md</span> <span class="comment">— Generated Cursor rules (in git)</span><br>
-<span class="dir">~/.eos/repos.yaml</span> <span class="comment">— Global registry of onboarded repos</span>
-</div>
-</section>
-
-<!-- Troubleshooting -->
-<section id="troubleshooting">
-<h2>Troubleshooting</h2>
-
-<h3>MCP Connection Error: <code>-32000</code></h3>
-<p>If you see <code>Failed to reconnect to engineering-os: -32000</code> when running <code>/mcp</code> in Claude Code, this almost always means a <strong>Node.js version mismatch</strong>.</p>
-<p>EOS uses <code>better-sqlite3</code>, a native C++ module compiled for a specific Node.js ABI version. If you installed EOS with one Node version (e.g., Node 24) but your shell defaults to another (e.g., Node 22), the native binary cannot load.</p>
-
-<h4>How to fix</h4>
-<div class="code-block">
-<pre><code># Check which Node version your shell defaults to
-node --version
-
-# Rebuild the native module for that version
-npm rebuild better-sqlite3
-
-# Or reinstall EOS globally with the current Node
-npm install -g engineering-os</code></pre>
-</div>
-
-<h4>Why this happens</h4>
-<p>If you use <strong>nvm</strong>, your <code>.zshrc</code> or <code>.bashrc</code> may force a specific Node version (e.g., <code>nvm use 22</code>). Claude Code inherits this shell environment when spawning the MCP server. If you originally ran <code>npm install</code> with a different Node version, the compiled native module won't match.</p>
-
-<h4>Permanent fix</h4>
-<div class="code-block">
-<pre><code># Option A: Always install with the same Node your shell uses
-nvm use 22       # or whatever your default is
-npm install -g engineering-os
-
-# Option B: Add a .nvmrc to avoid confusion
-echo "22" > ~/.nvmrc
-
-# Option C: Set nvm default to match your active version
-nvm alias default 22</code></pre>
-</div>
-
-<p><strong>Rule of thumb:</strong> The Node version that runs <code>npm install</code> must match the Node version that runs <code>eos serve</code>.</p>
-
-<h3>MCP Server Not Found</h3>
-<p>If Claude Code can't find the <code>eos</code> command:</p>
-<div class="code-block">
-<pre><code># Verify eos is installed and in PATH
-which eos
-
-# If not found, install globally
-npm install -g engineering-os
-
-# Verify it works
-eos --version</code></pre>
-</div>
-
-<h3>No <code>.eos/</code> Directory Found</h3>
-<p>The MCP server requires an initialized project. Run:</p>
-<div class="code-block">
-<pre><code>cd your-project
-eos init --claude</code></pre>
-</div>
-<p>If you're working from a directory that isn't a project root, use the <code>--global</code> flag or ensure the global registry has repos registered:</p>
-<div class="code-block">
-<pre><code># Check registered repos
-cat ~/.eos/repos.yaml
-
-# Start server in global mode
-eos serve --global</code></pre>
-</div>
-
-<h3>Database Locked Errors</h3>
-<p>If you see SQLite "database is locked" errors, it means two EOS processes are competing for the same database. This can happen if you have multiple Claude Code sessions open on the same project. Each session spawns its own <code>eos serve</code> process — this is safe (EOS uses WAL mode with busy timeout), but if you encounter issues:</p>
-<div class="code-block">
-<pre><code># Find and kill stale eos processes
-ps aux | grep "eos serve" | grep -v grep
-kill <pid>
-
-# Then reconnect in Claude Code
-/mcp</code></pre>
-</div>
-
-<h3>Slow Indexing</h3>
-<p>Initial indexing scans all source files. For very large repos (100K+ files), you can:</p>
-<div class="code-block">
-<pre><code># Use incremental refresh after the initial index
-eos refresh --incremental
-
-# Or use git-based refresh for just recent changes
-eos refresh --since=HEAD~5</code></pre>
-</div>
-
-<h3>Node.js Version Requirements</h3>
-<table class="params-table">
-<tr><th>Requirement</th><th>Version</th><th>Notes</th></tr>
-<tr><td>Minimum</td><td>Node.js 18.0.0</td><td>MCP SDK requires &ge;18</td></tr>
-<tr><td>Recommended</td><td>Node.js 20 LTS or 22 LTS</td><td>Best compatibility and performance</td></tr>
-<tr><td>Also supported</td><td>Node.js 24</td><td>Latest current release</td></tr>
-</table>
-
-</section>
-
-<footer style="text-align:center; padding: 48px 0 32px; border-top: 1px solid var(--border-light); margin-top: 64px;">
-  <p style="color: var(--text-tertiary); font-size: 12px;">
-    Engineering OS v0.1.2 · 47 MCP Tools · 341 Tests · 26K Lines<br>
-    100% Local · Zero API Keys · Works Offline
-  </p>
+  <p>Engineering OS v0.1.2 &middot; 47 MCP Tools &middot; Apache 2.0<br>Built for developers who ship with AI.</p>
 </footer>
 
-</div>
-</div>
-
-<style>
-.theme-transition-overlay {
-  position: fixed;
-  border-radius: 50%;
-  z-index: 99999;
-  pointer-events: none;
-  transform: scale(0);
-  transition: none;
-}
-.theme-transition-overlay.expanding {
-  transition: transform .5s cubic-bezier(0.2, 0, 0, 1);
-  transform: scale(1);
-}
-</style>
 <script>
-function toggleTheme() {
-  const html = document.documentElement;
-  const btn = document.getElementById('theme-toggle');
-  const current = html.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-
-  // Get button position for circle origin
-  const rect = btn.getBoundingClientRect();
-  const x = rect.left + rect.width / 2;
-  const y = rect.top + rect.height / 2;
-
-  // Calculate radius to cover entire viewport from the button position
-  const maxDist = Math.max(
-    Math.hypot(x, y),
-    Math.hypot(window.innerWidth - x, y),
-    Math.hypot(x, window.innerHeight - y),
-    Math.hypot(window.innerWidth - x, window.innerHeight - y)
-  );
-  const diameter = maxDist * 2;
-
-  // Create circular overlay with the TARGET theme's background color
-  const overlay = document.createElement('div');
-  overlay.className = 'theme-transition-overlay';
-  overlay.style.width = diameter + 'px';
-  overlay.style.height = diameter + 'px';
-  overlay.style.left = (x - maxDist) + 'px';
-  overlay.style.top = (y - maxDist) + 'px';
-  overlay.style.background = next === 'dark' ? '#0d1117' : '#f8fafb';
-  document.body.appendChild(overlay);
-
-  // Trigger expansion on next frame
-  requestAnimationFrame(() => {
-    overlay.classList.add('expanding');
-  });
-
-  // Switch theme at 60% of animation
-  setTimeout(() => {
-    html.setAttribute('data-theme', next);
-    localStorage.setItem('eos-theme', next);
-    document.getElementById('theme-icon').textContent = next === 'dark' ? '☀️' : '🌙';
-  }, 250);
-
-  // Remove overlay right after animation ends
-  setTimeout(() => {
-    overlay.remove();
-  }, 520);
-}
-
-// Mobile sidebar toggle
-function toggleSidebar() {
-  const sidebar = document.querySelector('.sidebar');
-  const overlay = document.querySelector('.sidebar-overlay');
-  const isOpen = sidebar.classList.contains('open');
-  if (isOpen) {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('visible');
-  } else {
-    sidebar.classList.add('open');
-    overlay.classList.add('visible');
-  }
-}
-
-// Close sidebar when a nav item is clicked (mobile)
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    if (window.innerWidth <= 960) {
-      document.querySelector('.sidebar').classList.remove('open');
-      document.querySelector('.sidebar-overlay').classList.remove('visible');
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
     }
   });
-});
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-// Load saved theme or respect system preference
-(function() {
-  const saved = localStorage.getItem('eos-theme');
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved);
-    if (saved === 'dark') document.getElementById('theme-icon').textContent = '☀️';
-  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    document.getElementById('theme-icon').textContent = '☀️';
-  }
-})();
-
-// Scroll spy — track active section in sidebar
-(function() {
-  const navItems = document.querySelectorAll('.nav-item');
-  const sections = [];
-
-  navItems.forEach(item => {
-    const href = item.getAttribute('href');
-    if (href && href.startsWith('#')) {
-      const target = document.querySelector(href);
-      if (target) sections.push({ el: target, link: item });
-    }
-  });
-
-  let ticking = false;
-  function updateActive() {
-    const scrollY = window.scrollY + 100;
-    let current = sections[0];
-
-    for (const section of sections) {
-      if (section.el.offsetTop <= scrollY) {
-        current = section;
-      }
-    }
-
-    navItems.forEach(item => item.classList.remove('active'));
-    if (current) current.link.classList.add('active');
-    ticking = false;
-  }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(updateActive);
-      ticking = true;
-    }
-  });
-
-  updateActive();
-})();
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
 </body>
 </html>
