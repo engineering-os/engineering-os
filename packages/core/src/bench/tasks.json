@@ -1,0 +1,202 @@
+[
+  {
+    "id": "task-01",
+    "description": "Add password reset endpoint to auth service",
+    "relevant_files": ["src/auth/auth.service.ts", "src/auth/auth.controller.ts"],
+    "relevant_decisions": ["DEC-001"],
+    "relevant_conventions": ["error-handling"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-02",
+    "description": "Fix login returning wrong error code on invalid credentials",
+    "relevant_files": ["src/auth/auth.service.ts", "src/auth/auth.controller.ts", "src/auth/dto/login.dto.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling"],
+    "category": "bug-fix"
+  },
+  {
+    "id": "task-03",
+    "description": "Add Stripe webhook handler for payment failures",
+    "relevant_files": ["src/payments/payments.controller.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-04",
+    "description": "Refactor auth service to use Result pattern consistently",
+    "relevant_files": ["src/auth/auth.service.ts", "src/shared/result.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling"],
+    "category": "refactor"
+  },
+  {
+    "id": "task-05",
+    "description": "Add rate limiting to login endpoint",
+    "relevant_files": ["src/auth/auth.controller.ts"],
+    "relevant_decisions": ["DEC-001"],
+    "relevant_conventions": [],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-06",
+    "description": "Add input validation to login DTO",
+    "relevant_files": ["src/auth/dto/login.dto.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["naming"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-07",
+    "description": "How does payment processing work in this project",
+    "relevant_files": ["src/payments/payments.controller.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": [],
+    "category": "exploration"
+  },
+  {
+    "id": "task-08",
+    "description": "Add user registration endpoint",
+    "relevant_files": ["src/auth/auth.controller.ts", "src/auth/auth.service.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling", "naming"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-09",
+    "description": "Where is the shared Result type defined and how is it used",
+    "relevant_files": ["src/shared/result.ts", "src/auth/auth.service.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling"],
+    "category": "exploration"
+  },
+  {
+    "id": "task-10",
+    "description": "Add subscription billing to payments service",
+    "relevant_files": ["src/payments/payments.controller.ts"],
+    "relevant_decisions": ["DEC-001"],
+    "relevant_conventions": ["error-handling"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-11",
+    "description": "What rate limiting approach does this project use",
+    "relevant_files": [],
+    "relevant_decisions": ["DEC-001"],
+    "relevant_conventions": [],
+    "category": "exploration"
+  },
+  {
+    "id": "task-12",
+    "description": "Add email verification after registration",
+    "relevant_files": ["src/auth/auth.service.ts", "src/auth/auth.controller.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-13",
+    "description": "Fix payment controller not validating amount",
+    "relevant_files": ["src/payments/payments.controller.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling"],
+    "category": "bug-fix"
+  },
+  {
+    "id": "task-14",
+    "description": "Add JWT token refresh mechanism",
+    "relevant_files": ["src/auth/auth.service.ts", "src/auth/auth.controller.ts"],
+    "relevant_decisions": ["DEC-001"],
+    "relevant_conventions": [],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-15",
+    "description": "What error handling conventions does this project follow",
+    "relevant_files": ["src/shared/result.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling"],
+    "category": "exploration"
+  },
+  {
+    "id": "task-16",
+    "description": "Add logout endpoint that invalidates session",
+    "relevant_files": ["src/auth/auth.controller.ts", "src/auth/auth.service.ts"],
+    "relevant_decisions": ["DEC-001"],
+    "relevant_conventions": [],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-17",
+    "description": "Rename login DTO fields to follow project naming convention",
+    "relevant_files": ["src/auth/dto/login.dto.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["naming"],
+    "category": "refactor"
+  },
+  {
+    "id": "task-18",
+    "description": "Add payment refund capability",
+    "relevant_files": ["src/payments/payments.controller.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-19",
+    "description": "What services exist in this project and how do they connect",
+    "relevant_files": ["src/auth/auth.controller.ts", "src/payments/payments.controller.ts", "src/shared/result.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": [],
+    "category": "exploration"
+  },
+  {
+    "id": "task-20",
+    "description": "Add two-factor authentication to login",
+    "relevant_files": ["src/auth/auth.service.ts", "src/auth/auth.controller.ts", "src/auth/dto/login.dto.ts"],
+    "relevant_decisions": ["DEC-001"],
+    "relevant_conventions": ["error-handling"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-21",
+    "description": "Check for security vulnerabilities in auth flow",
+    "relevant_files": ["src/auth/auth.service.ts", "src/auth/auth.controller.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": [],
+    "category": "security"
+  },
+  {
+    "id": "task-22",
+    "description": "Add request logging middleware",
+    "relevant_files": ["src/auth/auth.controller.ts", "src/payments/payments.controller.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": [],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-23",
+    "description": "Why was Redis chosen over PostgreSQL for rate limiting",
+    "relevant_files": [],
+    "relevant_decisions": ["DEC-001"],
+    "relevant_conventions": [],
+    "category": "exploration"
+  },
+  {
+    "id": "task-24",
+    "description": "Add password strength validation to registration",
+    "relevant_files": ["src/auth/dto/login.dto.ts", "src/auth/auth.service.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["naming"],
+    "category": "feature-add"
+  },
+  {
+    "id": "task-25",
+    "description": "Extract shared validation logic into a utility",
+    "relevant_files": ["src/shared/result.ts", "src/auth/dto/login.dto.ts"],
+    "relevant_decisions": [],
+    "relevant_conventions": ["error-handling", "naming"],
+    "category": "refactor"
+  }
+]

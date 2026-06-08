@@ -33,7 +33,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "bench": "node dist/bench/runner.js"
   },
   "dependencies": {
     "@engineering-os/shared": "0.1.0",
