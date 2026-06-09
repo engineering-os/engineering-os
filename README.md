@@ -176,6 +176,19 @@ packages/
 └── engineering-os/   # Single npm package (bundles everything)
 ```
 
+## Supported Languages
+
+TypeScript, JavaScript, Python, Go, Rust, Java, Ruby, Kotlin, C#, PHP, Shell/Bash — 11 languages with full function/class/import extraction.
+
+## Contributors
+
+Thanks to everyone who has contributed to Engineering OS.
+
+<a href="https://github.com/jvalbhani"><img src="https://github.com/jvalbhani.png" width="50" height="50" style="border-radius:50%" alt="jvalbhani"></a>
+<a href="https://github.com/gourangasatapathyvit"><img src="https://github.com/gourangasatapathyvit.png" width="50" height="50" style="border-radius:50%" alt="gourangasatapathyvit"></a>
+
+Want to contribute? See [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## License
 
 Apache 2.0 — see [LICENSE](./LICENSE)
