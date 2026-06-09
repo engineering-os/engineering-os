@@ -1,6 +1,6 @@
 {
   "name": "engineering-os",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "AI-native knowledge layer for your codebase — MCP server with 47 tools for code intelligence, architecture discovery, and workflow automation",
   "license": "Apache-2.0",
   "author": "Engineering OS Contributors",
