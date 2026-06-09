@@ -15,6 +15,9 @@ import { RustExtractor } from './rust-extractor';
 import { JavaExtractor } from './java-extractor';
 import { RubyExtractor } from './ruby-extractor';
 import { KotlinExtractor } from './kotlin-extractor';
+import { CSharpExtractor } from './csharp-extractor';
+import { PhpExtractor } from './php-extractor';
+import { ShellExtractor } from './shell-extractor';
 
 const ALL_EXTRACTORS: LanguageExtractor[] = [
   new TypeScriptExtractor(),
@@ -24,6 +27,9 @@ const ALL_EXTRACTORS: LanguageExtractor[] = [
   new JavaExtractor(),
   new RubyExtractor(),
   new KotlinExtractor(),
+  new CSharpExtractor(),
+  new PhpExtractor(),
+  new ShellExtractor(),
 ];
 
 const EXTENSION_MAP = new Map<string, LanguageExtractor>();
@@ -53,3 +59,6 @@ export { RustExtractor } from './rust-extractor';
 export { JavaExtractor } from './java-extractor';
 export { RubyExtractor } from './ruby-extractor';
 export { KotlinExtractor } from './kotlin-extractor';
+export { CSharpExtractor } from './csharp-extractor';
+export { PhpExtractor } from './php-extractor';
+export { ShellExtractor } from './shell-extractor';
