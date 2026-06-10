@@ -322,7 +322,29 @@ export class ToolHandlers {
       return `No results found for query: "${query}" (scope: ${scope})`;
     }
 
-    return JSON.stringify(results.slice(0, limit), null, 2);
+    const limited = results.slice(0, limit);
+    const lines: string[] = [`# Search Results for "${query}" (${limited.length} hits)\n`];
+
+    for (const r of limited as any[]) {
+      if (r.type === 'code') {
+        const location = r.startLine
+          ? `\`${r.filePath}:${r.startLine}${r.endLine ? `-${r.endLine}` : ''}\``
+          : `\`${r.filePath}\``;
+        lines.push(`- **${r.name}** — ${location} (score: ${r.score.toFixed(1)})`);
+        if (r.content) {
+          const snippet = r.content.trim().split('\n').slice(0, 5).join('\n');
+          lines.push(`  \`\`\`\n  ${snippet}\n  \`\`\``);
+        }
+      } else if (r.type === 'decision') {
+        lines.push(`- **[Decision] ${r.title}** (${r.id}, ${r.status})`);
+        if (r.rationale) {
+          lines.push(`  ${r.rationale}`);
+        }
+      }
+      lines.push('');
+    }
+
+    return lines.join('\n');
   }
 
   private async handleContext(args: { task: string; maxTokens?: number }): Promise<string> {

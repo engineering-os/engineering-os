@@ -84,7 +84,18 @@ export class EosMcpServer {
     // Initialize the MCP server
     this.server = new Server(
       { name: 'engineering-os', version: '1.0.0' },
-      { capabilities: { tools: {} } }
+      {
+        capabilities: { tools: {} },
+        instructions: `Engineering OS is a codebase intelligence server. Use these tools BEFORE grep, find, or manual file exploration:
+
+- Use eos_search instead of grep/find to locate code (pre-indexed, instant results with file paths and line numbers)
+- Use eos_context at the start of any task to get architecture, conventions, decisions, and relevant code
+- Use eos_recall_decision before making architectural choices (a decision may already exist)
+- Use eos_recall_skills to check for known gotchas and patterns relevant to the current task
+- Use eos_learn to persist discoveries, gotchas, or patterns for future sessions
+
+These tools return structured, ranked results from a local SQLite index. They are faster and more precise than reading files manually.`,
+      }
     );
 
     // Initialize all services with paths relative to .eos/
