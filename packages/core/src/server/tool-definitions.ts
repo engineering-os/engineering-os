@@ -16,6 +16,7 @@ export const TOOL_DEFINITIONS = [
           description: 'Search scope (defaults to all)',
         },
         limit: { type: 'number', description: 'Max results to return', default: 10 },
+        format: { type: 'string', enum: ['markdown', 'json'], description: 'Output format (defaults to markdown)', default: 'markdown' },
       },
       required: ['query'],
     },

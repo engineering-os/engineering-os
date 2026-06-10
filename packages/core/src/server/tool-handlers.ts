@@ -275,8 +275,8 @@ export class ToolHandlers {
     }
   }
 
-  private async handleSearch(args: { query: string; scope?: string; limit?: number }): Promise<string> {
-    const { query, scope = 'all', limit = 10 } = args;
+  private async handleSearch(args: { query: string; scope?: string; limit?: number; format?: string }): Promise<string> {
+    const { query, scope = 'all', limit = 10, format = 'markdown' } = args;
     const results: unknown[] = [];
     const seen = new Set<string>();
 
@@ -323,6 +323,11 @@ export class ToolHandlers {
     }
 
     const limited = results.slice(0, limit);
+
+    if (format === 'json') {
+      return JSON.stringify(limited, null, 2);
+    }
+
     const lines: string[] = [`# Search Results for "${query}" (${limited.length} hits)\n`];
 
     for (const r of limited as any[]) {
