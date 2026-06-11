@@ -3,10 +3,13 @@ import { LanguageExtractor } from './index';
 import { findBlockEnd } from './typescript-extractor';
 
 // Keywords that share the `name(...)` shape but are not declarations.
+// Also includes common debug-log calls (log/print/debugPrint): bare `log('x');`
+// is shape-identical to a typeless abstract decl, so it's filtered by name.
 const NON_DECLARATION_NAMES = new Set([
   'if', 'for', 'while', 'switch', 'catch', 'return', 'throw', 'assert', 'do',
   'else', 'yield', 'await', 'final', 'const', 'var', 'new', 'super', 'this',
   'sync', 'async',
+  'log', 'print', 'debugPrint',
 ]);
 
 export class DartExtractor implements LanguageExtractor {
@@ -41,8 +44,12 @@ export class DartExtractor implements LanguageExtractor {
       /^(?!\s*(?:class|enum|extension|mixin|typedef|import|export|part|abstract|base|final|sealed|interface)\b)(?:@\w+(?:\([^)]*\))?\s*\n?)*(?:[\w$.<>,?\[\] ]+\s+)?([\w$]+)\s*\([^;{]*\)\s*(?:async\*?|sync\*)?\s*(?:=>|\{)/gm;
 
     // Methods: indented, same keyword-less shape; trailing `;` covers abstract declarations.
+    // Leading negative lookahead rejects statement keywords (throw/return/await/...) so call
+    // and throw statements — `throw X(...);`, `log(...);`, `await F().m(...)` — aren't mistaken
+    // for declarations. The captured name lives in the prefix-eaten region, so NON_DECLARATION_NAMES
+    // alone can't catch these; the lookahead must block the whole line at the indent.
     const methodRegex =
-      /^[ \t]+(?:@\w+(?:\([^)]*\))?\s*\n?[ \t]*)*(?:(?:static|final|const|late|external|abstract|covariant)\s+)*(?:[\w$.<>,?\[\] ]+\s+)?([\w$]+)\s*\([^;{]*\)\s*(?:async\*?|sync\*)?\s*(?:=>|\{|;)/gm;
+      /^[ \t]+(?![ \t]*(?:return|throw|await|yield|if|for|while|switch|assert|else)\b)(?:@\w+(?:\([^)]*\))?\s*\n?[ \t]*)*(?:(?:static|final|const|late|external|abstract|covariant)\s+)*(?:[\w$.<>,?\[\] ]+\s+)?([\w$]+)\s*\([^;{]*\)\s*(?:async\*?|sync\*)?\s*(?:=>|\{|;)/gm;
 
     // Getters: `Type get name => / {` — no parameter list, so methodRegex won't match.
     const getterRegex =

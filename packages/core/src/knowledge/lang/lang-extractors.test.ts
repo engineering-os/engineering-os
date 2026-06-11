@@ -490,5 +490,34 @@ describe('Language Extractors', () => {
       expect(chunks.some((c) => c.name === 'if')).toBe(false);
       expect(chunks.some((c) => c.name === 'for')).toBe(false);
     });
+
+    it('does not extract throw/await/return statements or debug-log calls as methods', () => {
+      const content =
+        'class Bootstrap {\n' +
+        '  void run() {\n' +
+        "    log('starting');\n" +
+        "    debugPrint('x');\n" +
+        '    throw UnsupportedError(\n' +
+        "      'nope',\n" +
+        '    );\n' +
+        '    await Workmanager().initialize(\n' +
+        '      callbackDispatcher,\n' +
+        '    );\n' +
+        '    return doWork();\n' +
+        '  }\n' +
+        '}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'bootstrap.dart');
+      // The enclosing declaration is still captured (typed function or method).
+      expect(chunks.some((c) => c.name === 'run')).toBe(true);
+      // Statements led by a control-flow keyword are rejected by the leading-keyword
+      // lookahead in methodRegex.
+      expect(chunks.some((c) => c.name === 'UnsupportedError')).toBe(false);
+      expect(chunks.some((c) => c.name === 'Workmanager')).toBe(false);
+      expect(chunks.some((c) => c.name === 'doWork')).toBe(false);
+      // Bare debug-log calls are filtered by name via NON_DECLARATION_NAMES.
+      expect(chunks.some((c) => c.name === 'log')).toBe(false);
+      expect(chunks.some((c) => c.name === 'debugPrint')).toBe(false);
+    });
   });
 });
