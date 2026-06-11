@@ -18,6 +18,7 @@ import { KotlinExtractor } from './kotlin-extractor';
 import { CSharpExtractor } from './csharp-extractor';
 import { PhpExtractor } from './php-extractor';
 import { ShellExtractor } from './shell-extractor';
+import { DartExtractor } from './dart-extractor';
 
 const ALL_EXTRACTORS: LanguageExtractor[] = [
   new TypeScriptExtractor(),
@@ -30,6 +31,7 @@ const ALL_EXTRACTORS: LanguageExtractor[] = [
   new CSharpExtractor(),
   new PhpExtractor(),
   new ShellExtractor(),
+  new DartExtractor(),
 ];
 
 const EXTENSION_MAP = new Map<string, LanguageExtractor>();
@@ -62,3 +64,4 @@ export { KotlinExtractor } from './kotlin-extractor';
 export { CSharpExtractor } from './csharp-extractor';
 export { PhpExtractor } from './php-extractor';
 export { ShellExtractor } from './shell-extractor';
+export { DartExtractor } from './dart-extractor';

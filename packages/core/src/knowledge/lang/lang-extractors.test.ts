@@ -8,6 +8,7 @@ import { RubyExtractor } from './ruby-extractor';
 import { CSharpExtractor } from './csharp-extractor';
 import { PhpExtractor } from './php-extractor';
 import { ShellExtractor } from './shell-extractor';
+import { DartExtractor } from './dart-extractor';
 import { getExtractorForFile } from './index';
 
 describe('Language Extractors', () => {
@@ -40,6 +41,11 @@ describe('Language Extractors', () => {
     it('returns correct extractor for Bash', () => {
       const ext = getExtractorForFile('build.bash');
       expect(ext).toBeInstanceOf(ShellExtractor);
+    });
+
+    it('returns correct extractor for Dart', () => {
+      const ext = getExtractorForFile('main.dart');
+      expect(ext).toBeInstanceOf(DartExtractor);
     });
 
     it('returns null for unsupported files', () => {
@@ -349,6 +355,140 @@ describe('Language Extractors', () => {
       const chunks = extractor.extractChunks(content, lines, 'nested.sh');
       expect(chunks.length).toBeGreaterThan(0);
       expect(chunks[0].name).toBe('outer');
+    });
+  });
+
+  describe('DartExtractor', () => {
+    const extractor = new DartExtractor();
+
+    it('extracts classes', () => {
+      const content = 'class HomePage extends StatelessWidget {\n  const HomePage({super.key});\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'home_page.dart');
+      expect(chunks.some((c) => c.name === 'HomePage' && c.type === 'class')).toBe(true);
+    });
+
+    it('extracts abstract and sealed classes', () => {
+      const content = 'abstract class Repository {\n}\n\nsealed class Shape {\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'models.dart');
+      expect(chunks.some((c) => c.name === 'Repository' && c.type === 'class')).toBe(true);
+      expect(chunks.some((c) => c.name === 'Shape' && c.type === 'class')).toBe(true);
+    });
+
+    it('extracts stacked Dart 3 class modifiers', () => {
+      const content = 'abstract base class Animal {\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'animal.dart');
+      expect(chunks.some((c) => c.name === 'Animal' && c.type === 'class')).toBe(true);
+    });
+
+    it('extracts mixins', () => {
+      const content = 'mixin Walkable {\n  void walk() {}\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'walkable.dart');
+      expect(chunks.some((c) => c.name === 'Walkable' && c.type === 'module')).toBe(true);
+    });
+
+    it('extracts enums', () => {
+      const content = 'enum Status { active, inactive }\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'status.dart');
+      expect(chunks.some((c) => c.name === 'Status' && c.type === 'type')).toBe(true);
+    });
+
+    it('extracts enhanced enums with members and methods', () => {
+      const content =
+        'enum Planet {\n  earth(5.97),\n  mars(6.42);\n\n  const Planet(this.mass);\n  final double mass;\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'planet.dart');
+      expect(chunks.some((c) => c.name === 'Planet' && c.type === 'type')).toBe(true);
+    });
+
+    it('extracts extensions', () => {
+      const content = "extension StringX on String {\n  bool get isBlank => trim().isEmpty;\n}\n";
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'string_x.dart');
+      expect(chunks.some((c) => c.name === 'StringX' && c.type === 'class')).toBe(true);
+    });
+
+    it('extracts extension types (Dart 3.3+) and not as functions', () => {
+      const content = 'extension type Meters(int value) {\n  Meters operator +(Meters o) => Meters(value + o.value);\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'meters.dart');
+      expect(chunks.some((c) => c.name === 'Meters' && c.type === 'class')).toBe(true);
+      expect(chunks.some((c) => c.name === 'Meters' && c.type === 'function')).toBe(false);
+    });
+
+    it('extracts extension types with const and implements clause', () => {
+      const content = 'extension type const NumberI(int i) implements int {\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'number.dart');
+      expect(chunks.some((c) => c.name === 'NumberI' && c.type === 'class')).toBe(true);
+    });
+
+    it('captures primary-constructor classes (3.13) as class, not function', () => {
+      const content = 'class Point(final int x, final int y);\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'point.dart');
+      expect(chunks.some((c) => c.name === 'Point' && c.type === 'class')).toBe(true);
+      expect(chunks.some((c) => c.name === 'Point' && c.type === 'function')).toBe(false);
+    });
+
+    it('extracts top-level functions (keyword-less)', () => {
+      const content = "Future<void> main() async {\n  runApp(const MyApp());\n}\n";
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'main.dart');
+      expect(chunks.some((c) => c.name === 'main' && c.type === 'function')).toBe(true);
+    });
+
+    it('extracts arrow expression functions', () => {
+      const content = 'int add(int a, int b) => a + b;\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'math.dart');
+      expect(chunks.some((c) => c.name === 'add' && c.type === 'function')).toBe(true);
+    });
+
+    it('extracts methods inside a class', () => {
+      const content =
+        'class HomePage extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold();\n  }\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'home_page.dart');
+      expect(chunks.some((c) => c.name === 'build' && c.type === 'method')).toBe(true);
+    });
+
+    it('extracts getters', () => {
+      const content = 'class Cart {\n  int get total => 42;\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'cart.dart');
+      expect(chunks.some((c) => c.name === 'total' && c.type === 'method')).toBe(true);
+    });
+
+    it('extracts imports, exports, and parts', () => {
+      const content =
+        "import 'package:flutter/material.dart';\nimport 'dart:async' show Future;\nexport 'src/widgets.dart';\npart 'home.g.dart';\n";
+      const imports = extractor.extractImports(content);
+      expect(imports).toContain('package:flutter/material.dart');
+      expect(imports).toContain('dart:async');
+      expect(imports).toContain('src/widgets.dart');
+      expect(imports).toContain('home.g.dart');
+    });
+
+    it('extracts exports (export directives and public declarations)', () => {
+      const content = "export 'src/api.dart';\nclass PublicWidget {\n}\nclass _PrivateState {\n}\n";
+      const exports = extractor.extractExports(content);
+      expect(exports).toContain('src/api.dart');
+      expect(exports).toContain('PublicWidget');
+      expect(exports).not.toContain('_PrivateState');
+    });
+
+    it('skips control-flow keywords in function extraction', () => {
+      const content =
+        'void run() {\n  if (ready) {\n    doWork();\n  }\n  for (var i = 0; i < 3; i++) {\n  }\n}\n';
+      const lines = content.split('\n');
+      const chunks = extractor.extractChunks(content, lines, 'run.dart');
+      expect(chunks.some((c) => c.name === 'if')).toBe(false);
+      expect(chunks.some((c) => c.name === 'for')).toBe(false);
     });
   });
 });
