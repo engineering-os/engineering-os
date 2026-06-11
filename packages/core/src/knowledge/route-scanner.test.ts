@@ -290,5 +290,122 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       const scanner = new RouteScanner(tmpDir);
       expect(scanner.detectFramework()).toBeNull();
     });
+
+    it('should detect gorouter from pubspec.yaml', () => {
+      writeFile('pubspec.yaml', 'name: app\ndependencies:\n  go_router: ^16.2.4\n');
+      const scanner = new RouteScanner(tmpDir);
+      expect(scanner.detectFramework()).toBe('gorouter');
+    });
+
+    it('should detect autoroute from pubspec.yaml', () => {
+      writeFile('pubspec.yaml', 'name: app\ndependencies:\n  auto_route: ^9.0.0\n');
+      const scanner = new RouteScanner(tmpDir);
+      expect(scanner.detectFramework()).toBe('autoroute');
+    });
+  });
+
+  describe('Flutter go_router routes', () => {
+    it('should detect GoRoute paths with name and builder', () => {
+      writeFile('pubspec.yaml', 'name: app\ndependencies:\n  go_router: ^16.2.4\n');
+      writeFile('lib/core/router/app_router.dart', `
+final router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/login',
+      name: 'login',
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/work-log/:id',
+      builder: (context, state) => WorkLogPage(),
+    ),
+  ],
+);
+`);
+      const routes = new RouteScanner(tmpDir).scan();
+      const paths = routes.map((r) => r.path);
+      expect(paths).toContain('/login');
+      expect(paths).toContain('/work-log/:id');
+
+      const login = routes.find((r) => r.path === '/login')!;
+      expect(login.framework).toBe('gorouter');
+      expect(login.method).toBe('SCREEN');
+      expect(login.handler).toBe('login'); // name preferred
+      expect(login.file).toContain('app_router.dart');
+      expect(login.line).toBeGreaterThan(0);
+    });
+
+    it('should resolve path/name constant references (lume style)', () => {
+      writeFile('pubspec.yaml', 'name: app\ndependencies:\n  go_router: ^16.2.4\n');
+      writeFile('lib/core/router/app_router.dart', `
+class Routes {
+  static const signIn = 'sign-in';
+  static const home = 'home';
+}
+class RoutePaths {
+  static const signIn = '/sign-in';
+  static const home = '/';
+}
+final appRouter = GoRouter(
+  routes: [
+    GoRoute(
+      path: RoutePaths.signIn,
+      name: Routes.signIn,
+      builder: (context, state) => const SignInPage(),
+    ),
+    GoRoute(
+      path: RoutePaths.home,
+      name: Routes.home,
+      routes: [
+        GoRoute(
+          path: 'edit',
+          name: Routes.workLogEdit,
+        ),
+      ],
+    ),
+  ],
+);
+`);
+      const routes = new RouteScanner(tmpDir).scan();
+      const paths = routes.map((r) => r.path).sort();
+      expect(paths).toContain('/sign-in'); // resolved from RoutePaths.signIn
+      expect(paths).toContain('/');        // resolved from RoutePaths.home
+      expect(paths).toContain('edit');     // inline literal still works
+
+      const signIn = routes.find((r) => r.path === '/sign-in')!;
+      expect(signIn.handler).toBe('sign-in'); // name resolved from Routes.signIn
+    });
+
+    it('should detect TypedGoRoute annotation paths', () => {
+      writeFile('pubspec.yaml', 'name: app\ndependencies:\n  go_router: ^16.2.4\n');
+      writeFile('lib/routes.dart', `
+@TypedGoRoute<HomeRoute>(path: '/home')
+class HomeRoute extends GoRouteData {}
+`);
+      const paths = new RouteScanner(tmpDir).scan().map((r) => r.path);
+      expect(paths).toContain('/home');
+    });
+  });
+
+  describe('Flutter auto_route routes', () => {
+    it('should detect AutoRoute page and path', () => {
+      writeFile('pubspec.yaml', 'name: app\ndependencies:\n  auto_route: ^9.0.0\n');
+      writeFile('lib/router.dart', `
+@AutoRouterConfig()
+class AppRouter extends RootStackRouter {
+  List<AutoRoute> get routes => [
+    AutoRoute(page: HomeRoute.page, path: '/home'),
+    AutoRoute(page: SettingsRoute.page),
+  ];
+}
+`);
+      const routes = new RouteScanner(tmpDir).scan();
+      const home = routes.find((r) => r.path === '/home');
+      expect(home).toBeDefined();
+      expect(home!.framework).toBe('autoroute');
+      expect(home!.handler).toBe('HomeRoute');
+      // page-only route falls back to page name
+      expect(routes.some((r) => r.handler === 'SettingsRoute')).toBe(true);
+    });
   });
 });

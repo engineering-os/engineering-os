@@ -17,7 +17,7 @@ export interface ScannedRoute {
   framework: string;
 }
 
-type Framework = 'express' | 'nestjs' | 'fastify' | 'nextjs' | 'vertx';
+type Framework = 'express' | 'nestjs' | 'fastify' | 'nextjs' | 'vertx' | 'gorouter' | 'autoroute';
 
 const HTTP_METHODS = ['get', 'post', 'put', 'delete', 'patch', 'options', 'head'];
 
@@ -61,6 +61,13 @@ export class RouteScanner {
       return 'vertx';
     }
 
+    // Dart/Flutter routing
+    const pubspec = this.readSafe(path.join(this.rootPath, 'pubspec.yaml'));
+    if (pubspec) {
+      if (/^\s*go_router\s*:/m.test(pubspec)) return 'gorouter';
+      if (/^\s*auto_route\s*:/m.test(pubspec)) return 'autoroute';
+    }
+
     return null;
   }
 
@@ -78,6 +85,8 @@ export class RouteScanner {
       routes.push(...this.scanNestJSRoutes(content, relativePath));
       routes.push(...this.scanFastifyRoutes(content, relativePath));
       routes.push(...this.scanVertxRoutes(content, relativePath));
+      routes.push(...this.scanGoRouterRoutes(content, relativePath));
+      routes.push(...this.scanAutoRouteRoutes(content, relativePath));
     }
 
     routes.push(...this.scanNextJSRoutes());
@@ -119,6 +128,12 @@ export class RouteScanner {
           break;
         case 'vertx':
           routes.push(...this.scanVertxRoutes(content, relativePath));
+          break;
+        case 'gorouter':
+          routes.push(...this.scanGoRouterRoutes(content, relativePath));
+          break;
+        case 'autoroute':
+          routes.push(...this.scanAutoRouteRoutes(content, relativePath));
           break;
       }
     }
@@ -592,13 +607,118 @@ export class RouteScanner {
 
   // --- File System Utilities ---
 
+  // --- Flutter: go_router ---
+
+  private scanGoRouterRoutes(content: string, file: string): ScannedRoute[] {
+    if (!file.toLowerCase().endsWith('.dart')) return [];
+    const routes: ScannedRoute[] = [];
+
+    // Resolve `path: RoutePaths.signIn` style constant references. Many apps
+    // declare paths/names as `static const x = '/foo'` in a constants class.
+    const consts = this.buildDartConstMap(content);
+
+    // Matches GoRoute(...), TypedGoRoute<X>(...), and @TypedGoRoute<X>(...) annotations.
+    const ctorRe = /(?:Typed)?GoRoute\s*(?:<\s*\w+\s*>\s*)?\(/g;
+    let m: RegExpExecArray | null;
+    while ((m = ctorRe.exec(content)) !== null) {
+      const window = content.slice(m.index, m.index + 400);
+      const routePath = this.extractDartValue(window, 'path', consts);
+      if (routePath === null) continue;
+
+      const name = this.extractDartValue(window, 'name', consts);
+      const builderMatch = window.match(
+        /(?:builder|pageBuilder)\s*:\s*\([^)]*\)\s*=>\s*(?:const\s+)?(\w+)/
+      );
+      const line = content.slice(0, m.index).split('\n').length;
+
+      routes.push({
+        method: 'SCREEN',
+        path: routePath,
+        file,
+        line,
+        handler: name ?? builderMatch?.[1],
+        framework: 'gorouter',
+      });
+    }
+    return routes;
+  }
+
+  /**
+   * Build a map of Dart string constants: `static const x = '/foo'` →
+   * keyed by both `ClassName.x` and bare `x` so references resolve either way.
+   */
+  private buildDartConstMap(content: string): Map<string, string> {
+    const map = new Map<string, string>();
+    let currentClass: string | null = null;
+    for (const line of content.split('\n')) {
+      const classMatch = line.match(/^\s*(?:abstract\s+|final\s+|sealed\s+)*class\s+(\w+)/);
+      if (classMatch) currentClass = classMatch[1];
+
+      const cm = line.match(/(?:static\s+)?const\s+(\w+)\s*=\s*['"]([^'"]*)['"]\s*;/);
+      if (cm) {
+        const [, ident, value] = cm;
+        if (currentClass) map.set(`${currentClass}.${ident}`, value);
+        if (!map.has(ident)) map.set(ident, value); // bare fallback (first wins)
+      }
+    }
+    return map;
+  }
+
+  /**
+   * Extract a string value for `key:` from a constructor window — either a
+   * literal ('/foo') or a constant reference (RoutePaths.foo) resolved via map.
+   * Returns null when unresolvable.
+   */
+  private extractDartValue(
+    window: string,
+    key: string,
+    consts: Map<string, string>
+  ): string | null {
+    const re = new RegExp(`${key}\\s*:\\s*(?:(['"])([^'"]*)\\1|([A-Za-z_]\\w*(?:\\.\\w+)?))`);
+    const match = window.match(re);
+    if (!match) return null;
+    if (match[2] !== undefined) return match[2]; // literal
+    const ref = match[3]; // constant reference
+    return consts.get(ref) ?? null;
+  }
+
+  // --- Flutter: auto_route ---
+
+  private scanAutoRouteRoutes(content: string, file: string): ScannedRoute[] {
+    if (!file.toLowerCase().endsWith('.dart')) return [];
+    const routes: ScannedRoute[] = [];
+
+    // AutoRoute(...), MaterialRoute(...), CupertinoRoute(...), CustomRoute(...)
+    const ctorRe = /(?:Auto|Material|Cupertino|Custom)Route\s*\(/g;
+    let m: RegExpExecArray | null;
+    while ((m = ctorRe.exec(content)) !== null) {
+      const window = content.slice(m.index, m.index + 400);
+      const pageMatch = window.match(/page\s*:\s*(\w+)/);
+      const pathMatch = window.match(/path\s*:\s*['"]([^'"]+)['"]/);
+      if (!pathMatch && !pageMatch) continue;
+
+      const line = content.slice(0, m.index).split('\n').length;
+      routes.push({
+        method: 'SCREEN',
+        // auto_route can auto-generate the path from the page; fall back to page name.
+        path: pathMatch?.[1] ?? `(auto: ${pageMatch![1]})`,
+        file,
+        line,
+        handler: pageMatch?.[1],
+        framework: 'autoroute',
+      });
+    }
+    return routes;
+  }
+
   private walkSourceFiles(dir: string): string[] {
     const files: string[] = [];
     this.walkRecursive(dir, files, (name) => {
       const lower = name.toLowerCase();
       return lower.endsWith('.ts') || lower.endsWith('.tsx') ||
              lower.endsWith('.js') || lower.endsWith('.jsx') ||
-             lower.endsWith('.java') || lower.endsWith('.kt');
+             lower.endsWith('.java') || lower.endsWith('.kt') ||
+             lower.endsWith('.dart');
     }, 0);
     return files;
   }
