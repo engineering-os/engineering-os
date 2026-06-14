@@ -37,7 +37,7 @@ Engineering OS indexes your codebase and serves structured knowledge to AI tools
 ## Adapters included
 
 - **Claude Code** — 11 skills (`/eos:init`, `/eos:plan`, `/eos:security`, etc.)
-- **Cursor** — Auto-generated `.cursor/rules/` from your architecture
+- **Cursor** — Auto-generated `.cursor/rules/eos-*` and `.cursor/skills/eos-*`
 - **Codex** — Auto-generated `AGENTS.md`, `.agents/skills/eos-*`, and `.codex/config.toml`
 - **VS Code** — Extension with sidebar and command palette
 

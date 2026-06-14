@@ -3,6 +3,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { readConfig } from '../utils/config.js';
 import { getCodexStatus } from '../utils/codex.js';
+import { getCursorStatus } from '../utils/cursor.js';
 
 // ANSI color codes
 const GREEN = '\x1b[32m';
@@ -164,23 +165,15 @@ export const statusCommand = new Command('status')
     console.log(`  ${DIM}•${RESET} Claude Code:  ${claudeIcon} ${claudeStatus}`);
 
     // Cursor status
-    const cursorRulesDir = path.join(rootPath, '.cursor', 'rules');
     let cursorStatus = 'not configured';
     let cursorIcon = `${DIM}○${RESET}`;
-    try {
-      const cursorFiles = await fs.readdir(cursorRulesDir);
-      const activeRules = cursorFiles.filter(f => f.startsWith('eos-') && f.endsWith('.md'));
-      const disabledRules = cursorFiles.filter(f => f.startsWith('eos-') && f.endsWith('.md.disabled'));
-
-      if (activeRules.length > 0) {
-        cursorStatus = `enabled (${activeRules.length} rules)`;
-        cursorIcon = `${GREEN}●${RESET}`;
-      } else if (disabledRules.length > 0) {
-        cursorStatus = `disabled (${disabledRules.length} rules suspended)`;
-        cursorIcon = `${RED}●${RESET}`;
-      }
-    } catch {
-      // not configured
+    const cursor = await getCursorStatus(rootPath);
+    if (cursor.activeRules > 0 || cursor.activeSkills > 0) {
+      cursorStatus = `enabled (${cursor.activeRules} rules, ${cursor.activeSkills} skills)`;
+      cursorIcon = `${GREEN}●${RESET}`;
+    } else if (cursor.disabledRules > 0 || cursor.disabledSkills > 0) {
+      cursorStatus = `disabled (${cursor.disabledRules} rules, ${cursor.disabledSkills} skills suspended)`;
+      cursorIcon = `${RED}●${RESET}`;
     }
     console.log(`  ${DIM}•${RESET} Cursor:       ${cursorIcon} ${cursorStatus}`);
 

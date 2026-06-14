@@ -1,4 +1,5 @@
 import { Convention, Pattern, ServiceModel } from '@engineering-os/shared';
+import { AiContextGenerator, ArchitectureStore, DecisionStore, GraphStore } from '@engineering-os/core';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
@@ -101,52 +102,17 @@ export class CursorRulesGenerator {
     const rulesDir = path.dirname(this.config.outputPath);
     await fs.mkdir(rulesDir, { recursive: true });
 
-    const maxLength = this.config.maxLength ?? this.DEFAULT_MAX_LENGTH;
-    const perFileLimit = maxLength;
-
-    if (this.config.includeConventions) {
-      const conventions = await this.loadYamlDir<Convention>(
-        path.join(this.config.eosPath, 'knowledge', 'architecture', 'conventions')
-      );
-      if (conventions.length > 0) {
-        const content = this.truncateToLimit(this.formatConventions(conventions), perFileLimit);
-        await fs.writeFile(path.join(rulesDir, 'eos-conventions.md'), content, 'utf-8');
-      }
-    }
-
-    if (this.config.includePatterns) {
-      const patterns = await this.loadYamlDir<Pattern>(
-        path.join(this.config.eosPath, 'knowledge', 'architecture', 'patterns')
-      );
-      if (patterns.length > 0) {
-        const content = this.truncateToLimit(this.formatPatterns(patterns), perFileLimit);
-        await fs.writeFile(path.join(rulesDir, 'eos-patterns.md'), content, 'utf-8');
-      }
-    }
-
-    if (this.config.includeArchitecture) {
-      const services = await this.loadYamlDir<ServiceModel>(
-        path.join(this.config.eosPath, 'knowledge', 'architecture', 'services')
-      );
-      if (services.length > 0) {
-        const content = this.truncateToLimit(this.formatArchitecture(services), perFileLimit);
-        await fs.writeFile(path.join(rulesDir, 'eos-architecture.md'), content, 'utf-8');
-      }
-    }
-
-    if (this.config.includeDecisions) {
-      const decisions = await this.loadYamlDir<DecisionRecord>(
-        path.join(this.config.eosPath, 'knowledge', 'decisions')
-      );
-      const active = decisions.filter(d => !d.status || d.status === 'accepted' || d.status === 'active');
-      if (active.length > 0) {
-        const content = this.truncateToLimit(this.formatDecisions(active), perFileLimit);
-        await fs.writeFile(path.join(rulesDir, 'eos-decisions.md'), content, 'utf-8');
-      }
-    }
-
-    // Generate cross-repo service map from the graph database
-    await this.writeServiceMap(rulesDir);
+    const rootPath = path.dirname(this.config.eosPath);
+    const graphStore = new GraphStore(path.join(this.config.eosPath, 'graph', 'services.db'));
+    graphStore.initialize();
+    const generator = new AiContextGenerator({
+      architectureStore: new ArchitectureStore(path.join(this.config.eosPath, 'knowledge', 'architecture')),
+      decisionStore: new DecisionStore(path.join(this.config.eosPath, 'knowledge', 'decisions')),
+      graphStore,
+      rootPath,
+      projectName: path.basename(rootPath),
+    });
+    await generator.writeCursorRules(rulesDir);
   }
 
   /**

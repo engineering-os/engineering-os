@@ -14,6 +14,7 @@ npm install -g engineering-os
 eos init [--claude] [--cursor] [--codex] [--copilot] [--windsurf] [--all] [-f]
 eos serve [--global] [-p path]
 eos refresh [--incremental] [--since ref] [--full]
+eos cursor generate | watch
 eos codex generate | doctor
 eos workspace init | show | add-convention | add-decision | add-repo
 eos link <name> <path>
@@ -30,6 +31,7 @@ eos marketplace [action] [name]
 ```bash
 cd your-project
 eos init --claude    # Index + generate CLAUDE.md
+eos init --cursor    # Generate .cursor/rules/eos-* and .cursor/skills/eos-*
 eos init --codex     # Generate AGENTS.md, .agents/skills/eos-*, and Codex MCP config
 eos serve            # Start MCP server (Claude Code connects automatically)
 ```

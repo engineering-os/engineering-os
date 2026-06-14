@@ -47,6 +47,7 @@
   "files": [
     "dist",
     "skills",
+    "skills-cursor",
     "skills-codex",
     ".claude-plugin",
     "plugin.json",

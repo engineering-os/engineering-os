@@ -49,6 +49,7 @@ async function main() {
       { refreshCommand },
       { workspaceCommand },
       { codexCommand },
+      { cursorCommand },
     ] = await Promise.all([
       import('./commands/init.js'),
       import('./commands/serve.js'),
@@ -60,6 +61,7 @@ async function main() {
       import('./commands/refresh.js'),
       import('./commands/workspace.js'),
       import('./commands/codex.js'),
+      import('./commands/cursor.js'),
     ]);
 
     program.addCommand(initCommand);
@@ -74,6 +76,7 @@ async function main() {
     program.addCommand(refreshCommand);
     program.addCommand(workspaceCommand);
     program.addCommand(codexCommand);
+    program.addCommand(cursorCommand);
 
     await program.parseAsync();
   } catch (err: any) {

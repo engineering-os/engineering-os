@@ -95,6 +95,7 @@ eos refresh --incremental
 | `eos init --claude --cursor --codex` | Index your project + generate AI context files |
 | `eos serve`                  | Start the MCP server                           |
 | `eos refresh --incremental`  | Update knowledge after code changes            |
+| `eos cursor generate`        | Regenerate Cursor rules and EOS skills         |
 | `eos codex generate`         | Regenerate Codex `AGENTS.md`, skills, and MCP config |
 | `eos link <name> <path>`     | Link a sibling repository                      |
 | `eos workspace init`         | Create team-shared config (checked into git)   |

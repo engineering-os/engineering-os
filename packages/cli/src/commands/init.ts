@@ -5,6 +5,7 @@ import { RepositoryIndexer, ArchitectureDiscovery, ArchitectureStore, MetadataSt
 import { DecisionStore } from '@engineering-os/core';
 import { getDefaultConfig, readConfig, writeConfig } from '../utils/config.js';
 import { installCodexSkills, writeCodexMcpConfig } from '../utils/codex.js';
+import { installCursorSkills } from '../utils/cursor.js';
 
 // ANSI color codes
 const GREEN = '\x1b[32m';
@@ -305,6 +306,8 @@ export const initCommand = new Command('init')
           const cursorDir = path.join(rootPath, '.cursor', 'rules');
           const written = await generator.writeCursorRules(cursorDir);
           console.log(`${CHECK} .cursor/rules/ generated ${DIM}(${written.join(', ')})${RESET}`);
+          const installed = await installCursorSkills(rootPath);
+          console.log(`${CHECK} .cursor/skills/ generated ${DIM}(${installed.length} EOS Cursor skills)${RESET}`);
         }
 
         if (generateCodex) {

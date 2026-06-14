@@ -1,6 +1,6 @@
 # @engineering-os/adapter-cursor
 
-Generates `.cursor/rules/eos-*.md` files from Engineering OS knowledge.
+Generates `.cursor/rules/eos-*.md` files and `.cursor/skills/eos-*` workflows from Engineering OS knowledge.
 
 ## What it generates
 
@@ -8,15 +8,20 @@ Generates `.cursor/rules/eos-*.md` files from Engineering OS knowledge.
 |------|---------|
 | `eos-system.md` | Steering instructions (use EOS tools, don't explore) |
 | `eos-conventions.md` | Team coding conventions |
+| `eos-patterns.md` | Recorded coding patterns |
 | `eos-architecture.md` | Service map and dependencies |
 | `eos-decisions.md` | Settled engineering decisions |
 | `eos-service-map.md` | Cross-repo dependency graph |
+
+Cursor skills are installed under `.cursor/skills/eos-*` for the 11 EOS workflows:
+`context`, `decide`, `execute`, `init`, `multi-repo`, `plan`, `refine`, `review`, `security`, `status`, and `team`.
 
 ## Usage
 
 ```bash
 # Generate via CLI
 eos init --cursor
+eos cursor generate
 
 # Programmatic
 import { CursorRulesGenerator } from '@engineering-os/adapter-cursor';

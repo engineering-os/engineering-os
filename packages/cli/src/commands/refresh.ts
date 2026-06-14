@@ -6,6 +6,7 @@ import { RepositoryIndexer, MetadataStore, GraphStore, RepoRegistry, EosWatcher 
 import { readConfig } from '../utils/config.js';
 import { createAiContextGenerator } from '../utils/ai-context.js';
 import { installCodexSkills, writeCodexMcpConfig } from '../utils/codex.js';
+import { installCursorSkills } from '../utils/cursor.js';
 
 const GREEN = '\x1b[32m';
 const DIM = '\x1b[2m';
@@ -191,7 +192,8 @@ async function regenerateAiContexts(rootPath: string): Promise<void> {
 
   if (shouldRegenerateCursor) {
     const written = await generator.writeCursorRules(path.join(rootPath, '.cursor', 'rules'));
-    console.log(`${CHECK} .cursor/rules/ refreshed ${DIM}(${written.length} files)${RESET}`);
+    const installed = await installCursorSkills(rootPath);
+    console.log(`${CHECK} Cursor context refreshed ${DIM}(${written.length} rules, ${installed.length} skills)${RESET}`);
   }
 
   if (shouldRegenerateCodex) {

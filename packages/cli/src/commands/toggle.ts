@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { setCodexEnabled } from '../utils/codex.js';
+import { setCursorEnabled } from '../utils/cursor.js';
 
 const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
@@ -52,22 +53,6 @@ function isDisabledInClaude(settings: ClaudeSettings): boolean {
   return settings.disabledMcpjsonServers?.includes('engineering-os') ?? false;
 }
 
-/**
- * Get all EOS cursor rule files (active and disabled).
- */
-async function getCursorRuleFiles(projectRoot: string): Promise<{ active: string[]; disabled: string[] }> {
-  const rulesDir = path.join(projectRoot, '.cursor', 'rules');
-  try {
-    const files = await fs.readdir(rulesDir);
-    return {
-      active: files.filter(f => f.startsWith('eos-') && f.endsWith('.md')),
-      disabled: files.filter(f => f.startsWith('eos-') && f.endsWith('.md.disabled')),
-    };
-  } catch {
-    return { active: [], disabled: [] };
-  }
-}
-
 // ─────────────────────────────────────────────────
 // DISABLE COMMAND
 // ─────────────────────────────────────────────────
@@ -106,18 +91,11 @@ export const disableCommand = new Command('disable')
 
     // Disable for Cursor
     if (disableCursor) {
-      const rulesDir = path.join(projectRoot, '.cursor', 'rules');
-      const { active } = await getCursorRuleFiles(projectRoot);
-
-      if (active.length > 0) {
-        for (const file of active) {
-          const src = path.join(rulesDir, file);
-          const dest = path.join(rulesDir, `${file}.disabled`);
-          await fs.rename(src, dest);
-        }
-        console.log(`${CHECK} Cursor: disabled ${DIM}(${active.length} rule files suspended)${RESET}`);
+      const result = await setCursorEnabled(projectRoot, false);
+      if (result.rulesChanged > 0 || result.skillsChanged > 0) {
+        console.log(`${CHECK} Cursor: disabled ${DIM}(${result.rulesChanged} rules, ${result.skillsChanged} skill dirs suspended)${RESET}`);
       } else {
-        console.log(`${DIM}  Cursor: no active rules found${RESET}`);
+        console.log(`${DIM}  Cursor: no active EOS rules or skills found${RESET}`);
       }
     }
 
@@ -173,18 +151,11 @@ export const enableCommand = new Command('enable')
 
     // Enable for Cursor
     if (enableCursor) {
-      const rulesDir = path.join(projectRoot, '.cursor', 'rules');
-      const { disabled } = await getCursorRuleFiles(projectRoot);
-
-      if (disabled.length > 0) {
-        for (const file of disabled) {
-          const src = path.join(rulesDir, file);
-          const dest = path.join(rulesDir, file.replace('.disabled', ''));
-          await fs.rename(src, dest);
-        }
-        console.log(`${CHECK} Cursor: enabled ${DIM}(${disabled.length} rule files restored)${RESET}`);
+      const result = await setCursorEnabled(projectRoot, true);
+      if (result.rulesChanged > 0 || result.skillsChanged > 0) {
+        console.log(`${CHECK} Cursor: enabled ${DIM}(${result.rulesChanged} rules, ${result.skillsChanged} skill dirs restored)${RESET}`);
       } else {
-        console.log(`${DIM}  Cursor: no disabled rules to restore${RESET}`);
+        console.log(`${DIM}  Cursor: no disabled EOS rules or skills to restore${RESET}`);
       }
     }
 
