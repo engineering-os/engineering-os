@@ -48,6 +48,7 @@ async function main() {
       { marketplaceCommand },
       { refreshCommand },
       { workspaceCommand },
+      { codexCommand },
     ] = await Promise.all([
       import('./commands/init.js'),
       import('./commands/serve.js'),
@@ -58,6 +59,7 @@ async function main() {
       import('./commands/marketplace.js'),
       import('./commands/refresh.js'),
       import('./commands/workspace.js'),
+      import('./commands/codex.js'),
     ]);
 
     program.addCommand(initCommand);
@@ -71,6 +73,7 @@ async function main() {
     program.addCommand(marketplaceCommand);
     program.addCommand(refreshCommand);
     program.addCommand(workspaceCommand);
+    program.addCommand(codexCommand);
 
     await program.parseAsync();
   } catch (err: any) {

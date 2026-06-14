@@ -3,6 +3,9 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 import { execSync } from 'child_process';
 import { RepositoryIndexer, MetadataStore, GraphStore, RepoRegistry, EosWatcher } from '@engineering-os/core';
+import { readConfig } from '../utils/config.js';
+import { createAiContextGenerator } from '../utils/ai-context.js';
+import { installCodexSkills, writeCodexMcpConfig } from '../utils/codex.js';
 
 const GREEN = '\x1b[32m';
 const DIM = '\x1b[2m';
@@ -77,6 +80,7 @@ export const refreshCommand = new Command('refresh')
         const summary = await watcher.refreshFull();
         await fs.writeFile(lastRefreshPath, new Date().toISOString(), 'utf-8');
         printSummary(summary);
+        await regenerateAiContexts(rootPath);
         return;
       }
     } else if (options.full) {
@@ -84,6 +88,7 @@ export const refreshCommand = new Command('refresh')
       const lastRefreshPath = path.join(eosDir, '.last-refresh');
       await fs.writeFile(lastRefreshPath, new Date().toISOString(), 'utf-8');
       printSummary(summary);
+      await regenerateAiContexts(rootPath);
       return;
     } else {
       // Default: full refresh
@@ -91,6 +96,7 @@ export const refreshCommand = new Command('refresh')
       const lastRefreshPath = path.join(eosDir, '.last-refresh');
       await fs.writeFile(lastRefreshPath, new Date().toISOString(), 'utf-8');
       printSummary(summary);
+      await regenerateAiContexts(rootPath);
       return;
     }
 
@@ -105,6 +111,7 @@ export const refreshCommand = new Command('refresh')
     const lastRefreshPath = path.join(eosDir, '.last-refresh');
     await fs.writeFile(lastRefreshPath, new Date().toISOString(), 'utf-8');
     printSummary(summary);
+    await regenerateAiContexts(rootPath);
   });
 
 function printSummary(summary: { filesReindexed: number; routesUpdated: boolean; graphRelinked: boolean; infraUpdated: boolean; contractsUpdated: boolean }) {
@@ -143,4 +150,54 @@ async function findModifiedSince(rootPath: string, sinceMs: number): Promise<str
 
   await walk(rootPath);
   return results;
+}
+
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function regenerateAiContexts(rootPath: string): Promise<void> {
+  let configAdapters: { claude?: boolean; cursor?: boolean; codex?: boolean } = {};
+  try {
+    const config = await readConfig(rootPath);
+    configAdapters = config.adapters ?? {};
+  } catch {
+    // adapters are optional; fall back to marker/file detection below
+  }
+
+  const shouldRegenerateClaude =
+    configAdapters.claude === true || await fileExists(path.join(rootPath, 'CLAUDE.md'));
+  const shouldRegenerateCursor =
+    configAdapters.cursor === true || await fileExists(path.join(rootPath, '.cursor', 'rules', 'eos-system.md'));
+  const shouldRegenerateCodex =
+    configAdapters.codex === true || await fileExists(path.join(rootPath, 'AGENTS.md'));
+
+  if (!shouldRegenerateClaude && !shouldRegenerateCursor && !shouldRegenerateCodex) {
+    return;
+  }
+
+  const generator = await createAiContextGenerator(rootPath);
+  console.log(`\n${DIM}Regenerating AI context files...${RESET}`);
+
+  if (shouldRegenerateClaude) {
+    await generator.writeClaudeMd(path.join(rootPath, 'CLAUDE.md'));
+    console.log(`${CHECK} CLAUDE.md refreshed`);
+  }
+
+  if (shouldRegenerateCursor) {
+    const written = await generator.writeCursorRules(path.join(rootPath, '.cursor', 'rules'));
+    console.log(`${CHECK} .cursor/rules/ refreshed ${DIM}(${written.length} files)${RESET}`);
+  }
+
+  if (shouldRegenerateCodex) {
+    await generator.writeCodexAgentsMd(path.join(rootPath, 'AGENTS.md'));
+    const installed = await installCodexSkills(rootPath);
+    await writeCodexMcpConfig(rootPath, true);
+    console.log(`${CHECK} Codex context refreshed ${DIM}(AGENTS.md, ${installed.length} skills, MCP config)${RESET}`);
+  }
 }

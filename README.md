@@ -68,7 +68,7 @@ npm install -g engineering-os
 
 # Point it at your project
 cd your-project
-eos init --claude --cursor
+eos init --claude --cursor --codex
 
 # Link sibling services (optional)
 eos link backend-api ../backend-api
@@ -92,9 +92,10 @@ eos refresh --incremental
 
 | Command                      | What it does                                   |
 | ---------------------------- | ---------------------------------------------- |
-| `eos init --claude --cursor` | Index your project + generate AI context files |
+| `eos init --claude --cursor --codex` | Index your project + generate AI context files |
 | `eos serve`                  | Start the MCP server                           |
 | `eos refresh --incremental`  | Update knowledge after code changes            |
+| `eos codex generate`         | Regenerate Codex `AGENTS.md`, skills, and MCP config |
 | `eos link <name> <path>`     | Link a sibling repository                      |
 | `eos workspace init`         | Create team-shared config (checked into git)   |
 | `eos index --watch`          | Continuous re-indexing as you code             |

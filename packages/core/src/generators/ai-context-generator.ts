@@ -63,6 +63,77 @@ export class AiContextGenerator {
     return lines.join('\n');
   }
 
+  async generateCodexAgentsMd(): Promise<string> {
+    const lines: string[] = [];
+
+    lines.push(`# ${this.deps.projectName} — Engineering OS Managed`);
+    lines.push('');
+    lines.push('This repository uses Engineering OS (EOS) as its knowledge layer. Codex should use EOS MCP tools for project context instead of rediscovering architecture, conventions, decisions, and dependency relationships from scratch.');
+    lines.push('');
+    lines.push('## Mandatory EOS MCP usage');
+    lines.push('');
+    lines.push('| When you want to... | Use this EOS tool | Avoid |');
+    lines.push('|---|---|---|');
+    lines.push('| Understand the project before starting | `eos_context` | Broad manual exploration |');
+    lines.push('| Find where something is implemented | `eos_search` | Ad hoc grep/find scans |');
+    lines.push('| Check architecture/service boundaries | `eos_architecture` | Inferring from random files |');
+    lines.push('| Know conventions to follow | `eos_conventions` | Guessing from nearby code |');
+    lines.push('| Check if a decision was already made | `eos_recall_decision` | Re-debating settled choices |');
+    lines.push('| See what depends on what | `eos_dependencies` | Manually tracing imports |');
+    lines.push('| Check impact before changing an interface | `eos_impact` | Hoping nothing breaks |');
+    lines.push('| Find coding patterns to follow | `eos_patterns` | Creating a new pattern by default |');
+    lines.push('| Plan implementation work | `eos_plan` | Creating a plan from scratch |');
+    lines.push('| Validate code against standards | `eos_validate` | Manual-only review |');
+    lines.push('| Run security review | `eos_security_scan` | Manual OWASP check |');
+    lines.push('| Remember a durable codebase lesson | `eos_learn` | Letting it disappear after the session |');
+    lines.push('| Recall learned skills/gotchas | `eos_recall_skills` | Rediscovering past lessons |');
+    lines.push('');
+    lines.push('## Rules');
+    lines.push('');
+    lines.push('1. Call `eos_context` first before starting implementation or review work.');
+    lines.push('2. Prefer `eos_search` for project lookup before broad filesystem exploration.');
+    lines.push('3. Call `eos_recall_decision` before introducing or changing architecture decisions.');
+    lines.push('4. Call `eos_impact` before changing shared interfaces, public APIs, or cross-service contracts.');
+    lines.push('5. Follow `eos_conventions`; do not infer conventions when EOS has a recorded rule.');
+    lines.push('6. Call `eos_patterns` before adding new utilities, abstractions, or repeated structures.');
+    lines.push('7. Call `eos_learn` when you discover a durable gotcha, convention, or project-specific connection.');
+    lines.push('8. Call `eos_recall_skills` near the start of substantial tasks to reuse prior learning.');
+    lines.push('');
+
+    const conventions = await this.getConventions();
+    if (conventions.length > 0) {
+      lines.push('## Project conventions');
+      lines.push('');
+      for (const conv of conventions.slice(0, 10)) {
+        lines.push(`- **${conv.name}:** ${conv.rule}`);
+      }
+      lines.push('');
+    }
+
+    const decisions = await this.getDecisions();
+    if (decisions.length > 0) {
+      lines.push('## Settled decisions');
+      lines.push('');
+      lines.push('Do not propose alternatives to these decisions unless the user provides new constraints.');
+      for (const d of decisions.slice(0, 7)) {
+        lines.push(`- **${d.title}:** ${d.decision}`);
+      }
+      lines.push('');
+    }
+
+    lines.push('## Codex review guidelines');
+    lines.push('');
+    lines.push('- For `@codex review`, prioritize P0/P1 bugs, security regressions, broken contracts, and behavior changes that violate EOS decisions or conventions.');
+    lines.push('- Use `eos_impact` when a diff touches exported types, schemas, APIs, package boundaries, or shared infrastructure.');
+    lines.push('- Use `eos_security_scan` or `eos_security_audit` for security-sensitive changes.');
+    lines.push('');
+    lines.push('## EOS Codex skills');
+    lines.push('');
+    lines.push('Repo-scoped EOS workflows live under `.agents/skills/eos-*`. Invoke them explicitly with `$eos-plan`, `$eos-review`, `$eos-security`, etc., or let Codex choose them when the task matches their descriptions.');
+
+    return lines.join('\n');
+  }
+
   async generateCursorRules(): Promise<Map<string, string>> {
     const files = new Map<string, string>();
 
@@ -201,6 +272,11 @@ export class AiContextGenerator {
 
   async writeClaudeMd(outputPath: string): Promise<void> {
     const content = await this.generateClaudeMd();
+    this.writeWithMarkers(outputPath, content);
+  }
+
+  async writeCodexAgentsMd(outputPath: string): Promise<void> {
+    const content = await this.generateCodexAgentsMd();
     this.writeWithMarkers(outputPath, content);
   }
 

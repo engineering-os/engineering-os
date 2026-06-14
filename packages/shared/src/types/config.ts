@@ -42,6 +42,15 @@ export interface SsoConfig {
   defaultRole?: string;
 }
 
+/** AI tool adapter generation flags */
+export interface AdapterConfig {
+  claude?: boolean;
+  cursor?: boolean;
+  codex?: boolean;
+  copilot?: boolean;
+  windsurf?: boolean;
+}
+
 /** Project-level EOS configuration */
 export interface EosConfig {
   projectName: string;
@@ -49,5 +58,6 @@ export interface EosConfig {
   budgets: TokenBudgets;
   conventions?: Convention[];
   patterns?: Pattern[];
+  adapters?: AdapterConfig;
   sso?: SsoConfig;
 }

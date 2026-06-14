@@ -25,6 +25,7 @@ export function getDefaultConfig(projectName: string): EosConfig {
     projectName,
     embedding,
     budgets,
+    adapters: {},
   } as EosConfig;
 }
 
