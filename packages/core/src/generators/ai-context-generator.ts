@@ -63,73 +63,216 @@ export class AiContextGenerator {
     return lines.join('\n');
   }
 
+  async generateCodexAgentsMd(): Promise<string> {
+    const lines: string[] = [];
+
+    lines.push(`# ${this.deps.projectName} — Engineering OS Managed`);
+    lines.push('');
+    lines.push('This repository uses Engineering OS (EOS) as its knowledge layer. Codex should use EOS MCP tools for project context instead of rediscovering architecture, conventions, decisions, and dependency relationships from scratch.');
+    lines.push('');
+    lines.push('## Mandatory EOS MCP usage');
+    lines.push('');
+    lines.push('| When you want to... | Use this EOS tool | Avoid |');
+    lines.push('|---|---|---|');
+    lines.push('| Understand the project before starting | `eos_context` | Broad manual exploration |');
+    lines.push('| Find where something is implemented | `eos_search` | Ad hoc grep/find scans |');
+    lines.push('| Check architecture/service boundaries | `eos_architecture` | Inferring from random files |');
+    lines.push('| Know conventions to follow | `eos_conventions` | Guessing from nearby code |');
+    lines.push('| Check if a decision was already made | `eos_recall_decision` | Re-debating settled choices |');
+    lines.push('| See what depends on what | `eos_dependencies` | Manually tracing imports |');
+    lines.push('| Check impact before changing an interface | `eos_impact` | Hoping nothing breaks |');
+    lines.push('| Find coding patterns to follow | `eos_patterns` | Creating a new pattern by default |');
+    lines.push('| Plan implementation work | `eos_plan` | Creating a plan from scratch |');
+    lines.push('| Validate code against standards | `eos_validate` | Manual-only review |');
+    lines.push('| Run security review | `eos_security_scan` | Manual OWASP check |');
+    lines.push('| Remember a durable codebase lesson | `eos_learn` | Letting it disappear after the session |');
+    lines.push('| Recall learned skills/gotchas | `eos_recall_skills` | Rediscovering past lessons |');
+    lines.push('');
+    lines.push('## Rules');
+    lines.push('');
+    lines.push('1. Call `eos_context` first before starting implementation or review work.');
+    lines.push('2. Prefer `eos_search` for project lookup before broad filesystem exploration.');
+    lines.push('3. Call `eos_recall_decision` before introducing or changing architecture decisions.');
+    lines.push('4. Call `eos_impact` before changing shared interfaces, public APIs, or cross-service contracts.');
+    lines.push('5. Follow `eos_conventions`; do not infer conventions when EOS has a recorded rule.');
+    lines.push('6. Call `eos_patterns` before adding new utilities, abstractions, or repeated structures.');
+    lines.push('7. Call `eos_learn` when you discover a durable gotcha, convention, or project-specific connection.');
+    lines.push('8. Call `eos_recall_skills` near the start of substantial tasks to reuse prior learning.');
+    lines.push('');
+
+    const conventions = await this.getConventions();
+    if (conventions.length > 0) {
+      lines.push('## Project conventions');
+      lines.push('');
+      for (const conv of conventions.slice(0, 10)) {
+        lines.push(`- **${conv.name}:** ${conv.rule}`);
+      }
+      lines.push('');
+    }
+
+    const decisions = await this.getDecisions();
+    if (decisions.length > 0) {
+      lines.push('## Settled decisions');
+      lines.push('');
+      lines.push('Do not propose alternatives to these decisions unless the user provides new constraints.');
+      for (const d of decisions.slice(0, 7)) {
+        lines.push(`- **${d.title}:** ${d.decision}`);
+      }
+      lines.push('');
+    }
+
+    lines.push('## Codex review guidelines');
+    lines.push('');
+    lines.push('- For `@codex review`, prioritize P0/P1 bugs, security regressions, broken contracts, and behavior changes that violate EOS decisions or conventions.');
+    lines.push('- Use `eos_impact` when a diff touches exported types, schemas, APIs, package boundaries, or shared infrastructure.');
+    lines.push('- Use `eos_security_scan` or `eos_security_audit` for security-sensitive changes.');
+    lines.push('');
+    lines.push('## EOS Codex skills');
+    lines.push('');
+    lines.push('Repo-scoped EOS workflows live under `.agents/skills/eos-*`. Invoke them explicitly with `$eos-plan`, `$eos-review`, `$eos-security`, etc., or let Codex choose them when the task matches their descriptions.');
+
+    return lines.join('\n');
+  }
+
   async generateCursorRules(): Promise<Map<string, string>> {
     const files = new Map<string, string>();
 
-    // eos-system.md — steering instructions (ALWAYS generated)
     const sysLines = [
       '# Engineering OS — Use EOS MCP tools for all tasks',
       '',
-      'This project is managed by Engineering OS. Use these MCP tools:',
+      'This project uses Engineering OS (EOS) as its knowledge layer. EOS has pre-indexed the codebase, architecture, conventions, decisions, and cross-service dependencies.',
       '',
-      '- `eos_context` — CALL FIRST before any task. Returns full architecture, routes, conventions.',
-      '- `eos_search` — Use instead of grep/find. Pre-indexed and cross-repo.',
-      '- `eos_conventions` — Coding standards. Follow them.',
-      '- `eos_recall_decision` — Check before making architecture choices.',
-      '- `eos_impact` — Check before changing shared interfaces.',
-      '- `eos_patterns` — Find existing patterns to follow before writing new code.',
+      '## MANDATORY: Use EOS tools for all code tasks',
       '',
-      'Do NOT explore the codebase manually. Do NOT guess conventions. Ask EOS.',
+      '| When you want to... | Use this EOS tool | NOT this |',
+      '|---|---|---|',
+      '| Understand the project before starting | `eos_context` | Exploring files with Read/grep |',
+      '| Find where something is implemented | `eos_search` | grep, find, Explore agent |',
+      '| Check architecture/service boundaries | `eos_architecture` | Reading random files to infer |',
+      '| Know what conventions to follow | `eos_conventions` | Guessing from existing code |',
+      '| Check if a decision was already made | `eos_recall_decision` | Asking the user |',
+      '| See what depends on what | `eos_dependencies` | Manually tracing imports |',
+      '| Check impact before changing an interface | `eos_impact` | Hoping nothing breaks |',
+      '| Find coding patterns to follow | `eos_patterns` | Scanning for similar code |',
+      '| Plan a feature implementation | `eos_plan` | Creating a plan from scratch |',
+      '| Validate code against standards | `eos_validate` | Manual review |',
+      '| Run security review | `eos_security_scan` | Manual OWASP check |',
+      '| Remember something for next time | `eos_learn` | Forgetting between sessions |',
+      '| Recall past learnings | `eos_recall_skills` | Rediscovering the same thing |',
+      '',
+      '## Rules',
+      '',
+      '1. **ALWAYS call `eos_context` FIRST** before starting any task. It returns the full project gist — architecture, routes, conventions, decisions, cross-repo dependencies.',
+      '2. **NEVER use grep/find/Explore** to understand the codebase. EOS has already indexed everything. Use `eos_search` instead.',
+      '3. **NEVER make architecture decisions** without calling `eos_recall_decision` first — the decision may already exist.',
+      '4. **NEVER change a shared interface** without calling `eos_impact` — other services may depend on it.',
+      '5. **ALWAYS follow conventions** from `eos_conventions` — do not infer or guess patterns.',
+      '6. **ALWAYS use `eos_search`** before writing new utilities — the function may already exist.',
+      '7. **ALWAYS call `eos_learn`** when you discover something about this codebase (gotcha, pattern, connection) — it persists for future sessions.',
+      '8. **ALWAYS call `eos_recall_skills`** at the start of a task — past sessions may have learned relevant skills.',
+      '',
     ];
     files.set('eos-system.md', sysLines.join('\n'));
 
-    // eos-conventions.md
-    const conventions = await this.getConventions();
+    const conventions = await this.getDetailedConventions();
+    const conventionLines = ['# Project Conventions', '', 'Follow these conventions in all code changes:', ''];
     if (conventions.length > 0) {
-      const lines = ['# Project Conventions', '', 'Follow these conventions in all code changes:', ''];
       for (const conv of conventions) {
-        lines.push(`## ${conv.name}`);
-        lines.push(conv.rule);
-        lines.push('');
+        conventionLines.push(`## ${conv.name}`);
+        if (conv.description) conventionLines.push(conv.description);
+        conventionLines.push(`Rule: ${conv.rule}`);
+        if (conv.examples && conv.examples.length > 0) {
+          conventionLines.push('', 'Examples:');
+          for (const example of conv.examples.slice(0, 3)) {
+            conventionLines.push(`- ${example}`);
+          }
+        }
+        conventionLines.push('');
       }
-      files.set('eos-conventions.md', lines.join('\n'));
+    } else {
+      conventionLines.push('No project conventions have been recorded yet. Call `eos_conventions` before inferring standards.');
     }
+    files.set('eos-conventions.md', conventionLines.join('\n'));
 
-    // eos-architecture.md
+    const patterns = await this.getPatterns();
+    const patternLines = ['# Coding Patterns', '', 'Use these recorded patterns before creating new structures:', ''];
+    if (patterns.length > 0) {
+      for (const pattern of patterns) {
+        patternLines.push(`## ${pattern.name}`);
+        if (pattern.description) patternLines.push(pattern.description);
+        if (pattern.usage) patternLines.push(`Usage: ${pattern.usage}`);
+        if (pattern.files && pattern.files.length > 0) {
+          patternLines.push('', 'Files:');
+          for (const file of pattern.files.slice(0, 5)) {
+            patternLines.push(`- ${file}`);
+          }
+        }
+        patternLines.push('');
+      }
+    } else {
+      patternLines.push('No coding patterns have been recorded yet. Call `eos_patterns` before adding new abstractions.');
+    }
+    files.set('eos-patterns.md', patternLines.join('\n'));
+
+    const services = await this.getServices();
     const archLines = this.getArchitectureLines();
-    if (archLines.length > 0) {
-      const lines = [
-        '# Project Architecture', '',
-        `Project: ${this.deps.projectName}`,
-        this.buildProjectSummaryLine(), '',
-        ...archLines, '',
-      ];
-      files.set('eos-architecture.md', lines.join('\n'));
-    }
-
-    // eos-decisions.md
-    const decisions = await this.getDecisions();
-    if (decisions.length > 0) {
-      const lines = ['# Engineering Decisions', '', 'These decisions are made. Do not propose alternatives unless new information is presented.', ''];
-      for (const d of decisions) {
-        lines.push(`## ${d.title}`);
-        lines.push(`Decision: ${d.decision}`);
-        if (d.rationale) lines.push(`Rationale: ${d.rationale}`);
-        lines.push('');
+    const architectureLines = [
+      '# Project Architecture',
+      '',
+      `Project: ${this.deps.projectName}`,
+      this.buildProjectSummaryLine(),
+      '',
+    ];
+    if (services.length > 0) {
+      architectureLines.push('## Services', '');
+      for (const service of services) {
+        architectureLines.push(`### ${service.name}`);
+        if (service.description) architectureLines.push(service.description);
+        architectureLines.push(`- Criticality: ${service.criticality}`);
+        if (service.owners && service.owners.length > 0) architectureLines.push(`- Owners: ${service.owners.join(', ')}`);
+        if (service.publicApis && service.publicApis.length > 0) architectureLines.push(`- APIs: ${service.publicApis.join(', ')}`);
+        if (service.dependencies && service.dependencies.length > 0) architectureLines.push(`- Dependencies: ${service.dependencies.join(', ')}`);
+        if (service.patterns && service.patterns.length > 0) architectureLines.push(`- Patterns: ${service.patterns.join(', ')}`);
+        architectureLines.push('');
       }
-      files.set('eos-decisions.md', lines.join('\n'));
     }
+    if (archLines.length > 0) {
+      architectureLines.push('## Dependency Graph', '', ...archLines, '');
+    }
+    if (services.length === 0 && archLines.length === 0) {
+      architectureLines.push('No architecture records have been generated yet. Call `eos_architecture` for live architecture context.');
+    }
+    files.set('eos-architecture.md', architectureLines.join('\n'));
 
-    // eos-service-map.md (from graph JSON if available)
+    const decisions = await this.getDecisions();
+    const decisionLines = ['# Engineering Decisions', '', 'These decisions are made. Do not propose alternatives unless new information is presented.', ''];
+    if (decisions.length > 0) {
+      for (const d of decisions) {
+        decisionLines.push(`## ${d.title}`);
+        decisionLines.push(`Decision: ${d.decision}`);
+        if (d.rationale) decisionLines.push(`Rationale: ${d.rationale}`);
+        decisionLines.push('');
+      }
+    } else {
+      decisionLines.push('No accepted decisions have been recorded yet. Call `eos_recall_decision` before making architecture choices.');
+    }
+    files.set('eos-decisions.md', decisionLines.join('\n'));
+
     const serviceMapPath = path.join(this.deps.rootPath, '.eos', 'graph', 'service-map.json');
     if (fs.existsSync(serviceMapPath)) {
       try {
         const data = JSON.parse(fs.readFileSync(serviceMapPath, 'utf-8'));
-        if (data.services?.length > 0) {
-          const lines = this.buildServiceMapMarkdown(data);
-          files.set('eos-service-map.md', lines);
-        }
+        files.set('eos-service-map.md', this.buildServiceMapMarkdown(data));
       } catch { /* skip if malformed */ }
+    }
+    if (!files.has('eos-service-map.md')) {
+      files.set('eos-service-map.md', [
+        '# Service Dependency Map',
+        '',
+        'No exported service map is available yet.',
+        '',
+        'Changes to shared interfaces still require `eos_impact` before editing.',
+      ].join('\n'));
     }
 
     return files;
@@ -204,14 +347,23 @@ export class AiContextGenerator {
     this.writeWithMarkers(outputPath, content);
   }
 
-  async writeCursorRules(rulesDir: string): Promise<string[]> {
+  async writeCodexAgentsMd(outputPath: string): Promise<void> {
+    const content = await this.generateCodexAgentsMd();
+    this.writeWithMarkers(outputPath, content);
+  }
+
+  async writeCursorRules(rulesDir: string, options: { disabled?: boolean } = {}): Promise<string[]> {
     const rules = await this.generateCursorRules();
     if (!fs.existsSync(rulesDir)) fs.mkdirSync(rulesDir, { recursive: true });
 
     const written: string[] = [];
     for (const [filename, content] of rules) {
-      fs.writeFileSync(path.join(rulesDir, filename), content, 'utf-8');
-      written.push(filename);
+      const outputName = options.disabled ? `${filename}.disabled` : filename;
+      const oppositeName = options.disabled ? filename : `${filename}.disabled`;
+      const oppositePath = path.join(rulesDir, oppositeName);
+      if (fs.existsSync(oppositePath)) fs.rmSync(oppositePath, { force: true });
+      this.writeWithMarkers(path.join(rulesDir, outputName), content);
+      written.push(outputName);
     }
     return written;
   }
@@ -246,10 +398,35 @@ export class AiContextGenerator {
       const before = existing.slice(0, startIdx);
       const after = existing.slice(endIdx + EOS_MARKER_END.length);
       fs.writeFileSync(filePath, before + markedContent + after, 'utf-8');
+    } else if (this.isLegacyGeneratedCursorRule(filePath, existing)) {
+      fs.writeFileSync(filePath, markedContent + '\n', 'utf-8');
     } else {
       const separator = existing.endsWith('\n') ? '\n' : '\n\n';
       fs.writeFileSync(filePath, existing + separator + markedContent + '\n', 'utf-8');
     }
+  }
+
+  private isLegacyGeneratedCursorRule(filePath: string, content: string): boolean {
+    const baseName = path.basename(filePath).replace(/\.disabled$/, '');
+    const legacyHeadings: Record<string, string> = {
+      'eos-system.md': '# Engineering OS',
+      'eos-conventions.md': '# Project Conventions',
+      'eos-patterns.md': '# Coding Patterns',
+      'eos-architecture.md': '# Project Architecture',
+      'eos-decisions.md': '# Engineering Decisions',
+      'eos-service-map.md': '# Service Dependency Map',
+    };
+    const heading = legacyHeadings[baseName];
+    if (!heading || !content.trimStart().startsWith(heading)) return false;
+
+    return [
+      'eos_context',
+      'Follow these conventions',
+      'Use these recorded patterns',
+      'Project:',
+      'These decisions are made',
+      'multi-service architecture',
+    ].some((needle) => content.includes(needle));
   }
 
   private buildProjectSummaryLine(): string {
@@ -304,6 +481,51 @@ export class AiContextGenerator {
     }
   }
 
+  private async getDetailedConventions(): Promise<Array<{ name: string; description?: string; rule: string; examples?: string[] }>> {
+    if (this.workspace && this.workspace.conventions.length > 0) {
+      return this.workspace.conventions.map((c) => ({
+        name: c.name,
+        rule: c.rule,
+      }));
+    }
+
+    try {
+      const discovered = await this.deps.architectureStore.getConventions();
+      return discovered.map((c) => ({
+        name: c.name,
+        description: c.description,
+        rule: c.rule || c.description,
+        examples: c.examples,
+      }));
+    } catch {
+      return [];
+    }
+  }
+
+  private async getPatterns(): Promise<Array<{ name: string; description?: string; usage?: string; files?: string[] }>> {
+    try {
+      return await this.deps.architectureStore.getPatterns();
+    } catch {
+      return [];
+    }
+  }
+
+  private async getServices(): Promise<Array<{
+    name: string;
+    description?: string;
+    owners?: string[];
+    publicApis?: string[];
+    dependencies?: string[];
+    patterns?: string[];
+    criticality?: string;
+  }>> {
+    try {
+      return await this.deps.architectureStore.getServices();
+    } catch {
+      return [];
+    }
+  }
+
   private async getDecisions(): Promise<Array<{ title: string; decision: string; rationale?: string }>> {
     // Prefer workspace decisions (VCS-tracked)
     if (this.workspace && this.workspace.decisions.length > 0) {
@@ -324,23 +546,64 @@ export class AiContextGenerator {
   }
 
   private buildServiceMapMarkdown(data: { services: any[]; connections: any[]; contracts: any[] }): string {
+    const services = data.services ?? [];
+    const connections = data.connections ?? [];
+    const contracts = data.contracts ?? [];
     const lines: string[] = ['# Service Dependency Map', ''];
-    lines.push('Changes to shared interfaces require coordination across services.');
+    lines.push('This project is part of a multi-service architecture. Changes to shared interfaces require coordination.');
     lines.push('');
 
-    if (data.connections.length > 0) {
+    if (services.length > 0) {
+      const byRepo = new Map<string, any[]>();
+      for (const service of services) {
+        const repoName = service.repoName || 'unknown';
+        if (!byRepo.has(repoName)) byRepo.set(repoName, []);
+        byRepo.get(repoName)!.push(service);
+      }
+
+      lines.push('## Services', '');
+      for (const [repo, svcList] of byRepo) {
+        lines.push(`### ${repo}`);
+        for (const service of svcList) {
+          lines.push(`- **${service.serviceName}** [${service.criticality || 'unknown'}]${service.description ? ` — ${service.description}` : ''}`);
+          if (Array.isArray(service.owners) && service.owners.length > 0) {
+            lines.push(`  - Owners: ${service.owners.join(', ')}`);
+          }
+        }
+        lines.push('');
+      }
+    } else {
+      lines.push('No services are currently exported in `.eos/graph/service-map.json`.', '');
+    }
+
+    if (connections.length > 0) {
       lines.push('## Dependencies');
-      for (const c of data.connections) {
-        lines.push(`- ${c.sourceService} → ${c.targetService} [${c.protocol}]`);
+      lines.push('');
+      lines.push('When modifying endpoints or interfaces consumed by other services, maintain backward compatibility.');
+      lines.push('');
+      for (const c of connections) {
+        lines.push(`- ${c.sourceService} → ${c.targetService} via **${c.protocol}**`);
       }
       lines.push('');
     }
 
-    if (data.contracts.length > 0) {
-      lines.push('## Contracts');
-      for (const c of data.contracts) {
-        lines.push(`- ${c.type}: ${c.filePath} (${c.repoName})`);
+    if (contracts.length > 0) {
+      lines.push('## API Contracts');
+      lines.push('');
+      for (const c of contracts) {
+        const endpoints = Array.isArray(c.endpoints) ? c.endpoints : [];
+        lines.push(`- **${c.type}**: \`${c.filePath}\` (${c.repoName}) — ${endpoints.length} endpoints`);
       }
+      lines.push('');
+    }
+
+    const protocols = new Set(connections.map((c: any) => c.protocol));
+    if (protocols.size > 0) {
+      lines.push('## Cross-Service Conventions', '');
+      if (protocols.has('rest')) lines.push('- REST endpoint changes must maintain backward compatibility for all consumers');
+      if (protocols.has('event')) lines.push('- Event schema changes must be additive only (no breaking changes)');
+      if (protocols.has('grpc')) lines.push('- Proto file changes must follow gRPC backward compatibility rules');
+      if (protocols.has('import')) lines.push('- Shared package changes affect all importing services — follow semver');
     }
 
     return lines.join('\n');

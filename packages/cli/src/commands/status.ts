@@ -2,6 +2,8 @@ import { Command } from 'commander';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { readConfig } from '../utils/config.js';
+import { getCodexStatus } from '../utils/codex.js';
+import { getCursorStatus } from '../utils/cursor.js';
 
 // ANSI color codes
 const GREEN = '\x1b[32m';
@@ -163,25 +165,35 @@ export const statusCommand = new Command('status')
     console.log(`  ${DIM}•${RESET} Claude Code:  ${claudeIcon} ${claudeStatus}`);
 
     // Cursor status
-    const cursorRulesDir = path.join(rootPath, '.cursor', 'rules');
     let cursorStatus = 'not configured';
     let cursorIcon = `${DIM}○${RESET}`;
-    try {
-      const cursorFiles = await fs.readdir(cursorRulesDir);
-      const activeRules = cursorFiles.filter(f => f.startsWith('eos-') && f.endsWith('.md'));
-      const disabledRules = cursorFiles.filter(f => f.startsWith('eos-') && f.endsWith('.md.disabled'));
-
-      if (activeRules.length > 0) {
-        cursorStatus = `enabled (${activeRules.length} rules)`;
-        cursorIcon = `${GREEN}●${RESET}`;
-      } else if (disabledRules.length > 0) {
-        cursorStatus = `disabled (${disabledRules.length} rules suspended)`;
-        cursorIcon = `${RED}●${RESET}`;
-      }
-    } catch {
-      // not configured
+    const cursor = await getCursorStatus(rootPath);
+    if (cursor.activeRules > 0 || cursor.activeSkills > 0) {
+      cursorStatus = `enabled (${cursor.activeRules} rules, ${cursor.activeSkills} skills)`;
+      cursorIcon = `${GREEN}●${RESET}`;
+    } else if (cursor.disabledRules > 0 || cursor.disabledSkills > 0) {
+      cursorStatus = `disabled (${cursor.disabledRules} rules, ${cursor.disabledSkills} skills suspended)`;
+      cursorIcon = `${RED}●${RESET}`;
     }
     console.log(`  ${DIM}•${RESET} Cursor:       ${cursorIcon} ${cursorStatus}`);
+
+    // Codex status
+    const codex = await getCodexStatus(rootPath);
+    let codexStatus = 'not configured';
+    let codexIcon = `${DIM}○${RESET}`;
+    if (codex.agentsMd === 'enabled' || codex.activeSkills > 0 || codex.mcpConfig !== 'missing') {
+      if (codex.activeSkills > 0 && codex.mcpConfig === 'enabled') {
+        codexStatus = `enabled (${codex.activeSkills} skills, MCP configured)`;
+        codexIcon = `${GREEN}●${RESET}`;
+      } else if (codex.disabledSkills > 0 || codex.mcpConfig === 'disabled') {
+        codexStatus = `disabled (${codex.disabledSkills} skills suspended)`;
+        codexIcon = `${RED}●${RESET}`;
+      } else {
+        codexStatus = 'partial';
+        codexIcon = `${YELLOW}●${RESET}`;
+      }
+    }
+    console.log(`  ${DIM}•${RESET} Codex:        ${codexIcon} ${codexStatus}`);
     console.log('');
 
     // Overall health
@@ -191,7 +203,7 @@ export const statusCommand = new Command('status')
     console.log(`${BOLD}Health:${RESET} ${healthIcon} ${healthText}`);
 
     // Hint for enable/disable
-    if (claudeStatus === 'disabled' || cursorStatus.includes('disabled')) {
+    if (claudeStatus === 'disabled' || cursorStatus.includes('disabled') || codexStatus.includes('disabled')) {
       console.log(`\n${DIM}Some tools are disabled. Run \`eos enable\` to restore.${RESET}`);
     }
     console.log('');

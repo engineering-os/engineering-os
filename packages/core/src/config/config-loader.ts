@@ -41,6 +41,7 @@ export async function loadConfig(rootPath: string): Promise<EosConfig> {
       projectName: raw.projectName ?? path.basename(rootPath),
       embedding: raw.embedding ?? { provider: 'openai', model: 'text-embedding-3-small' },
       budgets,
+      adapters: raw.adapters,
     };
   } catch {
     return buildDefault(rootPath);
@@ -52,5 +53,6 @@ function buildDefault(rootPath: string): EosConfig {
     projectName: path.basename(rootPath),
     embedding: { provider: 'openai', model: 'text-embedding-3-small' },
     budgets: { ...DEFAULT_BUDGETS, enforcement: { ...DEFAULT_ENFORCEMENT } },
+    adapters: {},
   };
 }

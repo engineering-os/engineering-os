@@ -1,6 +1,8 @@
 import { Command } from 'commander';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { setCodexEnabled } from '../utils/codex.js';
+import { setCursorEnabled } from '../utils/cursor.js';
 
 const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
@@ -51,22 +53,6 @@ function isDisabledInClaude(settings: ClaudeSettings): boolean {
   return settings.disabledMcpjsonServers?.includes('engineering-os') ?? false;
 }
 
-/**
- * Get all EOS cursor rule files (active and disabled).
- */
-async function getCursorRuleFiles(projectRoot: string): Promise<{ active: string[]; disabled: string[] }> {
-  const rulesDir = path.join(projectRoot, '.cursor', 'rules');
-  try {
-    const files = await fs.readdir(rulesDir);
-    return {
-      active: files.filter(f => f.startsWith('eos-') && f.endsWith('.md')),
-      disabled: files.filter(f => f.startsWith('eos-') && f.endsWith('.md.disabled')),
-    };
-  } catch {
-    return { active: [], disabled: [] };
-  }
-}
-
 // ─────────────────────────────────────────────────
 // DISABLE COMMAND
 // ─────────────────────────────────────────────────
@@ -76,10 +62,12 @@ export const disableCommand = new Command('disable')
   .option('-p, --path <path>', 'Project root path', process.cwd())
   .option('--claude-only', 'Only disable for Claude Code')
   .option('--cursor-only', 'Only disable for Cursor')
+  .option('--codex-only', 'Only disable for Codex')
   .action(async (options) => {
     const projectRoot = path.resolve(options.path);
-    const disableClaude = !options.cursorOnly;
-    const disableCursor = !options.claudeOnly;
+    const disableClaude = !options.cursorOnly && !options.codexOnly;
+    const disableCursor = !options.claudeOnly && !options.codexOnly;
+    const disableCodex = !options.claudeOnly && !options.cursorOnly;
 
     console.log(`\n${BOLD}Disabling Engineering OS${RESET}\n`);
 
@@ -103,18 +91,21 @@ export const disableCommand = new Command('disable')
 
     // Disable for Cursor
     if (disableCursor) {
-      const rulesDir = path.join(projectRoot, '.cursor', 'rules');
-      const { active } = await getCursorRuleFiles(projectRoot);
-
-      if (active.length > 0) {
-        for (const file of active) {
-          const src = path.join(rulesDir, file);
-          const dest = path.join(rulesDir, `${file}.disabled`);
-          await fs.rename(src, dest);
-        }
-        console.log(`${CHECK} Cursor: disabled ${DIM}(${active.length} rule files suspended)${RESET}`);
+      const result = await setCursorEnabled(projectRoot, false);
+      if (result.rulesChanged > 0 || result.skillsChanged > 0) {
+        console.log(`${CHECK} Cursor: disabled ${DIM}(${result.rulesChanged} rules, ${result.skillsChanged} skill dirs suspended)${RESET}`);
       } else {
-        console.log(`${DIM}  Cursor: no active rules found${RESET}`);
+        console.log(`${DIM}  Cursor: no active EOS rules or skills found${RESET}`);
+      }
+    }
+
+    // Disable for Codex
+    if (disableCodex) {
+      const result = await setCodexEnabled(projectRoot, false);
+      if (result.skillsChanged > 0 || result.mcpChanged) {
+        console.log(`${CHECK} Codex: disabled ${DIM}(${result.skillsChanged} skill dirs suspended${result.mcpChanged ? ', MCP config disabled' : ''})${RESET}`);
+      } else {
+        console.log(`${DIM}  Codex: no active EOS skills or MCP config found${RESET}`);
       }
     }
 
@@ -130,10 +121,12 @@ export const enableCommand = new Command('enable')
   .option('-p, --path <path>', 'Project root path', process.cwd())
   .option('--claude-only', 'Only enable for Claude Code')
   .option('--cursor-only', 'Only enable for Cursor')
+  .option('--codex-only', 'Only enable for Codex')
   .action(async (options) => {
     const projectRoot = path.resolve(options.path);
-    const enableClaude = !options.cursorOnly;
-    const enableCursor = !options.claudeOnly;
+    const enableClaude = !options.cursorOnly && !options.codexOnly;
+    const enableCursor = !options.claudeOnly && !options.codexOnly;
+    const enableCodex = !options.claudeOnly && !options.cursorOnly;
 
     console.log(`\n${BOLD}Enabling Engineering OS${RESET}\n`);
 
@@ -158,18 +151,21 @@ export const enableCommand = new Command('enable')
 
     // Enable for Cursor
     if (enableCursor) {
-      const rulesDir = path.join(projectRoot, '.cursor', 'rules');
-      const { disabled } = await getCursorRuleFiles(projectRoot);
-
-      if (disabled.length > 0) {
-        for (const file of disabled) {
-          const src = path.join(rulesDir, file);
-          const dest = path.join(rulesDir, file.replace('.disabled', ''));
-          await fs.rename(src, dest);
-        }
-        console.log(`${CHECK} Cursor: enabled ${DIM}(${disabled.length} rule files restored)${RESET}`);
+      const result = await setCursorEnabled(projectRoot, true);
+      if (result.rulesChanged > 0 || result.skillsChanged > 0) {
+        console.log(`${CHECK} Cursor: enabled ${DIM}(${result.rulesChanged} rules, ${result.skillsChanged} skill dirs restored)${RESET}`);
       } else {
-        console.log(`${DIM}  Cursor: no disabled rules to restore${RESET}`);
+        console.log(`${DIM}  Cursor: no disabled EOS rules or skills to restore${RESET}`);
+      }
+    }
+
+    // Enable for Codex
+    if (enableCodex) {
+      const result = await setCodexEnabled(projectRoot, true);
+      if (result.skillsChanged > 0 || result.mcpChanged) {
+        console.log(`${CHECK} Codex: enabled ${DIM}(${result.skillsChanged} skill dirs restored${result.mcpChanged ? ', MCP config enabled' : ''})${RESET}`);
+      } else {
+        console.log(`${DIM}  Codex: no disabled EOS skills or MCP config found${RESET}`);
       }
     }
 

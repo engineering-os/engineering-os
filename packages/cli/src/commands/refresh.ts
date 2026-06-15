@@ -3,6 +3,10 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 import { execSync } from 'child_process';
 import { RepositoryIndexer, MetadataStore, GraphStore, RepoRegistry, EosWatcher } from '@engineering-os/core';
+import { readConfig } from '../utils/config.js';
+import { createAiContextGenerator } from '../utils/ai-context.js';
+import { getCodexStatus, installCodexSkills, isCodexDisabled, writeCodexMcpConfig } from '../utils/codex.js';
+import { getCursorStatus, installCursorSkills, isCursorDisabled } from '../utils/cursor.js';
 
 const GREEN = '\x1b[32m';
 const DIM = '\x1b[2m';
@@ -77,6 +81,7 @@ export const refreshCommand = new Command('refresh')
         const summary = await watcher.refreshFull();
         await fs.writeFile(lastRefreshPath, new Date().toISOString(), 'utf-8');
         printSummary(summary);
+        await regenerateAiContexts(rootPath);
         return;
       }
     } else if (options.full) {
@@ -84,6 +89,7 @@ export const refreshCommand = new Command('refresh')
       const lastRefreshPath = path.join(eosDir, '.last-refresh');
       await fs.writeFile(lastRefreshPath, new Date().toISOString(), 'utf-8');
       printSummary(summary);
+      await regenerateAiContexts(rootPath);
       return;
     } else {
       // Default: full refresh
@@ -91,6 +97,7 @@ export const refreshCommand = new Command('refresh')
       const lastRefreshPath = path.join(eosDir, '.last-refresh');
       await fs.writeFile(lastRefreshPath, new Date().toISOString(), 'utf-8');
       printSummary(summary);
+      await regenerateAiContexts(rootPath);
       return;
     }
 
@@ -105,6 +112,7 @@ export const refreshCommand = new Command('refresh')
     const lastRefreshPath = path.join(eosDir, '.last-refresh');
     await fs.writeFile(lastRefreshPath, new Date().toISOString(), 'utf-8');
     printSummary(summary);
+    await regenerateAiContexts(rootPath);
   });
 
 function printSummary(summary: { filesReindexed: number; routesUpdated: boolean; graphRelinked: boolean; infraUpdated: boolean; contractsUpdated: boolean }) {
@@ -143,4 +151,66 @@ async function findModifiedSince(rootPath: string, sinceMs: number): Promise<str
 
   await walk(rootPath);
   return results;
+}
+
+async function fileExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function regenerateAiContexts(rootPath: string): Promise<void> {
+  let configAdapters: { claude?: boolean; cursor?: boolean; codex?: boolean } = {};
+  try {
+    const config = await readConfig(rootPath);
+    configAdapters = config.adapters ?? {};
+  } catch {
+    // adapters are optional; fall back to marker/file detection below
+  }
+
+  const shouldRegenerateClaude =
+    configAdapters.claude === true || await fileExists(path.join(rootPath, 'CLAUDE.md'));
+  const cursorStatus = await getCursorStatus(rootPath);
+  const cursorDisabled = isCursorDisabled(cursorStatus);
+  const shouldRegenerateCursor =
+    configAdapters.cursor === true
+      || await fileExists(path.join(rootPath, '.cursor', 'rules', 'eos-system.md'))
+      || cursorDisabled;
+  const codexStatus = await getCodexStatus(rootPath);
+  const codexDisabled = isCodexDisabled(codexStatus);
+  const shouldRegenerateCodex =
+    configAdapters.codex === true
+      || await fileExists(path.join(rootPath, 'AGENTS.md'))
+      || codexStatus.mcpConfig !== 'missing'
+      || codexStatus.disabledSkills > 0;
+
+  if (!shouldRegenerateClaude && !shouldRegenerateCursor && !shouldRegenerateCodex) {
+    return;
+  }
+
+  const generator = await createAiContextGenerator(rootPath);
+  console.log(`\n${DIM}Regenerating AI context files...${RESET}`);
+
+  if (shouldRegenerateClaude) {
+    await generator.writeClaudeMd(path.join(rootPath, 'CLAUDE.md'));
+    console.log(`${CHECK} CLAUDE.md refreshed`);
+  }
+
+  if (shouldRegenerateCursor) {
+    const written = await generator.writeCursorRules(path.join(rootPath, '.cursor', 'rules'), { disabled: cursorDisabled });
+    const installed = await installCursorSkills(rootPath, { disabled: cursorDisabled });
+    const state = cursorDisabled ? 'suspended ' : '';
+    console.log(`${CHECK} Cursor context refreshed ${DIM}(${written.length} ${state}rules, ${installed.length} ${state}skills)${RESET}`);
+  }
+
+  if (shouldRegenerateCodex) {
+    await generator.writeCodexAgentsMd(path.join(rootPath, 'AGENTS.md'));
+    const installed = await installCodexSkills(rootPath, { disabled: codexDisabled });
+    await writeCodexMcpConfig(rootPath, !codexDisabled);
+    const state = codexDisabled ? 'suspended ' : '';
+    console.log(`${CHECK} Codex context refreshed ${DIM}(AGENTS.md, ${installed.length} ${state}skills, MCP config ${codexDisabled ? 'disabled' : 'enabled'})${RESET}`);
+  }
 }

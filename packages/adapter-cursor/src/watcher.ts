@@ -17,6 +17,8 @@ export class CursorRulesWatcher {
    */
   start(): void {
     const knowledgePath = path.join(this.eosPath, 'knowledge');
+    const graphPath = path.join(this.eosPath, 'graph', 'service-map.json');
+    const workspacePath = path.join(path.dirname(this.eosPath), 'eos.workspace.yaml');
 
     // Watch the knowledge directory recursively
     try {
@@ -33,11 +35,31 @@ export class CursorRulesWatcher {
 
       this.watchers.push(watcher);
       console.log(`[eos-cursor] Watching ${knowledgePath} for changes...`);
+      this.watchFile(graphPath);
+      this.watchFile(workspacePath);
     } catch (err: any) {
       if (err.code === 'ENOENT') {
         console.error(`[eos-cursor] Knowledge directory not found: ${knowledgePath}`);
         console.error('[eos-cursor] Run "eos init" to set up your project first.');
       } else {
+        throw err;
+      }
+    }
+  }
+
+  private watchFile(filePath: string): void {
+    try {
+      const watcher = fs.watch(filePath, (_eventType, filename) => {
+        console.log(`[eos-cursor] Detected change: ${filename || path.basename(filePath)}`);
+        this.scheduleRegenerate();
+      });
+      watcher.on('error', (err) => {
+        console.error('[eos-cursor] Watcher error:', err.message);
+      });
+      this.watchers.push(watcher);
+      console.log(`[eos-cursor] Watching ${filePath} for changes...`);
+    } catch (err: any) {
+      if (err.code !== 'ENOENT') {
         throw err;
       }
     }

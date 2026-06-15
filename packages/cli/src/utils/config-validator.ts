@@ -92,5 +92,19 @@ export function validateConfig(config: unknown): ValidationResult {
     }
   }
 
+  // adapters
+  if (cfg.adapters !== undefined) {
+    if (typeof cfg.adapters !== 'object' || cfg.adapters === null) {
+      errors.push('adapters must be an object');
+    } else {
+      const adapters = cfg.adapters as Record<string, unknown>;
+      for (const key of ['claude', 'cursor', 'codex', 'copilot', 'windsurf']) {
+        if (adapters[key] !== undefined && typeof adapters[key] !== 'boolean') {
+          errors.push(`adapters.${key} must be a boolean`);
+        }
+      }
+    }
+  }
+
   return { valid: errors.length === 0, errors, warnings };
 }

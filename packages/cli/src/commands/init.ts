@@ -3,7 +3,9 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { RepositoryIndexer, ArchitectureDiscovery, ArchitectureStore, MetadataStore, GraphStore, GraphLinker, ContractDiscovery, RepoRegistry, AiContextGenerator, WorkspaceLoader, GlobalRegistry } from '@engineering-os/core';
 import { DecisionStore } from '@engineering-os/core';
-import { getDefaultConfig, writeConfig } from '../utils/config.js';
+import { getDefaultConfig, readConfig, writeConfig } from '../utils/config.js';
+import { installCodexSkills, writeCodexMcpConfig } from '../utils/codex.js';
+import { installCursorSkills } from '../utils/cursor.js';
 
 // ANSI color codes
 const GREEN = '\x1b[32m';
@@ -66,6 +68,7 @@ export const initCommand = new Command('init')
   .option('-f, --force', 'Force re-initialization even if .eos/ exists')
   .option('--claude', 'Generate CLAUDE.md context file')
   .option('--cursor', 'Generate .cursor/rules/eos-*.md files')
+  .option('--codex', 'Generate Codex AGENTS.md, .agents/skills/eos-*, and .codex/config.toml')
   .option('--copilot', 'Generate .github/copilot-instructions.md')
   .option('--windsurf', 'Generate .windsurfrules file')
   .option('--all', 'Generate context files for all AI tools')
@@ -262,12 +265,24 @@ export const initCommand = new Command('init')
     // Generate AI tool context files
     const generateClaude = options.claude || options.all;
     const generateCursor = options.cursor || options.all;
+    const generateCodex = options.codex || options.all;
     const generateCopilot = options.copilot || options.all;
     const generateWindsurf = options.windsurf || options.all;
 
-    if (generateClaude || generateCursor || generateCopilot || generateWindsurf) {
+    if (generateClaude || generateCursor || generateCodex || generateCopilot || generateWindsurf) {
       console.log(`\n${DIM}Generating AI context files...${RESET}`);
       try {
+        const config = await readConfig(rootPath);
+        config.adapters = {
+          ...(config.adapters ?? {}),
+          ...(generateClaude ? { claude: true } : {}),
+          ...(generateCursor ? { cursor: true } : {}),
+          ...(generateCodex ? { codex: true } : {}),
+          ...(generateCopilot ? { copilot: true } : {}),
+          ...(generateWindsurf ? { windsurf: true } : {}),
+        };
+        await writeConfig(rootPath, config);
+
         const eosDir = path.join(rootPath, '.eos');
         const graphStore = new GraphStore(path.join(eosDir, 'graph', 'services.db'));
         graphStore.initialize();
@@ -291,6 +306,17 @@ export const initCommand = new Command('init')
           const cursorDir = path.join(rootPath, '.cursor', 'rules');
           const written = await generator.writeCursorRules(cursorDir);
           console.log(`${CHECK} .cursor/rules/ generated ${DIM}(${written.join(', ')})${RESET}`);
+          const installed = await installCursorSkills(rootPath);
+          console.log(`${CHECK} .cursor/skills/ generated ${DIM}(${installed.length} EOS Cursor skills)${RESET}`);
+        }
+
+        if (generateCodex) {
+          await generator.writeCodexAgentsMd(path.join(rootPath, 'AGENTS.md'));
+          const installed = await installCodexSkills(rootPath);
+          await writeCodexMcpConfig(rootPath, true);
+          console.log(`${CHECK} AGENTS.md generated ${DIM}(Codex repo instructions)${RESET}`);
+          console.log(`${CHECK} .agents/skills/ generated ${DIM}(${installed.length} EOS Codex skills)${RESET}`);
+          console.log(`${CHECK} .codex/config.toml generated ${DIM}(Codex MCP config; project must be trusted)${RESET}`);
         }
 
         if (generateCopilot) {

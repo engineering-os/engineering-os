@@ -72,6 +72,24 @@ if (fs.existsSync(skillsDest)) {
 copyDir(skillsSrc, skillsDest);
 console.log('  ✓ skills (11 Claude Code skills)');
 
+// Copy Codex skills
+const codexSkillsSrc = path.join(PACKAGES, 'adapter-codex', 'skills');
+const codexSkillsDest = path.join(ROOT, 'skills-codex');
+if (fs.existsSync(codexSkillsDest)) {
+  fs.rmSync(codexSkillsDest, { recursive: true });
+}
+copyDir(codexSkillsSrc, codexSkillsDest);
+console.log('  ✓ skills-codex (11 Codex skills)');
+
+// Copy Cursor skills
+const cursorSkillsSrc = path.join(PACKAGES, 'adapter-cursor', 'skills');
+const cursorSkillsDest = path.join(ROOT, 'skills-cursor');
+if (fs.existsSync(cursorSkillsDest)) {
+  fs.rmSync(cursorSkillsDest, { recursive: true });
+}
+copyDir(cursorSkillsSrc, cursorSkillsDest);
+console.log('  ✓ skills-cursor (11 Cursor skills)');
+
 // Copy .claude-plugin from adapter-claude
 const pluginSrc = path.join(PACKAGES, 'adapter-claude', '.claude-plugin');
 const pluginDest = path.join(ROOT, '.claude-plugin');
