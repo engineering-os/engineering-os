@@ -38,7 +38,7 @@ async function copyDir(src: string, dest: string): Promise<void> {
   }
 }
 
-export async function installCursorSkills(projectRoot: string): Promise<string[]> {
+export async function installCursorSkills(projectRoot: string, options: { disabled?: boolean } = {}): Promise<string[]> {
   const source = resolveCursorSkillsSource();
   const skillsDir = path.join(projectRoot, '.cursor', 'skills');
   await fs.mkdir(skillsDir, { recursive: true });
@@ -47,8 +47,11 @@ export async function installCursorSkills(projectRoot: string): Promise<string[]
   const installed: string[] = [];
   for (const entry of sourceEntries) {
     if (!entry.isDirectory()) continue;
-    const targetName = `eos-${entry.name}`;
+    const activeName = `eos-${entry.name}`;
+    const targetName = options.disabled ? `${activeName}.disabled` : activeName;
     const targetPath = path.join(skillsDir, targetName);
+    const oppositePath = path.join(skillsDir, options.disabled ? activeName : `${activeName}.disabled`);
+    await fs.rm(oppositePath, { recursive: true, force: true });
     await fs.rm(targetPath, { recursive: true, force: true });
     await copyDir(path.join(source, entry.name), targetPath);
     installed.push(targetName);
@@ -120,4 +123,10 @@ export async function getCursorStatus(projectRoot: string): Promise<CursorStatus
     activeSkills: skills.active.length,
     disabledSkills: skills.disabled.length,
   };
+}
+
+export function isCursorDisabled(status: CursorStatus): boolean {
+  return status.activeRules === 0
+    && status.activeSkills === 0
+    && (status.disabledRules > 0 || status.disabledSkills > 0);
 }

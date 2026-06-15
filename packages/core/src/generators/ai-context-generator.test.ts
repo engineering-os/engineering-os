@@ -129,4 +129,29 @@ describe('AiContextGenerator Codex output', () => {
     expect(content.match(/EOS:START/g)).toHaveLength(1);
     expect(content).toContain('MANDATORY: Use EOS tools');
   });
+
+  it('replaces legacy generated Cursor rules instead of appending duplicates', async () => {
+    const rulesDir = path.join(tmpDir, '.cursor', 'rules');
+    await fs.mkdir(rulesDir, { recursive: true });
+    const systemPath = path.join(rulesDir, 'eos-system.md');
+    await fs.writeFile(
+      systemPath,
+      [
+        '# Engineering OS — Use EOS MCP tools for all tasks',
+        '',
+        'This project is managed by Engineering OS. Use these MCP tools:',
+        '',
+        '- `eos_context` — CALL FIRST before any task.',
+        '',
+      ].join('\n'),
+      'utf-8'
+    );
+
+    await generator.writeCursorRules(rulesDir);
+
+    const content = await fs.readFile(systemPath, 'utf-8');
+    expect(content.match(/EOS:START/g)).toHaveLength(1);
+    expect(content).not.toContain('This project is managed by Engineering OS');
+    expect(content).toContain('This project uses Engineering OS');
+  });
 });

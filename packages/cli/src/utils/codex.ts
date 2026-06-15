@@ -54,7 +54,7 @@ async function getCodexSkillDirs(projectRoot: string): Promise<{ active: string[
   }
 }
 
-export async function installCodexSkills(projectRoot: string): Promise<string[]> {
+export async function installCodexSkills(projectRoot: string, options: { disabled?: boolean } = {}): Promise<string[]> {
   const source = resolveCodexSkillsSource();
   const skillsDir = path.join(projectRoot, '.agents', 'skills');
   await fs.mkdir(skillsDir, { recursive: true });
@@ -63,8 +63,11 @@ export async function installCodexSkills(projectRoot: string): Promise<string[]>
   const installed: string[] = [];
   for (const entry of sourceEntries) {
     if (!entry.isDirectory()) continue;
-    const targetName = `eos-${entry.name}`;
+    const activeName = `eos-${entry.name}`;
+    const targetName = options.disabled ? `${activeName}.disabled` : activeName;
     const targetPath = path.join(skillsDir, targetName);
+    const oppositePath = path.join(skillsDir, options.disabled ? activeName : `${activeName}.disabled`);
+    await fs.rm(oppositePath, { recursive: true, force: true });
     await fs.rm(targetPath, { recursive: true, force: true });
     await copyDir(path.join(source, entry.name), targetPath);
     installed.push(targetName);
@@ -171,4 +174,9 @@ export async function getCodexStatus(projectRoot: string): Promise<CodexStatus> 
     disabledSkills: disabled.length,
     mcpConfig,
   };
+}
+
+export function isCodexDisabled(status: CodexStatus): boolean {
+  return status.mcpConfig === 'disabled'
+    || (status.activeSkills === 0 && status.disabledSkills > 0);
 }

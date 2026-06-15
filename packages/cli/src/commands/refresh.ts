@@ -5,8 +5,8 @@ import { execSync } from 'child_process';
 import { RepositoryIndexer, MetadataStore, GraphStore, RepoRegistry, EosWatcher } from '@engineering-os/core';
 import { readConfig } from '../utils/config.js';
 import { createAiContextGenerator } from '../utils/ai-context.js';
-import { installCodexSkills, writeCodexMcpConfig } from '../utils/codex.js';
-import { installCursorSkills } from '../utils/cursor.js';
+import { getCodexStatus, installCodexSkills, isCodexDisabled, writeCodexMcpConfig } from '../utils/codex.js';
+import { getCursorStatus, installCursorSkills, isCursorDisabled } from '../utils/cursor.js';
 
 const GREEN = '\x1b[32m';
 const DIM = '\x1b[2m';
@@ -162,7 +162,7 @@ async function fileExists(filePath: string): Promise<boolean> {
   }
 }
 
-async function regenerateAiContexts(rootPath: string): Promise<void> {
+export async function regenerateAiContexts(rootPath: string): Promise<void> {
   let configAdapters: { claude?: boolean; cursor?: boolean; codex?: boolean } = {};
   try {
     const config = await readConfig(rootPath);
@@ -173,10 +173,19 @@ async function regenerateAiContexts(rootPath: string): Promise<void> {
 
   const shouldRegenerateClaude =
     configAdapters.claude === true || await fileExists(path.join(rootPath, 'CLAUDE.md'));
+  const cursorStatus = await getCursorStatus(rootPath);
+  const cursorDisabled = isCursorDisabled(cursorStatus);
   const shouldRegenerateCursor =
-    configAdapters.cursor === true || await fileExists(path.join(rootPath, '.cursor', 'rules', 'eos-system.md'));
+    configAdapters.cursor === true
+      || await fileExists(path.join(rootPath, '.cursor', 'rules', 'eos-system.md'))
+      || cursorDisabled;
+  const codexStatus = await getCodexStatus(rootPath);
+  const codexDisabled = isCodexDisabled(codexStatus);
   const shouldRegenerateCodex =
-    configAdapters.codex === true || await fileExists(path.join(rootPath, 'AGENTS.md'));
+    configAdapters.codex === true
+      || await fileExists(path.join(rootPath, 'AGENTS.md'))
+      || codexStatus.mcpConfig !== 'missing'
+      || codexStatus.disabledSkills > 0;
 
   if (!shouldRegenerateClaude && !shouldRegenerateCursor && !shouldRegenerateCodex) {
     return;
@@ -191,15 +200,17 @@ async function regenerateAiContexts(rootPath: string): Promise<void> {
   }
 
   if (shouldRegenerateCursor) {
-    const written = await generator.writeCursorRules(path.join(rootPath, '.cursor', 'rules'));
-    const installed = await installCursorSkills(rootPath);
-    console.log(`${CHECK} Cursor context refreshed ${DIM}(${written.length} rules, ${installed.length} skills)${RESET}`);
+    const written = await generator.writeCursorRules(path.join(rootPath, '.cursor', 'rules'), { disabled: cursorDisabled });
+    const installed = await installCursorSkills(rootPath, { disabled: cursorDisabled });
+    const state = cursorDisabled ? 'suspended ' : '';
+    console.log(`${CHECK} Cursor context refreshed ${DIM}(${written.length} ${state}rules, ${installed.length} ${state}skills)${RESET}`);
   }
 
   if (shouldRegenerateCodex) {
     await generator.writeCodexAgentsMd(path.join(rootPath, 'AGENTS.md'));
-    const installed = await installCodexSkills(rootPath);
-    await writeCodexMcpConfig(rootPath, true);
-    console.log(`${CHECK} Codex context refreshed ${DIM}(AGENTS.md, ${installed.length} skills, MCP config)${RESET}`);
+    const installed = await installCodexSkills(rootPath, { disabled: codexDisabled });
+    await writeCodexMcpConfig(rootPath, !codexDisabled);
+    const state = codexDisabled ? 'suspended ' : '';
+    console.log(`${CHECK} Codex context refreshed ${DIM}(AGENTS.md, ${installed.length} ${state}skills, MCP config ${codexDisabled ? 'disabled' : 'enabled'})${RESET}`);
   }
 }

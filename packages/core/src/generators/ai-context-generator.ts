@@ -352,14 +352,18 @@ export class AiContextGenerator {
     this.writeWithMarkers(outputPath, content);
   }
 
-  async writeCursorRules(rulesDir: string): Promise<string[]> {
+  async writeCursorRules(rulesDir: string, options: { disabled?: boolean } = {}): Promise<string[]> {
     const rules = await this.generateCursorRules();
     if (!fs.existsSync(rulesDir)) fs.mkdirSync(rulesDir, { recursive: true });
 
     const written: string[] = [];
     for (const [filename, content] of rules) {
-      this.writeWithMarkers(path.join(rulesDir, filename), content);
-      written.push(filename);
+      const outputName = options.disabled ? `${filename}.disabled` : filename;
+      const oppositeName = options.disabled ? filename : `${filename}.disabled`;
+      const oppositePath = path.join(rulesDir, oppositeName);
+      if (fs.existsSync(oppositePath)) fs.rmSync(oppositePath, { force: true });
+      this.writeWithMarkers(path.join(rulesDir, outputName), content);
+      written.push(outputName);
     }
     return written;
   }
@@ -394,10 +398,35 @@ export class AiContextGenerator {
       const before = existing.slice(0, startIdx);
       const after = existing.slice(endIdx + EOS_MARKER_END.length);
       fs.writeFileSync(filePath, before + markedContent + after, 'utf-8');
+    } else if (this.isLegacyGeneratedCursorRule(filePath, existing)) {
+      fs.writeFileSync(filePath, markedContent + '\n', 'utf-8');
     } else {
       const separator = existing.endsWith('\n') ? '\n' : '\n\n';
       fs.writeFileSync(filePath, existing + separator + markedContent + '\n', 'utf-8');
     }
+  }
+
+  private isLegacyGeneratedCursorRule(filePath: string, content: string): boolean {
+    const baseName = path.basename(filePath).replace(/\.disabled$/, '');
+    const legacyHeadings: Record<string, string> = {
+      'eos-system.md': '# Engineering OS',
+      'eos-conventions.md': '# Project Conventions',
+      'eos-patterns.md': '# Coding Patterns',
+      'eos-architecture.md': '# Project Architecture',
+      'eos-decisions.md': '# Engineering Decisions',
+      'eos-service-map.md': '# Service Dependency Map',
+    };
+    const heading = legacyHeadings[baseName];
+    if (!heading || !content.trimStart().startsWith(heading)) return false;
+
+    return [
+      'eos_context',
+      'Follow these conventions',
+      'Use these recorded patterns',
+      'Project:',
+      'These decisions are made',
+      'multi-service architecture',
+    ].some((needle) => content.includes(needle));
   }
 
   private buildProjectSummaryLine(): string {
