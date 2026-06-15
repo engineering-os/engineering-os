@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+import * as fs from 'fs';
+import * as path from 'path';
+
 const nodeMajor = parseInt(process.versions.node.split('.')[0], 10);
 if (nodeMajor < 18) {
   process.stderr.write(
@@ -29,12 +32,34 @@ process.on('uncaughtException', (err) => {
 
 import { Command } from 'commander';
 
+function getCliVersion(): string {
+  let current = __dirname;
+  while (true) {
+    const packagePath = path.join(current, 'package.json');
+    if (fs.existsSync(packagePath)) {
+      try {
+        const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+        if ((pkg.name === 'engineering-os' || pkg.name === '@engineering-os/cli') && typeof pkg.version === 'string') {
+          return pkg.version;
+        }
+      } catch {
+        // Keep walking upward until a valid package boundary is found.
+      }
+    }
+
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  return '0.0.0';
+}
+
 const program = new Command();
 
 program
   .name('eos')
   .description('Engineering OS - Engineering Intelligence Platform')
-  .version('1.0.0');
+  .version(getCliVersion());
 
 async function main() {
   try {
