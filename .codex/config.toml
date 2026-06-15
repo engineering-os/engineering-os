@@ -1,0 +1,6 @@
+# EOS:START - Engineering OS Codex MCP
+[mcp_servers.engineering-os]
+command = "eos"
+args = ["serve"]
+enabled = true
+# EOS:END
