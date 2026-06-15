@@ -733,18 +733,22 @@ li { margin: 8px 0; line-height: 1.7; }
 <h3>2. Initialize in your project</h3>
 <div class="code-title">Terminal</div>
 <pre><code>cd your-project
-eos init --claude --cursor
+eos init --claude --cursor --codex
 
 # Output:
 # ✓ Repository indexed (847 files, 4201 chunks)
 # ✓ Architecture discovered (12 services, 3 patterns)
 # ✓ Graph built (156 calls, 4 contracts)
 # ✓ CLAUDE.md generated
-# ✓ .cursor/rules/ generated (5 files)
+# ✓ .cursor/rules/ generated (6 files)
+# ✓ .cursor/skills/ generated (11 EOS Cursor skills)
+# ✓ AGENTS.md generated
+# ✓ .agents/skills/ generated (11 EOS Codex skills)
+# ✓ .codex/config.toml generated
 # ✨ Engineering OS initialized!</code></pre>
 
 <h3>3. That's it — start coding</h3>
-<p>Open Claude Code or Cursor. Your AI now has full project knowledge. It will:</p>
+<p>Open Claude Code, Cursor, or Codex. Your AI now has full project knowledge. It will:</p>
 <ul>
   <li>Call <code>eos_context</code> before starting any task (gets routes, architecture, conventions)</li>
   <li>Use <code>eos_search</code> instead of grep/find (pre-indexed, instant results)</li>
@@ -754,7 +758,7 @@ eos init --claude --cursor
 
 <div class="callout callout-tip">
   <span class="callout-icon">💡</span>
-  <div><strong>No manual wiring needed.</strong> The generated <code>CLAUDE.md</code> steers your AI to call EOS tools automatically. The <code>.mcp.json</code> tells Claude Code where the server is. Just code.</div>
+  <div><strong>No manual wiring needed.</strong> The generated <code>CLAUDE.md</code>, <code>.cursor/rules/</code>, and <code>AGENTS.md</code> steer your AI to call EOS tools automatically. MCP config files tell Claude Code and Codex where the server is. Just code.</div>
 </div>
 
 <h3>4. Cross-repo (optional)</h3>
@@ -825,7 +829,7 @@ decisions:
 
 # Which AI tool context files to generate
 ai:
-  tools: [claude, cursor]
+  tools: [claude, cursor, codex]
   mcp: true</code></pre>
 
 <p>Or build incrementally with the CLI:</p>
@@ -949,15 +953,26 @@ eos_learn({
 // • NEVER make architecture decisions without eos_recall_decision</code></pre>
 
 <h3>Cursor</h3>
-<p>Cursor loads per-topic rule files from <code>.cursor/rules/</code>. EOS generates 5 files, each serving a specific purpose:</p>
+<p>Cursor loads per-topic rule files from <code>.cursor/rules/</code> and workflow skills from <code>.cursor/skills/</code>. EOS generates 6 rule files plus 11 EOS workflow skills:</p>
 <pre><code>eos init --cursor
 
 # Generated files (all prefixed eos- to avoid conflicts with your rules):
 # .cursor/rules/eos-system.md        → "Use EOS tools, don't explore"
 # .cursor/rules/eos-conventions.md   → Project coding standards
+# .cursor/rules/eos-patterns.md      → Recorded implementation patterns
 # .cursor/rules/eos-architecture.md  → Service map and key directories
 # .cursor/rules/eos-decisions.md     → Settled decisions (don't re-debate)
-# .cursor/rules/eos-service-map.md   → Cross-repo dependency graph</code></pre>
+# .cursor/rules/eos-service-map.md   → Cross-repo dependency graph
+# .cursor/skills/eos-*               → 11 EOS workflows for Cursor</code></pre>
+
+<h3>Codex</h3>
+<p>Codex reads repository instructions from <code>AGENTS.md</code>, repo-scoped skills from <code>.agents/skills/</code>, and project-local MCP configuration from <code>.codex/config.toml</code>.</p>
+<pre><code>eos init --codex
+
+# Generated files:
+# AGENTS.md                          → Codex repo instructions
+# .agents/skills/eos-*               → 11 EOS workflows for Codex
+# .codex/config.toml                 → Codex MCP server config</code></pre>
 
 <h3>Windsurf</h3>
 <p>Single rules file with EOS tool instructions:</p>
@@ -994,7 +1009,8 @@ eos_learn({
 <table>
 <tr><th>Option</th><th>Description</th></tr>
 <tr><td><code>--claude</code></td><td>Generate CLAUDE.md steering file</td></tr>
-<tr><td><code>--cursor</code></td><td>Generate .cursor/rules/eos-*.md files</td></tr>
+<tr><td><code>--cursor</code></td><td>Generate .cursor/rules/eos-*.md files and .cursor/skills/eos-* workflows</td></tr>
+<tr><td><code>--codex</code></td><td>Generate AGENTS.md, .agents/skills/eos-*, and .codex/config.toml</td></tr>
 <tr><td><code>--copilot</code></td><td>Generate .github/copilot-instructions.md</td></tr>
 <tr><td><code>--windsurf</code></td><td>Generate .windsurfrules</td></tr>
 <tr><td><code>--all</code></td><td>All AI tool files</td></tr>
@@ -1438,7 +1454,7 @@ eos_build({
 <tr><td><code>repos</code></td><td>array</td><td>Linked repositories (name, path, role)</td></tr>
 <tr><td><code>conventions</code></td><td>array</td><td>Team conventions (name, rule)</td></tr>
 <tr><td><code>decisions</code></td><td>array</td><td>Engineering decisions (title, decision, rationale)</td></tr>
-<tr><td><code>ai.tools</code></td><td>string[]</td><td>AI tools to generate files for ([claude, cursor])</td></tr>
+<tr><td><code>ai.tools</code></td><td>string[]</td><td>AI tools to generate files for ([claude, cursor, codex])</td></tr>
 <tr><td><code>ai.mcp</code></td><td>boolean</td><td>Whether to configure MCP auto-connect</td></tr>
 </table>
 
@@ -1457,6 +1473,10 @@ eos_build({
 <span class="dir">eos.workspace.yaml</span> <span class="comment">— Team-shared (in git)</span><br>
 <span class="dir">CLAUDE.md</span> <span class="comment">— Generated steering file (in git)</span><br>
 <span class="dir">.cursor/rules/eos-*.md</span> <span class="comment">— Generated Cursor rules (in git)</span><br>
+<span class="dir">.cursor/skills/eos-*</span> <span class="comment">— Generated Cursor workflows (in git)</span><br>
+<span class="dir">AGENTS.md</span> <span class="comment">— Generated Codex instructions (in git)</span><br>
+<span class="dir">.agents/skills/eos-*</span> <span class="comment">— Generated Codex workflows (in git)</span><br>
+<span class="dir">.codex/config.toml</span> <span class="comment">— Generated Codex MCP config (in git)</span><br>
 <span class="dir">~/.eos/repos.yaml</span> <span class="comment">— Global registry of onboarded repos</span>
 </div>
 </section>
