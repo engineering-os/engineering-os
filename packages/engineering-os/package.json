@@ -6,7 +6,7 @@
   "author": "Engineering OS Contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/engineering-os/engineering-os.git"
+    "url": "git+https://github.com/engineering-os/engineering-os.git"
   },
   "homepage": "https://engineering-os.github.io/engineering-os/",
   "bugs": {
@@ -31,7 +31,7 @@
     "provenance": true
   },
   "bin": {
-    "eos": "./dist/cli/cli.js"
+    "eos": "dist/cli/cli.js"
   },
   "main": "dist/core/index.js",
   "types": "dist/core/index.d.ts",
