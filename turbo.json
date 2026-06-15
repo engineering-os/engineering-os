@@ -3,7 +3,15 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "outputs": [
+        "dist/**",
+        "skills/**",
+        "skills-cursor/**",
+        "skills-codex/**",
+        ".claude-plugin/**",
+        "plugin.json",
+        "scripts/check-native.js"
+      ]
     },
     "dev": {
       "cache": false,
